@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f98850ab63bc4d147a62d237455ead0d, type: 3}
   m_Name: Shoot01
   m_EditorClassIdentifier: 
+  _money: 20
   _speed: 10
   _prefab: {fileID: 1939295805654080282, guid: a0cdef1ec00c641498981e9f9a594be7, type: 3}
   _shootDamage: 1

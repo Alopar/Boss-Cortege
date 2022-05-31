@@ -15,7 +15,10 @@ namespace BossCortege
         private uint _shootMaxDamage;
         private uint _currentShootDamage;
 
-        private bool _isFire = false;
+        private Coroutine _fireCoroutine = null;
+        private Coroutine _moveNextCoroutine = null;
+
+        private bool _isLeaving = false;
         #endregion
 
         #region PROPERTIES
@@ -42,31 +45,42 @@ namespace BossCortege
         #endregion
 
         #region UNITY CALLBACKS
+        private void Start()
+        {
+            StartCoroutine(Leave(10f));
+        }
+
         private void Update()
         {
             transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _currentSpeed * Time.deltaTime);
 
             if (transform.position == _currentPoint.transform.position)
             {
-                Fire();
+                if(_fireCoroutine == null)
+                {
+                    _fireCoroutine = StartCoroutine(SpawnBullet(_currentRateOfFire));
+                }
+
+                if(_moveNextCoroutine == null)
+                {
+                    _moveNextCoroutine = StartCoroutine(MoveNextRow(3f));
+                }
+
+                if (_isLeaving)
+                {
+                    Die();
+                }
             }
         }
         #endregion
 
         #region METHODS PRIVATE
-        private void Fire()
-        {
-            if (_isFire) return;
-
-            _isFire = true;
-            StartCoroutine(SpawnBullet(_currentRateOfFire));
-        }
         #endregion
 
         #region COROUTINES
         IEnumerator SpawnBullet(float delay)
         {
-            while (true)
+            while (!_isLeaving)
             {
                 var projectile = Instantiate(_config.ProjectileScheme.Prefab, transform.position, transform.rotation);
                 projectile.transform.SetParent(CortegeController.Instance.ProjectilesContainer);
@@ -74,6 +88,25 @@ namespace BossCortege
 
                 yield return new WaitForSeconds(delay);
             }
+        }
+
+        IEnumerator MoveNextRow(float delay)
+        {
+            while (!_isLeaving)
+            {
+                yield return new WaitForSeconds(delay);
+
+                var row = (CortegeRow)Random.Range(1, 4);
+                _currentPoint = CortegeController.Instance.GetCortegePoint(row, _currentPoint.CortegeColumn);
+            }
+        }
+
+        IEnumerator Leave(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            _isLeaving = true;
+            _currentPoint = CortegeController.Instance.GetCortegePoint(CortegeRow.Front, _currentPoint.CortegeColumn);
         }
         #endregion
     }

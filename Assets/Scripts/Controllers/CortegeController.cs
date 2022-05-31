@@ -9,7 +9,8 @@ namespace BossCortege
     public class CortegeController : MonoBehaviour
     {
         #region FIELDS INSPECTOR
-        [SerializeField, Range(1, 100), Tooltip("All cortege speed")] private float _speed = 0;
+        [SerializeField, Range(1, 100), Tooltip("Монет за расстояние")] private uint _moneyPerUnit = 1;
+        [SerializeField, Range(1, 100), Tooltip("Скорость всего кортежа")] private float _speed = 0;
 
         [Space(10)]
         [SerializeField] private Transform _raidsContainer;
@@ -112,7 +113,7 @@ namespace BossCortege
                     var firstCar = GetCortegeCar(row, (CortegeColumn)i);
                     var secondCar = GetCortegeCar(row, (CortegeColumn)(i + 1));
 
-                    if (firstCar == null && secondCar != null && !(secondCar.GetType() == typeof(LimoRaidController)))
+                    if (firstCar == null && secondCar != null)
                     {
                         secondCar.SetPoint(GetCortegePoint(row, (CortegeColumn)i));
                     }
@@ -125,7 +126,7 @@ namespace BossCortege
                     var firstCar = GetCortegeCar(row, (CortegeColumn)i);
                     var secondCar = GetCortegeCar(row, (CortegeColumn)(i - 1));
 
-                    if (firstCar == null && secondCar != null && !(secondCar.GetType() == typeof(LimoRaidController)))
+                    if (firstCar == null && secondCar != null)
                     {
                         secondCar.SetPoint(GetCortegePoint(row, (CortegeColumn)i));
                     }
@@ -137,14 +138,14 @@ namespace BossCortege
         {
             return _raids.Find(e => e.CortegePoint.CortegeRow == row && e.CortegePoint.CortegeColumn == column);
         }
-
-        private CortegePoint GetCortegePoint(CortegeRow row, CortegeColumn column)
-        {
-            return _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
-        }
         #endregion
 
         #region METHODS PUBLIC
+        public CortegePoint GetCortegePoint(CortegeRow row, CortegeColumn column)
+        {
+            return _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
+        }
+
         public void SetCar<T>(CortegeRow row, CortegeColumn column, T carScheme) where T : CarScheme
         {
             if (typeof(T) == typeof(GuardScheme))
@@ -213,7 +214,7 @@ namespace BossCortege
             {
                 var enemyCar = Instantiate(enemySchema.Prefab) as SuicideEnemyController;
                 enemyCar.transform.SetParent(_enemiesContainer);
-                enemyCar.Settings = enemySchema as SuicideEnemyScheme;
+                enemyCar.Config = enemySchema as SuicideEnemyScheme;
 
                 CortegePoint startPoint = _points.Find(e => e.CortegeRow == CortegeRow.Front && e.CortegeColumn == column);
                 CortegePoint finishPoint = _points.Find(e => e.CortegeRow == CortegeRow.Back && e.CortegeColumn == column);
@@ -292,6 +293,9 @@ namespace BossCortege
             StopCoroutine(_spawnEnemies);
             StopCoroutine(_spawnBulletEnemies);
 
+            var coins = Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit;
+            GameManager.Instance.SetMoney((uint)coins);
+
             transform.position = _startPosition;
 
             var raidsToDelete = _raids.ToArray();
@@ -336,10 +340,12 @@ namespace BossCortege
             {
                 var enemySchema = Resources.Load<ShootEnemyScheme>("Shoot01");
                 var column = UnityEngine.Random.Range(0f, 1f) < 0.5f ? CortegeColumn.One : CortegeColumn.Five;
+                
                 var enemy = _enemies.Find(e => e.CortegePoint.CortegeColumn == column);
-                if(enemy == null)
+                var raid = _raids.Find(e => e.CortegePoint.CortegeColumn == column);
+                if(enemy == null && raid == null)
                 {
-                    SetEnemy<ShootEnemyScheme>(column, enemySchema);
+                    SetEnemy(column, enemySchema);
                 }
 
                 yield return new WaitForSeconds(timeDelay);

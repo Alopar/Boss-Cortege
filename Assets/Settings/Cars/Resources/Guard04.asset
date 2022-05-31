@@ -9,8 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94a136032f414914e95964b3891118fe, type: 3}
-  m_Name: Bullet01
+  m_Script: {fileID: 11500000, guid: 23c6ebed8bb342448982b320fea0b983, type: 3}
+  m_Name: Guard04
   m_EditorClassIdentifier: 
-  _speed: 15
-  _prefab: {fileID: 8099085129823859641, guid: fd13fa87f4cf1824a90cb0ce63e98732, type: 3}
+  _name: Guard 04
+  _durability: 250
+  _prefab: {fileID: 1066682663356223023, guid: 72fe82b87c571524dbd47a2babc56260, type: 3}
+  _ramDamage: 25
+  _level: 3

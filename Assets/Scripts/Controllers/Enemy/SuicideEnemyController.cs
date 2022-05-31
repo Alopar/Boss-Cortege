@@ -17,7 +17,7 @@ namespace BossCortege
         /// <summary>
         /// Only the initial installation is available
         /// </summary>
-        public SuicideEnemyScheme Settings
+        public SuicideEnemyScheme Config
         {
             get { return _config; }
             set

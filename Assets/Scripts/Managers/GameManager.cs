@@ -77,12 +77,6 @@ namespace BossCortege
             place.PlaceCar(car);
         }
 
-        private void SetMoney(uint coins)
-        {
-            _money += (int)coins;
-            OnMoneyChange?.Invoke(_money);
-        }
-
         private bool GetMoney(uint coins)
         {
             if(_money >= coins)
@@ -98,6 +92,12 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
+        public void SetMoney(uint coins)
+        {
+            _money += (int)coins;
+            OnMoneyChange?.Invoke(_money);
+        }
+
         public void BuyCar(uint cost)
         {
             foreach (var place in _parkingPlace)
@@ -209,11 +209,6 @@ namespace BossCortege
             }
 
             OnCortegeStop?.Invoke();
-        }
-
-        public void AddMoney()
-        {
-            SetMoney(500);
         }
 
 #if UNITY_EDITOR

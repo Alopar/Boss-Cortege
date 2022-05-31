@@ -39,12 +39,16 @@ namespace BossCortege
             {
                 SetDamage(suicideEnemy.RamDamage);
                 suicideEnemy.Die();
+
+                GameManager.Instance.SetMoney(suicideEnemy.Config.Money);
             }
 
-            var bulletEnemy = collision.gameObject.GetComponentInParent<ShootEnemyController>();
-            if (bulletEnemy != null)
+            var shootEnemy = collision.gameObject.GetComponentInParent<ShootEnemyController>();
+            if (shootEnemy != null)
             {
-                bulletEnemy.Die();
+                shootEnemy.Die();
+
+                GameManager.Instance.SetMoney(shootEnemy.Config.Money);
             }
 
             var projectile = collision.gameObject.GetComponent<ProjectileController>();
