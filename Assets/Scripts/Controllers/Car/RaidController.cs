@@ -3,50 +3,22 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    public class RaidController : MonoBehaviour
+    public abstract class RaidController : MonoBehaviour
     {
         #region FIELDS PRIVATE
-        private bool _isLimo;
-        private Car _settings;
-
         private float _speed;
 
-        private int _maxHP;
+        private uint _maxHP;
         private int _currentHP;
-
-        private uint _maxDamage;
-        private uint _currentDamage;
-
-        private Collider _collider;
-        private Rigidbody _rigidbody;
 
         private CortegePoint _currentPoint;
         private CortegePoint _previousPoint;
+
+        private bool _initialized = false;
         #endregion
 
         #region PROPERTIES
-        /// <summary>
-        /// Only the initial installation is available
-        /// </summary>
-        public Car Settings
-        {
-            get { return _settings; }
-            set
-            {
-                if (_settings == null)
-                {
-                    _settings = value;
-
-                    _maxHP = (int)_settings.Durability;
-                    _currentHP = _maxHP;
-
-                    _maxDamage = _settings.Damage;
-                    _currentDamage = _maxDamage;
-                }
-            }
-        }
         public CortegePoint CortegePoint => _currentPoint;
-        public bool IsLimo { get { return _isLimo; } set { _isLimo = value; } }
         public float Speed { get { return _speed; } set { _speed = value; } }
         #endregion
 
@@ -55,12 +27,6 @@ namespace BossCortege
         #endregion
 
         #region UNITY CALLBACKS
-        private void OnEnable()
-        {
-            _rigidbody = GetComponentInChildren<Rigidbody>();
-            _collider = GetComponentInChildren<BoxCollider>();
-        }
-
         private void Update()
         {
             transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _speed * Time.deltaTime);
@@ -68,44 +34,38 @@ namespace BossCortege
 
         private void OnCollisionEnter(Collision collision)
         {
-            var suicideEnemy = collision.gameObject.GetComponentInParent<SuicideController>();
+            var suicideEnemy = collision.gameObject.GetComponentInParent<SuicideEnemyController>();
             if(suicideEnemy != null)
             {
-                SetDamage(suicideEnemy.Damage);
+                SetDamage(suicideEnemy.RamDamage);
                 suicideEnemy.Die();
             }
 
-            var bulletEnemy = collision.gameObject.GetComponentInParent<BulletController>();
+            var bulletEnemy = collision.gameObject.GetComponentInParent<ShootEnemyController>();
             if (bulletEnemy != null)
             {
                 bulletEnemy.Die();
             }
 
-            var bullet = collision.gameObject.GetComponent<Bullet>();
-            if(bullet != null)
+            var projectile = collision.gameObject.GetComponent<ProjectileController>();
+            if(projectile != null)
             {
-                SetDamage(bullet.Damage);
-                Destroy(bullet.gameObject);
+                SetDamage(projectile.Damage);
+                Destroy(projectile.gameObject);
             }
         }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if(other.gameObject.tag == "Gate")
-            {
-                if (_isLimo)
-                {
-                    GameManager.Instance.AddMoney();
-                    GameManager.Instance.StopCortege();
-                }
-            }
-        }
-        #endregion
-
-        #region METHODS PRIVATE
         #endregion
 
         #region METHODS PUBLIC
+        public virtual void Initialize(CarScheme scheme)
+        {
+            if (_initialized) return;
+            _initialized = true;
+
+            _maxHP = scheme.Durability;
+            _currentHP = (int)_maxHP;
+        }
+
         public void SetDamage(uint damage)
         {
             _currentHP -= (int)damage;
@@ -121,7 +81,7 @@ namespace BossCortege
             _currentPoint = point;
         }
 
-        public void Die()
+        public virtual void Die()
         {
             OnRaidDestroyed?.Invoke(this);
             Destroy(gameObject);

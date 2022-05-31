@@ -52,7 +52,7 @@ namespace BossCortege
             _parkingPlace = FindObjectsOfType<ParkingPlace>().OrderBy(e => e.Number).ToList();
 
             var limoPlace = _cortegePlace.Find(e => e.IsLimo);
-            var limoScheme = Resources.Load<Car>("Limo");
+            var limoScheme = Resources.Load<LimoScheme>("Limo01");
             SpawnCar(limoScheme, limoPlace);
 
             SetMoney(1000);
@@ -60,10 +60,20 @@ namespace BossCortege
         #endregion
 
         #region METHODS PRIVATE
-        private void SpawnCar(Car carScheme, Place place)
+        private void SpawnCar(LimoScheme scheme, Place place)
         {
-            var car = Instantiate(carScheme.CarPrefab);
-            car.Settings = carScheme;
+            var car = Instantiate(scheme.Prefab);
+            car.Initialize(scheme, place);
+            place.PlaceCar(car);
+        }
+
+        private void SpawnCar(GuardScheme scheme, Place place)
+        {
+            var car = Instantiate(scheme.Prefab);
+            car.Initialize(scheme, place);
+
+            car.gameObject.AddComponent<Merger>();
+
             place.PlaceCar(car);
         }
 
@@ -88,16 +98,16 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public void BuyCar()
+        public void BuyCar(uint cost)
         {
             foreach (var place in _parkingPlace)
             {
                 if(place.Car == null)
-                {
-                    var baseCarScheme = Resources.Load<Car>("Car01");
-                    if (GetMoney(baseCarScheme.Cost))
+                {   
+                    if (GetMoney(cost))
                     {
-                        SpawnCar(baseCarScheme, place);
+                        var scheme = Resources.Load<GuardScheme>("Guard01");
+                        SpawnCar(scheme, place);
                     }
 
                     return;
@@ -105,45 +115,45 @@ namespace BossCortege
             }
         }
 
-        public void MergeCar(CarController dominantCar, CarController submissiveCar)
+        public void MergeCar(Merger dominantCar, Merger submissiveCar)
         {
             string carSchemeName;
-            switch (dominantCar.Settings.Level)
+            switch (dominantCar.Parking.Config.Level)
             {
                 case CarLevel.Level01:
-                    carSchemeName = "Car02";
+                    carSchemeName = "Guard02";
                     break;
                 case CarLevel.Level02:
-                    carSchemeName = "Car03";
+                    carSchemeName = "Guard03";
                     break;
                 case CarLevel.Level03:
-                    carSchemeName = "Car04";
+                    carSchemeName = "Guard04";
                     break;
                 case CarLevel.Level04:
-                    carSchemeName = "Car05";
+                    carSchemeName = "Guard05";
                     break;
                 case CarLevel.Level05:
-                    carSchemeName = "Car05";
+                    carSchemeName = "Guard05";
                     break;
                 default:
-                    carSchemeName = "Car05";
+                    carSchemeName = "Guard05";
                     break;
             }
-            var nextLevelCarScheme = Resources.Load<Car>(carSchemeName);
+            var nextLevelCarScheme = Resources.Load<GuardScheme>(carSchemeName);
 
-            SpawnCar(nextLevelCarScheme, submissiveCar.Place);
+            SpawnCar(nextLevelCarScheme, submissiveCar.Parking.Place);
 
-            dominantCar.Place.ClearPlace();
+            dominantCar.Parking.Place.ClearPlace();
 
             Destroy(dominantCar.gameObject);
             Destroy(submissiveCar.gameObject);
         }
 
-        public void SwapCar(CarController dominantCar, CarController submissiveCar)
+        public void SwapCar(Merger dominantCar, Merger submissiveCar)
         {
-            var tempPlace = submissiveCar.Place;
-            dominantCar.Place.PlaceCar(submissiveCar);
-            tempPlace.PlaceCar(dominantCar);            
+            var tempPlace = submissiveCar.Parking.Place;
+            dominantCar.Parking.Place.PlaceCar(submissiveCar.Parking);
+            tempPlace.PlaceCar(dominantCar.Parking);
         }
 
         public void GoCortege()
@@ -165,7 +175,22 @@ namespace BossCortege
                 if (place.Car != null)
                 {
                     place.Car.gameObject.SetActive(false);
-                    _cortege.SetCar(place.CortegeRow, place.CortegeColumn, place.Car);
+
+                    if(place.Car.GetType() == typeof(GuardParkingController))
+                    {
+                        var scheme = (place.Car as GuardParkingController).Config;
+                        _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
+
+                        continue;
+                    }
+
+                    if (place.Car.GetType() == typeof(LimoParkingController))
+                    {
+                        var scheme = (place.Car as LimoParkingController).Config;
+                        _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
+
+                        continue;
+                    }
                 }
             }
 
@@ -199,6 +224,5 @@ namespace BossCortege
         }
 #endif
         #endregion
-
     }
 }

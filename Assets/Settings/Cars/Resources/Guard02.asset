@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca7402ce06754164fb24486f18d9181c, type: 3}
-  m_Name: Suicide01
+  m_Script: {fileID: 11500000, guid: 23c6ebed8bb342448982b320fea0b983, type: 3}
+  m_Name: Guard02
   m_EditorClassIdentifier: 
-  _speed: 10
-  _prefab: {fileID: 2229783855411144896, guid: f3568c0f2896cfd488f1b13e1680011c, type: 3}
-  _ramDamage: 25
+  _name: Guard 02
+  _durability: 150
+  _prefab: {fileID: 1361566163372709016, guid: 73f51b16f05bece40982810e0674617e, type: 3}
+  _ramDamage: 15
+  _level: 1

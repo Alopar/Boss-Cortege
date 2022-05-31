@@ -5,8 +5,7 @@ namespace BossCortege
 {
     public class SwipeDetection : MonoBehaviour
     {
-        public static event Action<Vector2> OnSwipe;
-
+        #region FIELDS PRIVATE
         private Vector2 tapPosition;
         private Vector2 swipeDelta;
 
@@ -14,7 +13,13 @@ namespace BossCortege
 
         private bool isSwiping;
         private bool isMobile;
+        #endregion
 
+        #region EVENTS
+        public static event Action<Vector2> OnSwipe;
+        #endregion
+
+        #region UNITY CALLBACKS
         private void Start()
         {
             isMobile = Application.isMobilePlatform;
@@ -36,9 +41,9 @@ namespace BossCortege
             }
             else
             {
-                if(Input.touchCount > 0)
+                if (Input.touchCount > 0)
                 {
-                    if(Input.GetTouch(0).phase == TouchPhase.Began)
+                    if (Input.GetTouch(0).phase == TouchPhase.Began)
                     {
                         isSwiping = true;
                         tapPosition = Input.GetTouch(0).position;
@@ -52,14 +57,16 @@ namespace BossCortege
 
             CheckSwipe();
         }
+        #endregion
 
+        #region METHODS PRIVATE
         private void CheckSwipe()
         {
             swipeDelta = Vector2.zero;
 
             if (isSwiping)
             {
-                if(!isMobile && Input.GetMouseButton(0))
+                if (!isMobile && Input.GetMouseButton(0))
                 {
                     swipeDelta = (Vector2)Input.mousePosition - tapPosition;
                 }
@@ -69,11 +76,11 @@ namespace BossCortege
                 }
             }
 
-            if(swipeDelta.magnitude > deadZone)
+            if (swipeDelta.magnitude > deadZone)
             {
-                if(OnSwipe != null)
+                if (OnSwipe != null)
                 {
-                    if(Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
+                    if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
                     {
                         OnSwipe(swipeDelta.x > 0 ? Vector2.right : Vector2.left);
                     }
@@ -93,5 +100,6 @@ namespace BossCortege
             tapPosition = Vector2.zero;
             swipeDelta = Vector2.zero;
         }
+        #endregion
     }
 }

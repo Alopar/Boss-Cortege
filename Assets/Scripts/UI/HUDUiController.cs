@@ -59,7 +59,7 @@ namespace BossCortege
         #region METHODS PUBLIC
         public void AddCar()
         {
-            GameManager.Instance.BuyCar();
+            GameManager.Instance.BuyCar(100);
         }
 
         public void Go()

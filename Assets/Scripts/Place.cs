@@ -9,18 +9,17 @@ namespace BossCortege
         #endregion
 
         #region FIELDS PRIVATE
-        private CarController _car;
+        private ParkingController _car;
         #endregion
 
         #region PROPERTIES
-        public CarController Car => _car;
+        public ParkingController Car => _car;
         #endregion
 
-
         #region METHODS PUBLIC
-        public void PlaceCar(CarController car)
+        public void PlaceCar(ParkingController parking)
         {
-            _car = car;
+            _car = parking;
             _car.Place = this;
             _car.transform.position = _spawnPoint.position;
         }

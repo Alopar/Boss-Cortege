@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca7402ce06754164fb24486f18d9181c, type: 3}
-  m_Name: Suicide01
+  m_Script: {fileID: 11500000, guid: 82fd5bbd8cf6b2f459359e0c336cab40, type: 3}
+  m_Name: Limo01
   m_EditorClassIdentifier: 
-  _speed: 10
-  _prefab: {fileID: 2229783855411144896, guid: f3568c0f2896cfd488f1b13e1680011c, type: 3}
-  _ramDamage: 25
+  _name: Limo 01
+  _durability: 300
+  _prefab: {fileID: 4245132621368757288, guid: 9867952aae2cf724aafb2c6c17be829a, type: 3}

@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca7402ce06754164fb24486f18d9181c, type: 3}
-  m_Name: Suicide01
+  m_Script: {fileID: 11500000, guid: 94a136032f414914e95964b3891118fe, type: 3}
+  m_Name: Bullet01
   m_EditorClassIdentifier: 
   _speed: 10
-  _prefab: {fileID: 2229783855411144896, guid: f3568c0f2896cfd488f1b13e1680011c, type: 3}
-  _ramDamage: 25
+  _prefab: {fileID: 8099085129823859641, guid: fd13fa87f4cf1824a90cb0ce63e98732, type: 3}
