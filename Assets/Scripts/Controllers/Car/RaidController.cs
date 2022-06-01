@@ -12,7 +12,6 @@ namespace BossCortege
         private int _currentHP;
 
         private CortegePoint _currentPoint;
-        private CortegePoint _previousPoint;
 
         private bool _initialized = false;
         #endregion
@@ -24,15 +23,21 @@ namespace BossCortege
 
         #region EVENTS
         public event Action<RaidController> OnRaidDestroyed;
+        public event Action OnRam;
         #endregion
 
         #region UNITY CALLBACKS
         private void Update()
         {
             transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _speed * Time.deltaTime);
+
+            if(transform.position == _currentPoint.transform.position)
+            {
+                CortegeController.Instance.DropAttack();
+            }
         }
 
-        private void OnCollisionEnter(Collision collision)
+        protected virtual void OnCollisionEnter(Collision collision)
         {
             var suicideEnemy = collision.gameObject.GetComponentInParent<SuicideEnemyController>();
             if(suicideEnemy != null)
@@ -43,20 +48,19 @@ namespace BossCortege
                 GameManager.Instance.SetMoney(suicideEnemy.Config.Money);
             }
 
-            var shootEnemy = collision.gameObject.GetComponentInParent<ShootEnemyController>();
-            if (shootEnemy != null)
-            {
-                shootEnemy.Die();
-
-                GameManager.Instance.SetMoney(shootEnemy.Config.Money);
-            }
-
             var projectile = collision.gameObject.GetComponent<ProjectileController>();
             if(projectile != null)
             {
                 SetDamage(projectile.Damage);
                 Destroy(projectile.gameObject);
             }
+        }
+        #endregion
+
+        #region METHODS PRIVATE
+        protected void OnRamWrapper()
+        {
+            OnRam?.Invoke();
         }
         #endregion
 
@@ -81,15 +85,20 @@ namespace BossCortege
 
         public void SetPoint(CortegePoint point)
         {
-            _previousPoint = _currentPoint;
+            if(_currentPoint != null && _currentPoint.RaidController == this)
+            {
+                _currentPoint.RaidController = null;
+            }
+            
             _currentPoint = point;
+            _currentPoint.RaidController = this;
         }
 
         public virtual void Die()
         {
             OnRaidDestroyed?.Invoke(this);
-            Destroy(gameObject);
         }
         #endregion
+
     }
 }

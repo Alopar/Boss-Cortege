@@ -12,6 +12,9 @@ namespace BossCortege
         private float _currentSpeed;
         private float _currentRateOfFire;
 
+        private uint _maxHP;
+        private int  _currentHP;
+
         private uint _shootMaxDamage;
         private uint _currentShootDamage;
 
@@ -33,6 +36,9 @@ namespace BossCortege
                 if (_config == null)
                 {
                     _config = value;
+
+                    _maxHP = _config.Durability;
+                    _currentHP = (int)_maxHP;
 
                     _currentSpeed = _config.Speed;
                     _currentRateOfFire = _config.RateOfFire;
@@ -75,6 +81,22 @@ namespace BossCortege
         #endregion
 
         #region METHODS PRIVATE
+        public override void Die()
+        {
+            base.Die();
+            GameManager.Instance.SetMoney(_config.Money);
+        }
+        #endregion
+
+        #region METHODS PUBLIC
+        public void SetDamage(uint damage)
+        {
+            _currentHP -= (int)damage;
+            if (_currentHP <= 0)
+            {
+                Die();
+            }
+        }
         #endregion
 
         #region COROUTINES

@@ -16,6 +16,20 @@ namespace BossCortege
         public GuardScheme Config => _config;
         #endregion
 
+        #region UNITY CALLBACKS
+        protected override void OnCollisionEnter(Collision collision)
+        {
+            base.OnCollisionEnter(collision);
+
+            var shootEnemy = collision.gameObject.GetComponentInParent<ShootEnemyController>();
+            if (shootEnemy != null)
+            {
+                shootEnemy.SetDamage(_currentRamDamage);
+                OnRamWrapper();
+            }
+        }
+        #endregion
+
         #region METHODS PUBLIC
         public override void Initialize(CarScheme scheme)
         {

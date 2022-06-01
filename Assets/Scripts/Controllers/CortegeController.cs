@@ -19,6 +19,9 @@ namespace BossCortege
         #endregion
 
         #region FIELDS PRIVATE
+        private bool _isAttackLeft = false;
+        private bool _isAttackRight = false;
+
         private bool _go = false;
         private Vector3 _startPosition;
         private List<CortegePoint> _points = new List<CortegePoint>();
@@ -28,6 +31,7 @@ namespace BossCortege
         private Coroutine _spawnEnemies;
         private Coroutine _spawnBulletEnemies;
 
+        private Cortege _cortege;
         private RaidController _limo;
 
         private static CortegeController _instance;
@@ -47,10 +51,50 @@ namespace BossCortege
         private void SwipeDetection_OnSwipe(Vector2 direction)
         {
             if (!_go) return;
+            if (_isAttackLeft || _isAttackRight) return;
 
-            ShiftCarRow(CortegeRow.One, (int)direction.x);
-            ShiftCarRow(CortegeRow.Two, (int)direction.x);
-            ShiftCarRow(CortegeRow.Three, (int)direction.x);
+            if(direction.x < 0)
+            {
+                var checkCell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Left);
+                if (checkCell.Point.LeftPoint == null) return;
+
+                var enemy = GetEnemyByColumn(checkCell.Point.LeftPoint.CortegeColumn);
+                if (enemy != null && enemy.GetType() == typeof(ShootEnemyController))
+                {
+                    if (enemy.CortegePoint.RightPoint.RaidController != null)
+                    {
+                        _isAttackLeft = true;
+                        _cortege.MoveLeft();
+                    }
+                }
+                else
+                {
+                    _cortege.MoveLeft();
+                }
+            }
+            else
+            {
+                var checkCell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Right);
+                if (checkCell.Point.RightPoint == null) return;
+
+                var enemy = GetEnemyByColumn(checkCell.Point.RightPoint.CortegeColumn);
+                if (enemy != null && enemy.GetType() == typeof(ShootEnemyController))
+                {
+                    if (enemy.CortegePoint.LeftPoint.RaidController != null)
+                    {
+                        _isAttackRight = true;
+                        _cortege.MoveRight();
+                    }
+                }
+                else
+                {
+                    _cortege.MoveRight();
+                }
+            }
+
+            //ShiftCarRow(CortegeRow.One, (int)direction.x);
+            //ShiftCarRow(CortegeRow.Two, (int)direction.x);
+            //ShiftCarRow(CortegeRow.Three, (int)direction.x);
         }
 
         private void Limo_OnLimoDestroyed()
@@ -58,8 +102,54 @@ namespace BossCortege
             GameManager.Instance.StopCortege();
         }
 
+        private void Raid_OnRam()
+        {
+            if (_isAttackLeft)
+            {
+                _cortege.MoveRight();
+            }
+
+            if (_isAttackRight)
+            {   
+                _cortege.MoveLeft();
+            }
+        }
+
         private void Raid_OnRaidDestroyed(RaidController raid)
         {
+            var cell = _cortege.GetCellByRaid(raid);
+            if(cell != null)
+            {
+                if(cell.Vertical == CortegePosition.Front && cell.Horizontal != CortegePosition.Center)
+                {
+                    var vacantCell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Center);
+                    if(vacantCell.Raid != null)
+                    {
+                        cell.Raid = vacantCell.Raid;
+                        cell.Raid.SetPoint(cell.Point);
+                        vacantCell.Raid = null;
+                    }
+                }
+                
+                if (cell.Vertical == CortegePosition.Middle && cell.Horizontal != CortegePosition.Center)
+                {
+                    var centerVacantCell = _cortege.GetCellByPosition(CortegePosition.Middle, CortegePosition.Center);
+                    var bottomVacantCell = _cortege.GetCellByPosition(CortegePosition.Back, cell.Horizontal);
+                    if (centerVacantCell.Raid != null)
+                    {
+                        cell.Raid = centerVacantCell.Raid;
+                        cell.Raid.SetPoint(cell.Point);
+                        centerVacantCell.Raid = null;
+                    }
+                    else if(bottomVacantCell.Raid != null)
+                    {
+                        cell.Raid = bottomVacantCell.Raid;
+                        cell.Raid.SetPoint(cell.Point);
+                        bottomVacantCell.Raid = null;
+                    }
+                }
+            }
+
             DeleteCar(raid);
         }
 
@@ -141,6 +231,12 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
+        public void DropAttack()
+        {
+            _isAttackLeft = false;
+            _isAttackRight = false;
+        }
+
         public CortegePoint GetCortegePoint(CortegeRow row, CortegeColumn column)
         {
             return _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
@@ -159,11 +255,14 @@ namespace BossCortege
                 raidController.Initialize(raidSchema);
                 raidController.Speed = _speed * 2f;
 
+                raidController.OnRam += Raid_OnRam;
                 raidController.OnRaidDestroyed += Raid_OnRaidDestroyed;
 
                 CortegePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
                 if (point != null)
                 {
+                    point.RaidController = raidController;
+
                     raidController.transform.position = point.transform.position;
                     raidController.SetPoint(point);
 
@@ -194,6 +293,8 @@ namespace BossCortege
                 CortegePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
                 if (point != null)
                 {
+                    point.RaidController = raidController;
+
                     raidController.transform.position = point.transform.position;
                     raidController.SetPoint(point);
 
@@ -207,7 +308,7 @@ namespace BossCortege
                 return;
             }
         }
-
+        
         public void SetEnemy<T>(CortegeColumn column, T enemySchema) where T : EnemyScheme
         {
             if(typeof(T) == typeof(SuicideEnemyScheme))
@@ -270,6 +371,8 @@ namespace BossCortege
         {
             _raids.Remove(raid);
             raid.OnRaidDestroyed -= Raid_OnRaidDestroyed;
+            
+            Destroy(raid.gameObject);
         }
 
         public void DeleteEnemy(EnemyController enemy)
@@ -284,6 +387,59 @@ namespace BossCortege
             _limo = _raids.Find(e => e.GetType() == typeof(LimoRaidController));
             _spawnEnemies = StartCoroutine(SpawnSuicideEnemies());
             _spawnBulletEnemies = StartCoroutine(SpawnShootEnemies());
+
+            _cortege = new Cortege();
+
+            CortegeCell cell;
+            CortegePoint point;
+
+            // front
+            cell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Left);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Two);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
+
+            cell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Center);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Three);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
+
+            cell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Right);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Four);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
+
+            // middle
+            cell = _cortege.GetCellByPosition(CortegePosition.Middle, CortegePosition.Left);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Two);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
+
+            cell = _cortege.GetCellByPosition(CortegePosition.Middle, CortegePosition.Center);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Three);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
+
+            cell = _cortege.GetCellByPosition(CortegePosition.Middle, CortegePosition.Right);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Four);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
+
+            // back
+            cell = _cortege.GetCellByPosition(CortegePosition.Back, CortegePosition.Left);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Two);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
+
+            cell = _cortege.GetCellByPosition(CortegePosition.Back, CortegePosition.Center);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Three);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
+
+            cell = _cortege.GetCellByPosition(CortegePosition.Back, CortegePosition.Right);
+            point = _points.Find(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Four);
+            cell.Raid = point.RaidController;
+            cell.SetPoint(point);
         }
 
         public void Stop()
@@ -315,6 +471,11 @@ namespace BossCortege
             {
                 Destroy(bullet.gameObject);
             }
+        }
+
+        public EnemyController GetEnemyByColumn(CortegeColumn column)
+        {
+            return _enemies.Find(e => e.CortegePoint.CortegeColumn == column);
         }
         #endregion
 

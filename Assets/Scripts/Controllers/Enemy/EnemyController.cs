@@ -23,7 +23,7 @@ namespace BossCortege
             _currentPoint = point;
         }
 
-        public void Die()
+        public virtual void Die()
         {
             OnEnemyDestroyed?.Invoke(this);
             Destroy(gameObject);

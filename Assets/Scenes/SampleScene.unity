@@ -185,6 +185,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 3
   _cortegeColumn: 3
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 2138861930}
+  _rightPoint: {fileID: 1779432895}
+  _bottomPoint: {fileID: 1463043045}
 --- !u!1001 &51909620
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -342,6 +346,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 4
   _cortegeColumn: 1
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 1895753407}
+  _rightPoint: {fileID: 1487576187}
+  _bottomPoint: {fileID: 221275121}
 --- !u!1 &77466910
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,6 +412,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 4
   _cortegeColumn: 4
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 1863626006}
+  _rightPoint: {fileID: 0}
+  _bottomPoint: {fileID: 1779432895}
 --- !u!1001 &82058681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -688,6 +700,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 3
   _cortegeColumn: 1
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 415731180}
+  _rightPoint: {fileID: 2138861930}
+  _bottomPoint: {fileID: 1932586850}
 --- !u!1 &355521551
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,6 +837,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 3
   _cortegeColumn: 0
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 0}
+  _rightPoint: {fileID: 221275121}
+  _bottomPoint: {fileID: 1906147799}
 --- !u!1001 &458922232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -978,6 +998,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 1
   _cortegeColumn: 3
+  _topPoint: {fileID: 1463043045}
+  _leftPoint: {fileID: 2038209969}
+  _rightPoint: {fileID: 1424512001}
+  _bottomPoint: {fileID: 0}
 --- !u!1 &480165830
 GameObject:
   m_ObjectHideFlags: 3
@@ -1135,6 +1159,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 0
   _cortegeColumn: 1
+  _topPoint: {fileID: 1089957930}
+  _leftPoint: {fileID: 996928576}
+  _rightPoint: {fileID: 1172103884}
+  _bottomPoint: {fileID: 0}
 --- !u!1 &621374976
 GameObject:
   m_ObjectHideFlags: 0
@@ -1242,6 +1270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7442a2f6668c06c48b78eaa0d30e8b25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _moneyPerUnit: 1
   _speed: 3
   _raidsContainer: {fileID: 1943391168}
   _enemiesContainer: {fileID: 704576627}
@@ -1413,6 +1442,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 2
   _cortegeColumn: 4
+  _topPoint: {fileID: 1779432895}
+  _leftPoint: {fileID: 1463043045}
+  _rightPoint: {fileID: 0}
+  _bottomPoint: {fileID: 1424512001}
 --- !u!1 &704576626
 GameObject:
   m_ObjectHideFlags: 0
@@ -1824,6 +1857,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 1
   _cortegeColumn: 0
+  _topPoint: {fileID: 1906147799}
+  _leftPoint: {fileID: 0}
+  _rightPoint: {fileID: 1089957930}
+  _bottomPoint: {fileID: 0}
 --- !u!1001 &846897502
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2485,6 +2522,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 0
   _cortegeColumn: 3
+  _topPoint: {fileID: 465872872}
+  _leftPoint: {fileID: 1172103884}
+  _rightPoint: {fileID: 1719145657}
+  _bottomPoint: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -2683,6 +2724,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 0
   _cortegeColumn: 0
+  _topPoint: {fileID: 832216403}
+  _leftPoint: {fileID: 0}
+  _rightPoint: {fileID: 496015008}
+  _bottomPoint: {fileID: 0}
 --- !u!1001 &1036455631
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2922,6 +2967,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 1
   _cortegeColumn: 1
+  _topPoint: {fileID: 1932586850}
+  _leftPoint: {fileID: 832216403}
+  _rightPoint: {fileID: 2038209969}
+  _bottomPoint: {fileID: 0}
 --- !u!1 &1172103881
 GameObject:
   m_ObjectHideFlags: 0
@@ -2984,6 +3033,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 0
   _cortegeColumn: 2
+  _topPoint: {fileID: 2038209969}
+  _leftPoint: {fileID: 496015008}
+  _rightPoint: {fileID: 920817701}
+  _bottomPoint: {fileID: 0}
 --- !u!1001 &1195027816
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3280,6 +3333,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 1
   _cortegeColumn: 4
+  _topPoint: {fileID: 683651015}
+  _leftPoint: {fileID: 465872872}
+  _rightPoint: {fileID: 0}
+  _bottomPoint: {fileID: 0}
 --- !u!1 &1427506049
 GameObject:
   m_ObjectHideFlags: 0
@@ -3342,6 +3399,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 2
   _cortegeColumn: 2
+  _topPoint: {fileID: 2138861930}
+  _leftPoint: {fileID: 1932586850}
+  _rightPoint: {fileID: 1463043045}
+  _bottomPoint: {fileID: 2038209969}
 --- !u!1 &1463043042
 GameObject:
   m_ObjectHideFlags: 0
@@ -3404,6 +3465,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 2
   _cortegeColumn: 3
+  _topPoint: {fileID: 24384914}
+  _leftPoint: {fileID: 1427506052}
+  _rightPoint: {fileID: 683651015}
+  _bottomPoint: {fileID: 465872872}
 --- !u!4 &1482769281 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2718854906584197499, guid: ff64c93a33d211d458dc4a37705ad233,
@@ -3472,6 +3537,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 4
   _cortegeColumn: 2
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 75300307}
+  _rightPoint: {fileID: 1863626006}
+  _bottomPoint: {fileID: 2138861930}
 --- !u!1001 &1505469529
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3756,6 +3825,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 0
   _cortegeColumn: 4
+  _topPoint: {fileID: 1424512001}
+  _leftPoint: {fileID: 920817701}
+  _rightPoint: {fileID: 0}
+  _bottomPoint: {fileID: 0}
 --- !u!1 &1744462248
 GameObject:
   m_ObjectHideFlags: 0
@@ -4046,6 +4119,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 3
   _cortegeColumn: 4
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 24384914}
+  _rightPoint: {fileID: 0}
+  _bottomPoint: {fileID: 683651015}
 --- !u!1001 &1809625046
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4213,6 +4290,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 4
   _cortegeColumn: 3
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 1487576187}
+  _rightPoint: {fileID: 77466913}
+  _bottomPoint: {fileID: 24384914}
 --- !u!1001 &1863970484
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4370,6 +4451,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 4
   _cortegeColumn: 0
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 0}
+  _rightPoint: {fileID: 75300307}
+  _bottomPoint: {fileID: 415731180}
 --- !u!1 &1906147796
 GameObject:
   m_ObjectHideFlags: 0
@@ -4432,6 +4517,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 2
   _cortegeColumn: 0
+  _topPoint: {fileID: 415731180}
+  _leftPoint: {fileID: 0}
+  _rightPoint: {fileID: 1932586850}
+  _bottomPoint: {fileID: 832216403}
 --- !u!1001 &1926841228
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4630,6 +4719,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 2
   _cortegeColumn: 1
+  _topPoint: {fileID: 221275121}
+  _leftPoint: {fileID: 1906147799}
+  _rightPoint: {fileID: 1427506052}
+  _bottomPoint: {fileID: 1089957930}
 --- !u!1 &1943391167
 GameObject:
   m_ObjectHideFlags: 0
@@ -4874,6 +4967,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 1
   _cortegeColumn: 2
+  _topPoint: {fileID: 1427506052}
+  _leftPoint: {fileID: 1089957930}
+  _rightPoint: {fileID: 465872872}
+  _bottomPoint: {fileID: 0}
 --- !u!1001 &2128541473
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5031,6 +5128,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cortegeRow: 3
   _cortegeColumn: 2
+  _topPoint: {fileID: 0}
+  _leftPoint: {fileID: 221275121}
+  _rightPoint: {fileID: 24384914}
+  _bottomPoint: {fileID: 1427506052}
 --- !u!1001 &2718854905910930170
 PrefabInstance:
   m_ObjectHideFlags: 0
