@@ -133,10 +133,13 @@ namespace BossCortege
                     carSchemeName = "Guard05";
                     break;
                 case CarLevel.Level05:
-                    carSchemeName = "Guard05";
+                    carSchemeName = "Guard06";
+                    break;
+                case CarLevel.Level06:
+                    carSchemeName = "Guard06";
                     break;
                 default:
-                    carSchemeName = "Guard05";
+                    carSchemeName = "Guard06";
                     break;
             }
             var nextLevelCarScheme = Resources.Load<GuardScheme>(carSchemeName);

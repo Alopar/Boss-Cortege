@@ -53,7 +53,7 @@ namespace BossCortege
         #region UNITY CALLBACKS
         private void Start()
         {
-            StartCoroutine(Leave(10f));
+            StartCoroutine(Leave(12f));
         }
 
         private void Update()
@@ -102,21 +102,25 @@ namespace BossCortege
         #region COROUTINES
         IEnumerator SpawnBullet(float delay)
         {
-            while (!_isLeaving)
+            while (true)
             {
                 var projectile = Instantiate(_config.ProjectileScheme.Prefab, transform.position, transform.rotation);
                 projectile.transform.SetParent(CortegeController.Instance.ProjectilesContainer);
                 projectile.Initialize(_config.ProjectileScheme.Speed, _currentShootDamage, CortegeController.Instance.Limo.transform);
 
                 yield return new WaitForSeconds(delay);
+
+                if (_isLeaving) break;
             }
         }
 
         IEnumerator MoveNextRow(float delay)
         {
-            while (!_isLeaving)
+            while (true)
             {
                 yield return new WaitForSeconds(delay);
+
+                if (_isLeaving) break;
 
                 var row = (CortegeRow)Random.Range(1, 4);
                 _currentPoint = CortegeController.Instance.GetCortegePoint(row, _currentPoint.CortegeColumn);

@@ -16,6 +16,6 @@ MonoBehaviour:
   _speed: 10
   _prefab: {fileID: 1939295805654080282, guid: a0cdef1ec00c641498981e9f9a594be7, type: 3}
   _durability: 30
-  _shootDamage: 1
-  _rateOfFire: 3
+  _shootDamage: 5
+  _rateOfFire: 1
   _projectileScheme: {fileID: 11400000, guid: b18978d15bc193943b7f0b80f8be2880, type: 2}
