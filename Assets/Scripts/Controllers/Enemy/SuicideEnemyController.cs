@@ -36,11 +36,11 @@ namespace BossCortege
         #endregion
 
         #region UNITY CALLBACKS
-        private void Update()
+        private void FixedUpdate()
         {
-            transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _speed * Time.deltaTime);
-            
-            if(transform.position == _currentPoint.transform.position)
+            transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _speed * Time.fixedDeltaTime);
+
+            if (transform.position == _currentPoint.transform.position)
             {
                 Die();
             }

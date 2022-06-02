@@ -174,11 +174,11 @@ namespace BossCortege
             }
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (_go)
             {
-                transform.position += Vector3.forward * _speed * Time.deltaTime;
+                transform.position += Vector3.forward * _speed * Time.fixedDeltaTime;
             }
         }
 
@@ -485,20 +485,22 @@ namespace BossCortege
             var timeDelay = 3f;
             while (true)
             {
+                yield return new WaitForSeconds(timeDelay);
+
                 var enemySchema = Resources.Load<SuicideEnemyScheme>("Suicide01");
                 var randomColumn = UnityEngine.Random.Range(1, 4);
 
                 SetEnemy<SuicideEnemyScheme>((CortegeColumn)randomColumn, enemySchema);
-
-                yield return new WaitForSeconds(timeDelay);
             }
         }
 
         IEnumerator SpawnShootEnemies()
         {
-            var timeDelay = 3f;
+            var timeDelay = 5f;
             while (true)
             {
+                yield return new WaitForSeconds(timeDelay);
+
                 var enemySchema = Resources.Load<ShootEnemyScheme>("Shoot01");
                 var column = UnityEngine.Random.Range(0f, 1f) < 0.5f ? CortegeColumn.One : CortegeColumn.Five;
                 
@@ -508,8 +510,6 @@ namespace BossCortege
                 {
                     SetEnemy(column, enemySchema);
                 }
-
-                yield return new WaitForSeconds(timeDelay);
             }
         }
         #endregion

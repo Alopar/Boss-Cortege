@@ -22,9 +22,9 @@ namespace BossCortege
             _initialized = false;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            transform.position = Vector3.MoveTowards(transform.position, _aim.position, _speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _aim.position, _speed * Time.fixedDeltaTime);
         }
         #endregion
 

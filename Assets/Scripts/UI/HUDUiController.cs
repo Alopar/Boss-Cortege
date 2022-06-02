@@ -34,7 +34,7 @@ namespace BossCortege
 
         private void GameManager_OnMoneyChange(int value)
         {
-            _moneyText.text = $"Money: {value:d7}";
+            _moneyText.text = $"Money: {value}";
         }
         #endregion
 

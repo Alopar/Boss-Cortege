@@ -56,18 +56,18 @@ namespace BossCortege
             StartCoroutine(Leave(12f));
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _currentSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _currentSpeed * Time.fixedDeltaTime);
 
             if (transform.position == _currentPoint.transform.position)
             {
-                if(_fireCoroutine == null)
+                if (_fireCoroutine == null)
                 {
                     _fireCoroutine = StartCoroutine(SpawnBullet(_currentRateOfFire));
                 }
 
-                if(_moveNextCoroutine == null)
+                if (_moveNextCoroutine == null)
                 {
                     _moveNextCoroutine = StartCoroutine(MoveNextRow(3f));
                 }

@@ -42,7 +42,7 @@ namespace BossCortege
             var mouseZ = _camera.WorldToScreenPoint(transform.position).z;
             var screenPosition = new Vector3(eventData.position.x, eventData.position.y, mouseZ);
             var worldPosition = _camera.ScreenToWorldPoint(screenPosition);
-            transform.position = new Vector3(worldPosition.x, transform.position.y, worldPosition.z);
+            transform.position = new Vector3(worldPosition.x, transform.position.y, worldPosition.z + 0.5f);
         }
 
         public void OnEndDrag(PointerEventData eventData)
