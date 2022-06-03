@@ -10,6 +10,9 @@ namespace BossCortege
         #region FIELDS INSPECTOR
         [SerializeField] private Cinemachine.CinemachineVirtualCamera _parkingCamera;
         [SerializeField] private Cinemachine.CinemachineVirtualCamera _cortegeCamera;
+        
+        [Space(10)]
+        [SerializeField] private BarrieController _barrieController;
         #endregion
 
         #region FIELDS PRIVATE
@@ -199,12 +202,14 @@ namespace BossCortege
 
             _cortege.Go();
             _cortegeCamera.Priority = 30;
+            _barrieController.UpBarrier();
         }
 
         public void StopCortege()
         {
             _cortege.Stop();
             _cortegeCamera.Priority = 10;
+            _barrieController.DownBarrier();
 
             foreach (var place in _cortegePlace)
             {
