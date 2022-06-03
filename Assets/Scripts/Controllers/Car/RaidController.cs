@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using DG.Tweening;
 
 namespace BossCortege
 {
@@ -33,6 +34,7 @@ namespace BossCortege
 
             if(transform.position == _currentPoint.transform.position)
             {
+                transform.DORotate(new Vector3(0, 0, 0), 0.1f);
                 CortegeController.Instance.DropAttack();
             }
         }
@@ -89,7 +91,19 @@ namespace BossCortege
             {
                 _currentPoint.RaidController = null;
             }
-            
+
+            if(_currentPoint != null)
+            {
+                if (_currentPoint.transform.position.x > point.transform.position.x)
+                {
+                    transform.DORotate(new Vector3(0, -7, 0), 0.2f);
+                }
+                else
+                {
+                    transform.DORotate(new Vector3(0, 7, 0), 0.2f);
+                }
+            }
+
             _currentPoint = point;
             _currentPoint.RaidController = this;
         }

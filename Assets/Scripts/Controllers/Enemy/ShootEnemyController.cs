@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using DG.Tweening;
 
 namespace BossCortege
 {
@@ -96,6 +97,8 @@ namespace BossCortege
             {
                 Die();
             }
+
+            transform.DOShakePosition(0.5f, new Vector3(1.5f, 0, 0), vibrato: 20);
         }
         #endregion
 

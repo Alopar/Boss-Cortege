@@ -10,7 +10,8 @@ namespace BossCortege
     {
         #region FIELDS INSPECTOR
         [SerializeField, Range(1, 100), Tooltip("Монет за расстояние")] private uint _moneyPerUnit = 1;
-        [SerializeField, Range(1, 100), Tooltip("Скорость всего кортежа")] private float _speed = 0;
+        [SerializeField, Range(1, 100), Tooltip("Скорость всего кортежа")] private float _speed = 5;
+        [SerializeField, Range(1, 100), Tooltip("Скорость перестроения машин")] private float _shiftSpeed = 3;
 
         [Space(10)]
         [SerializeField] private Transform _raidsContainer;
@@ -61,10 +62,15 @@ namespace BossCortege
                 var enemy = GetEnemyByColumn(checkCell.Point.LeftPoint.CortegeColumn);
                 if (enemy != null && enemy.GetType() == typeof(ShootEnemyController))
                 {
+                    _isAttackLeft = true;
                     if (enemy.CortegePoint.RightPoint.RaidController != null)
                     {
-                        _isAttackLeft = true;
+                        
                         _cortege.MoveLeft();
+                    }
+                    else
+                    {
+                        StartCoroutine(FalseAttack(true));
                     }
                 }
                 else
@@ -80,10 +86,14 @@ namespace BossCortege
                 var enemy = GetEnemyByColumn(checkCell.Point.RightPoint.CortegeColumn);
                 if (enemy != null && enemy.GetType() == typeof(ShootEnemyController))
                 {
+                    _isAttackRight = true;
                     if (enemy.CortegePoint.LeftPoint.RaidController != null)
-                    {
-                        _isAttackRight = true;
+                    {   
                         _cortege.MoveRight();
+                    }
+                    else
+                    {
+                        StartCoroutine(FalseAttack(false));
                     }
                 }
                 else
@@ -253,7 +263,7 @@ namespace BossCortege
 
                 var raidController = raidCar.gameObject.AddComponent<GuardRaidController>();
                 raidController.Initialize(raidSchema);
-                raidController.Speed = _speed * 2f;
+                raidController.Speed = _shiftSpeed;
 
                 raidController.OnRam += Raid_OnRam;
                 raidController.OnRaidDestroyed += Raid_OnRaidDestroyed;
@@ -285,7 +295,7 @@ namespace BossCortege
 
                 var raidController = raidCar.gameObject.AddComponent<LimoRaidController>();
                 raidController.Initialize(raidSchema);
-                raidController.Speed = _speed * 2f;
+                raidController.Speed = _shiftSpeed;
 
                 raidController.OnRaidDestroyed += Raid_OnRaidDestroyed;
                 raidController.OnLimoDestroyed += Limo_OnLimoDestroyed;
@@ -510,6 +520,29 @@ namespace BossCortege
                 {
                     SetEnemy(column, enemySchema);
                 }
+            }
+        }
+
+        IEnumerator FalseAttack(bool isSideLeft)
+        {
+            if (isSideLeft)
+            {
+                _cortege.MoveLeft();
+            }
+            else
+            {
+                _cortege.MoveRight();
+            }
+
+            yield return new WaitForSeconds(0.2f);
+
+            if (isSideLeft)
+            {
+                _cortege.MoveRight();
+            }
+            else
+            {
+                _cortege.MoveLeft();
             }
         }
         #endregion
