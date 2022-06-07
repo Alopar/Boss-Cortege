@@ -4,7 +4,7 @@ using DG.Tweening;
 
 namespace BossCortege
 {
-    public abstract class RaidController : MonoBehaviour
+    public abstract class RaidController : MonoBehaviour, IDamageable
     {
         #region FIELDS PRIVATE
         private float _speed;
@@ -24,6 +24,7 @@ namespace BossCortege
 
         #region EVENTS
         public event Action<RaidController> OnRaidDestroyed;
+        public event Action<uint, int> OnDamage;
         public event Action OnRam;
         #endregion
 
@@ -79,6 +80,8 @@ namespace BossCortege
         public void SetDamage(uint damage)
         {
             _currentHP -= (int)damage;
+            OnDamage?.Invoke(_maxHP, _currentHP);
+
             if(_currentHP <= 0)
             {
                 Die();

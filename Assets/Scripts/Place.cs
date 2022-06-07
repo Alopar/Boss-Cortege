@@ -9,24 +9,35 @@ namespace BossCortege
         #endregion
 
         #region FIELDS PRIVATE
-        private ParkingController _car;
+        private IReplacementable _vechicle = null;
         #endregion
 
         #region PROPERTIES
-        public ParkingController Car => _car;
+        public bool IsEmpty => _vechicle == null;
+        public virtual bool IsVacant => IsEmpty;
+
+        public Transform SpawnPoint => _spawnPoint;
+        public IReplacementable Vechicle => _vechicle;
+        #endregion
+
+        #region HANDLERS
+        private void Vechicle_OnReplaced()
+        {
+            _vechicle.OnReplaced -= Vechicle_OnReplaced;
+            _vechicle = null;
+        }
         #endregion
 
         #region METHODS PUBLIC
-        public void PlaceCar(ParkingController parking)
+        public bool TryPlaceVechicle(IReplacementable vechicle)
         {
-            _car = parking;
-            _car.Place = this;
-            _car.transform.position = _spawnPoint.position;
-        }
+            if (_vechicle != null) return false;
 
-        public void ClearPlace()
-        {
-            _car = null;
+            _vechicle = vechicle;
+            _vechicle.SetPlace(this);
+            _vechicle.OnReplaced += Vechicle_OnReplaced;
+
+            return true;
         }
         #endregion
     }

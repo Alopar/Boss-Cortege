@@ -7,8 +7,13 @@ namespace BossCortege
     public class HUDUiController : MonoBehaviour
     {
         #region FIELDS INSPECTOR
-        [SerializeField] private TextMeshProUGUI _moneyText;
+        [SerializeField] private TextMeshProUGUI _moneyText;        
+
+        [Space(10)]
         [SerializeField] private Button _addCarButton;
+        [SerializeField] private Button _addPlaceButton;
+
+        [Space(10)]
         [SerializeField] private Button _goButton;
         [SerializeField] private Button _stopButton;
         #endregion
@@ -44,12 +49,16 @@ namespace BossCortege
             if (parking)
             {
                 _addCarButton.gameObject.SetActive(true);
+                _addPlaceButton.gameObject.SetActive(true);
+                
                 _goButton.gameObject.SetActive(true);
                 _stopButton.gameObject.SetActive(false);
             }
             else
             {
                 _addCarButton.gameObject.SetActive(false);
+                _addPlaceButton.gameObject.SetActive(false);
+
                 _goButton.gameObject.SetActive(false);
                 _stopButton.gameObject.SetActive(true);
             }
@@ -60,6 +69,11 @@ namespace BossCortege
         public void AddCar()
         {
             GameManager.Instance.BuyCar(100);
+        }
+
+        public void AddPlace()
+        {
+            GameManager.Instance.BuyPlace(1000);
         }
 
         public void Go()

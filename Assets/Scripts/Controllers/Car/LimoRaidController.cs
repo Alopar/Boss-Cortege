@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    public class LimoRaidController : RaidController
+    public class LimoRaidController : RaidController, IDamageable
     {
         #region FIELDS PRIVATE
         private LimoScheme _config;

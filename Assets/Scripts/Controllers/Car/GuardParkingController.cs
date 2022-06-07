@@ -22,6 +22,11 @@ namespace BossCortege
             _config = scheme as GuardScheme;
             _place = place;
         }
+
+        public override ParkingController GetCar()
+        {
+            return this;
+        }
         #endregion
     }
 }

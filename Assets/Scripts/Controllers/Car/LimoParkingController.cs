@@ -22,6 +22,11 @@ namespace BossCortege
             _config = scheme as LimoScheme;
             _place = place;
         }
+
+        public override ParkingController GetCar()
+        {
+            return this;
+        }
         #endregion
     }
 }

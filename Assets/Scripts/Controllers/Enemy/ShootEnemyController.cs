@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
@@ -5,7 +6,7 @@ using DG.Tweening;
 namespace BossCortege
 {
     [SelectionBase]
-    public class ShootEnemyController : EnemyController
+    public class ShootEnemyController : EnemyController, IDamageable
     {
         #region FIELDS PRIVATE
         private ShootEnemyScheme _config;
@@ -51,6 +52,10 @@ namespace BossCortege
         }
         #endregion
 
+        #region EVENTS
+        public event Action<uint, int> OnDamage;
+        #endregion
+
         #region UNITY CALLBACKS
         private void Start()
         {
@@ -93,6 +98,8 @@ namespace BossCortege
         public void SetDamage(uint damage)
         {
             _currentHP -= (int)damage;
+            OnDamage?.Invoke(_maxHP, _currentHP);
+
             if (_currentHP <= 0)
             {
                 Die();
@@ -125,7 +132,7 @@ namespace BossCortege
 
                 if (_isLeaving) break;
 
-                var row = (CortegeRow)Random.Range(1, 4);
+                var row = (CortegeRow)UnityEngine.Random.Range(1, 4);
                 _currentPoint = CortegeController.Instance.GetCortegePoint(row, _currentPoint.CortegeColumn);
             }
         }

@@ -10,8 +10,9 @@ namespace BossCortege
         #region FIELDS INSPECTOR
         [SerializeField] private Cinemachine.CinemachineVirtualCamera _parkingCamera;
         [SerializeField] private Cinemachine.CinemachineVirtualCamera _cortegeCamera;
-        
+
         [Space(10)]
+        [SerializeField] private Parking _parking;
         [SerializeField] private BarrieController _barrieController;
         #endregion
 
@@ -67,7 +68,7 @@ namespace BossCortege
         {
             var car = Instantiate(scheme.Prefab);
             car.Initialize(scheme, place);
-            place.PlaceCar(car);
+            place.TryPlaceVechicle(car);
         }
 
         private void SpawnCar(GuardScheme scheme, Place place)
@@ -77,7 +78,7 @@ namespace BossCortege
 
             car.gameObject.AddComponent<Merger>();
 
-            place.PlaceCar(car);
+            place.TryPlaceVechicle(car);
         }
 
         private bool GetMoney(uint coins)
@@ -101,11 +102,19 @@ namespace BossCortege
             OnMoneyChange?.Invoke(_money);
         }
 
+        public void BuyPlace(uint cost)
+        {
+            if (GetMoney(cost))
+            {
+                _parking.AddPlace();
+            }
+        }
+
         public void BuyCar(uint cost)
         {
             foreach (var place in _parkingPlace)
             {
-                if(place.Car == null)
+                if(place.IsVacant && place.IsEmpty)
                 {   
                     if (GetMoney(cost))
                     {
@@ -147,19 +156,20 @@ namespace BossCortege
             }
             var nextLevelCarScheme = Resources.Load<GuardScheme>(carSchemeName);
 
-            SpawnCar(nextLevelCarScheme, submissiveCar.Parking.Place);
-
-            dominantCar.Parking.Place.ClearPlace();
-
+            dominantCar.Parking.Replace();
             Destroy(dominantCar.gameObject);
+            
+            SpawnCar(nextLevelCarScheme, submissiveCar.Parking.Replace());
             Destroy(submissiveCar.gameObject);
         }
 
         public void SwapCar(Merger dominantCar, Merger submissiveCar)
         {
-            var tempPlace = submissiveCar.Parking.Place;
-            dominantCar.Parking.Place.PlaceCar(submissiveCar.Parking);
-            tempPlace.PlaceCar(dominantCar.Parking);
+            var dominantCarPlace = dominantCar.Parking.Replace();
+            var submissiveCarPlace = submissiveCar.Parking.Replace();
+
+            dominantCarPlace.TryPlaceVechicle(submissiveCar.Parking);
+            submissiveCarPlace.TryPlaceVechicle(dominantCar.Parking);
         }
 
         public void GoCortege()
@@ -178,21 +188,22 @@ namespace BossCortege
             foreach (var p in predicates)
             {
                 var place = _cortegePlace.Find(p);
-                if (place.Car != null)
+                if (!place.IsEmpty)
                 {
-                    place.Car.gameObject.SetActive(false);
+                    var car = place.Vechicle.GetCar();
+                    car.gameObject.SetActive(false);
 
-                    if(place.Car.GetType() == typeof(GuardParkingController))
+                    if(car.GetType() == typeof(GuardParkingController))
                     {
-                        var scheme = (place.Car as GuardParkingController).Config;
+                        var scheme = (car as GuardParkingController).Config;
                         _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
 
                         continue;
                     }
 
-                    if (place.Car.GetType() == typeof(LimoParkingController))
+                    if (car.GetType() == typeof(LimoParkingController))
                     {
-                        var scheme = (place.Car as LimoParkingController).Config;
+                        var scheme = (car as LimoParkingController).Config;
                         _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
 
                         continue;
@@ -213,7 +224,13 @@ namespace BossCortege
 
             foreach (var place in _cortegePlace)
             {
-                place.Car?.gameObject.SetActive(true);
+                var vechicle = place.Vechicle;
+                if (vechicle == null) continue;
+
+                var car = vechicle.GetCar();
+                if (car == null) continue;
+
+                car.gameObject.SetActive(true);
             }
 
             OnCortegeStop?.Invoke();

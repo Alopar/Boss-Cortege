@@ -112,7 +112,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawnPoint: {fileID: 1031353731465913474}
-  _number: 0
+  _number: 1
+  _openPlaceMaterial: {fileID: 2100000, guid: d95b988d3597aa148a729d3f80c2e4fc, type: 2}
+  _closePlaceMaterial: {fileID: 2100000, guid: 336806492e47a0b4580ae92ab6a4565d, type: 2}
 --- !u!1 &1083233306313242156
 GameObject:
   m_ObjectHideFlags: 0

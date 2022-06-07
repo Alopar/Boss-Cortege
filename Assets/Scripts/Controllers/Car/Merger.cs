@@ -68,15 +68,15 @@ namespace BossCortege
                 }
 
                 var place = hit.collider.GetComponent<Place>();
-                if (place != null && place != _parkingController.Place && place.Car == null)
+                if (place != null && place != _parkingController.Place && place.IsVacant)
                 {
-                    _parkingController.Place.ClearPlace();
-                    place.PlaceCar(_parkingController);
-                    return;
+                    _parkingController.Replace();
+                    place.TryPlaceVechicle(_parkingController);
+                    return;                    
                 }
             }
 
-            _parkingController.Place.PlaceCar(_parkingController);
+            _parkingController.ReturnToPlace();
         }
         #endregion
     }

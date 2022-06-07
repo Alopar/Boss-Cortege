@@ -204,35 +204,35 @@ namespace BossCortege
         #endregion
 
         #region METHODS PRIVATE
-        private void ShiftCarRow(CortegeRow row, int direction)
-        {
-            if(direction < 0)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    var firstCar = GetCortegeCar(row, (CortegeColumn)i);
-                    var secondCar = GetCortegeCar(row, (CortegeColumn)(i + 1));
+        //private void ShiftCarRow(CortegeRow row, int direction)
+        //{
+        //    if(direction < 0)
+        //    {
+        //        for (int i = 0; i < 4; i++)
+        //        {
+        //            var firstCar = GetCortegeCar(row, (CortegeColumn)i);
+        //            var secondCar = GetCortegeCar(row, (CortegeColumn)(i + 1));
 
-                    if (firstCar == null && secondCar != null)
-                    {
-                        secondCar.SetPoint(GetCortegePoint(row, (CortegeColumn)i));
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 4; i > 0; i--)
-                {
-                    var firstCar = GetCortegeCar(row, (CortegeColumn)i);
-                    var secondCar = GetCortegeCar(row, (CortegeColumn)(i - 1));
+        //            if (firstCar == null && secondCar != null)
+        //            {
+        //                secondCar.SetPoint(GetCortegePoint(row, (CortegeColumn)i));
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (int i = 4; i > 0; i--)
+        //        {
+        //            var firstCar = GetCortegeCar(row, (CortegeColumn)i);
+        //            var secondCar = GetCortegeCar(row, (CortegeColumn)(i - 1));
 
-                    if (firstCar == null && secondCar != null)
-                    {
-                        secondCar.SetPoint(GetCortegePoint(row, (CortegeColumn)i));
-                    }
-                }
-            }
-        }
+        //            if (firstCar == null && secondCar != null)
+        //            {
+        //                secondCar.SetPoint(GetCortegePoint(row, (CortegeColumn)i));
+        //            }
+        //        }
+        //    }
+        //}
 
         private RaidController GetCortegeCar(CortegeRow row, CortegeColumn column)
         {
@@ -261,12 +261,17 @@ namespace BossCortege
                 raidCar.transform.SetParent(_raidsContainer);
                 raidCar.enabled = false;
 
-                var raidController = raidCar.gameObject.AddComponent<GuardRaidController>();
+                var raidController = raidCar.gameObject.GetComponent<GuardRaidController>();
+                raidController.enabled = true;
+
                 raidController.Initialize(raidSchema);
                 raidController.Speed = _shiftSpeed;
 
                 raidController.OnRam += Raid_OnRam;
                 raidController.OnRaidDestroyed += Raid_OnRaidDestroyed;
+
+                var healthBar = raidCar.GetComponentInChildren<Healthbar>(true);
+                healthBar.gameObject.SetActive(true);
 
                 CortegePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
                 if (point != null)
@@ -293,12 +298,17 @@ namespace BossCortege
                 raidCar.transform.SetParent(_raidsContainer);
                 raidCar.enabled = false;
 
-                var raidController = raidCar.gameObject.AddComponent<LimoRaidController>();
+                var raidController = raidCar.GetComponent<LimoRaidController>();
+                raidController.enabled = true;
+
                 raidController.Initialize(raidSchema);
                 raidController.Speed = _shiftSpeed;
 
                 raidController.OnRaidDestroyed += Raid_OnRaidDestroyed;
                 raidController.OnLimoDestroyed += Limo_OnLimoDestroyed;
+
+                var healthBar = raidCar.GetComponentInChildren<Healthbar>(true);
+                healthBar.gameObject.SetActive(true);
 
                 CortegePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
                 if (point != null)
