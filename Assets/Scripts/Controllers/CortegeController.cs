@@ -12,6 +12,7 @@ namespace BossCortege
         [SerializeField, Range(1, 100), Tooltip("Монет за расстояние")] private uint _moneyPerUnit = 1;
         [SerializeField, Range(1, 100), Tooltip("Скорость всего кортежа")] private float _speed = 5;
         [SerializeField, Range(1, 100), Tooltip("Скорость перестроения машин")] private float _shiftSpeed = 3;
+        [SerializeField, Tooltip("Расстояние через которое усиливаются враги на один уровень")] private int _powerUpDistance = 200;
 
         [Space(10)]
         [SerializeField] private Transform _raidsContainer;
@@ -190,6 +191,8 @@ namespace BossCortege
             {
                 transform.position += Vector3.forward * _speed * Time.fixedDeltaTime;
             }
+
+            GameManager.Instance.SetDistance((int)Vector3.Distance(_startPosition, transform.position));
         }
 
         private void OnEnable()
@@ -497,17 +500,45 @@ namespace BossCortege
         {
             return _enemies.Find(e => e.CortegePoint.CortegeColumn == column);
         }
+
+        public int GetCortegeLevel()
+        {
+            var cortegeLevel = 1;
+            var levelCount = 8;
+            var levelSum = 0;
+
+            foreach (var raid in _raids)
+            {
+                if(raid is GuardRaidController guard)
+                {
+                    levelSum += (int)guard.Config.Level;
+                }
+            }
+            
+            if (levelSum > 0)
+            {
+                cortegeLevel = levelSum / levelCount;
+            }
+
+            return cortegeLevel;
+        }
         #endregion
 
         #region COROUTINES
         IEnumerator SpawnSuicideEnemies()
         {
+            var cortegeLevel = GetCortegeLevel();
+
             var timeDelay = 3f;
             while (true)
             {
                 yield return new WaitForSeconds(timeDelay);
 
-                var enemySchema = Resources.Load<SuicideEnemyScheme>("Suicide01");
+                var distance = Vector3.Distance(_startPosition, transform.position);
+                var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
+                var enemyName = $"Suicide0{cortegeLevel + enemyPowerUp}";
+
+                var enemySchema = Resources.Load<SuicideEnemyScheme>(enemyName);
                 var randomColumn = UnityEngine.Random.Range(1, 4);
 
                 SetEnemy<SuicideEnemyScheme>((CortegeColumn)randomColumn, enemySchema);
@@ -516,12 +547,18 @@ namespace BossCortege
 
         IEnumerator SpawnShootEnemies()
         {
+            var cortegeLevel = GetCortegeLevel();
+
             var timeDelay = 5f;
             while (true)
             {
                 yield return new WaitForSeconds(timeDelay);
 
-                var enemySchema = Resources.Load<ShootEnemyScheme>("Shoot01");
+                var distance = Vector3.Distance(_startPosition, transform.position);
+                var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
+                var enemyName = $"Shoot0{cortegeLevel + enemyPowerUp}";
+
+                var enemySchema = Resources.Load<ShootEnemyScheme>(enemyName);
                 var column = UnityEngine.Random.Range(0f, 1f) < 0.5f ? CortegeColumn.One : CortegeColumn.Five;
                 
                 var enemy = _enemies.Find(e => e.CortegePoint.CortegeColumn == column);

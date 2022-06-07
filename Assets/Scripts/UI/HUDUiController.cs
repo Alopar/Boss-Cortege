@@ -7,7 +7,8 @@ namespace BossCortege
     public class HUDUiController : MonoBehaviour
     {
         #region FIELDS INSPECTOR
-        [SerializeField] private TextMeshProUGUI _moneyText;        
+        [SerializeField] private TextMeshProUGUI _moneyText;
+        [SerializeField] private TextMeshProUGUI _distanceText;
 
         [Space(10)]
         [SerializeField] private Button _addCarButton;
@@ -23,11 +24,13 @@ namespace BossCortege
         {
             GameManager.Instance.OnCortegeStop += GameManager_OnCortegeStop;
             GameManager.Instance.OnMoneyChange += GameManager_OnMoneyChange;
+            GameManager.Instance.OnDistanceChange += GameManager_OnDistanceChange;
         }
 
         private void OnDisable()
         {
             GameManager.Instance.OnMoneyChange -= GameManager_OnMoneyChange;
+            GameManager.Instance.OnDistanceChange -= GameManager_OnDistanceChange;
         }
         #endregion
 
@@ -40,6 +43,11 @@ namespace BossCortege
         private void GameManager_OnMoneyChange(int value)
         {
             _moneyText.text = $"Money: {value}";
+        }
+
+        private void GameManager_OnDistanceChange(int value)
+        {
+            _distanceText.text = $"Distance: {value}";
         }
         #endregion
 

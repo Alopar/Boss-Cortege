@@ -34,6 +34,7 @@ namespace BossCortege
         #region EVENTS
         public event Action OnCortegeStop;
         public event Action<int> OnMoneyChange;
+        public event Action<int> OnDistanceChange;
         #endregion
 
         #region UNITY CALLBACKS
@@ -96,6 +97,11 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
+        public void SetDistance(int value)
+        {
+            OnDistanceChange?.Invoke(value);
+        }
+
         public void SetMoney(uint coins)
         {
             _money += (int)coins;
