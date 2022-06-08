@@ -2,12 +2,17 @@ using System;
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using Random = UnityEngine.Random;
 
 namespace BossCortege
 {
     [SelectionBase]
     public class ShootEnemyController : EnemyController, IDamageable
     {
+        #region FIELDS INSPECTOR
+        [SerializeField] private Transform _body;
+        #endregion
+
         #region FIELDS PRIVATE
         private ShootEnemyScheme _config;
 
@@ -64,6 +69,8 @@ namespace BossCortege
 
         private void FixedUpdate()
         {
+            if (IsDie) return;
+
             transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _currentSpeed * Time.fixedDeltaTime);
 
             if (transform.position == _currentPoint.transform.position)
@@ -80,17 +87,10 @@ namespace BossCortege
 
                 if (_isLeaving)
                 {
-                    Die();
+                    base.Die();
+                    Destroy(gameObject);
                 }
             }
-        }
-        #endregion
-
-        #region METHODS PRIVATE
-        public override void Die()
-        {
-            base.Die();
-            GameManager.Instance.SetMoney(_config.Money);
         }
         #endregion
 
@@ -105,7 +105,37 @@ namespace BossCortege
                 Die();
             }
 
-            transform.DOShakePosition(0.5f, new Vector3(1.5f, 0, 0), vibrato: 20);
+            _body.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), vibrato: 20);
+        }
+
+        public override void Die()
+        {
+            if (IsDie) return;
+
+            base.Die();
+
+            GameManager.Instance.SetMoney(_config.Money);
+
+            transform.DOKill();
+            StopAllCoroutines();
+
+            _rigidbody.isKinematic = false;
+
+            if(CortegePoint.CortegeColumn == CortegeColumn.One)
+            {
+                _rigidbody.AddForce(-transform.right * 300f, ForceMode.Impulse);
+            }
+            else
+            {
+                _rigidbody.AddForce(transform.right * 300f, ForceMode.Impulse);
+            }
+            _rigidbody.AddForce(-transform.forward * 1000f, ForceMode.Impulse);
+            _rigidbody.AddForce(transform.up * 800f, ForceMode.Impulse);
+
+            var randomTorque = new Vector3(Random.value, Random.value, Random.value);
+            _rigidbody.AddTorque(randomTorque * 200f, ForceMode.Impulse);
+
+            Destroy(gameObject, 1.5f);
         }
         #endregion
 
@@ -115,8 +145,8 @@ namespace BossCortege
             while (true)
             {
                 var projectile = Instantiate(_config.ProjectileScheme.Prefab, transform.position, transform.rotation);
-                projectile.transform.SetParent(CortegeController.Instance.ProjectilesContainer);
-                projectile.Initialize(_config.ProjectileScheme.Speed, _currentShootDamage, CortegeController.Instance.Limo.transform);
+                projectile.transform.SetParent(RaidManager.Instance.ProjectilesContainer);
+                projectile.Initialize(_config.ProjectileScheme.Speed, _currentShootDamage, RaidManager.Instance.Limo.transform);
 
                 yield return new WaitForSeconds(delay);
 
@@ -133,7 +163,7 @@ namespace BossCortege
                 if (_isLeaving) break;
 
                 var row = (CortegeRow)UnityEngine.Random.Range(1, 4);
-                _currentPoint = CortegeController.Instance.GetCortegePoint(row, _currentPoint.CortegeColumn);
+                _currentPoint = RaidManager.Instance.GetCortegePoint(row, _currentPoint.CortegeColumn);
             }
         }
 
@@ -142,7 +172,8 @@ namespace BossCortege
             yield return new WaitForSeconds(delay);
 
             _isLeaving = true;
-            _currentPoint = CortegeController.Instance.GetCortegePoint(CortegeRow.Front, _currentPoint.CortegeColumn);
+            _currentSpeed *= 1.5f;
+            _currentPoint = RaidManager.Instance.GetCortegePoint(CortegeRow.Front, _currentPoint.CortegeColumn);
         }
         #endregion
     }

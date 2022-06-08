@@ -1325,6 +1325,7 @@ MonoBehaviour:
   _moneyPerUnit: 1
   _speed: 8
   _shiftSpeed: 6
+  _powerUpDistance: 200
   _raidsContainer: {fileID: 1943391168}
   _enemiesContainer: {fileID: 704576627}
   _projectilesContainer: {fileID: 1928012793}

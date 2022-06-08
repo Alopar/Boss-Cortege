@@ -5,16 +5,29 @@ namespace BossCortege
 {
     public abstract class EnemyController : MonoBehaviour
     {
-        #region METHODS PRIVATE
-        protected CortegePoint _currentPoint;
+        #region FIELDS PRIVATE
+        private bool _isDie = false;
+        protected Rigidbody _rigidbody;
         #endregion
 
         #region PROPERTIES
+        public bool IsDie => _isDie;
         public CortegePoint CortegePoint => _currentPoint;
         #endregion
 
         #region EVENTS
         public event Action<EnemyController> OnEnemyDestroyed;
+        #endregion
+
+        #region UNITY CALLBACKS
+        private void Awake()
+        {
+            _rigidbody = GetComponent<Rigidbody>();
+        }
+        #endregion
+
+        #region METHODS PRIVATE
+        protected CortegePoint _currentPoint;
         #endregion
 
         #region METHODS PUBLIC
@@ -25,8 +38,8 @@ namespace BossCortege
 
         public virtual void Die()
         {
+            _isDie = true;
             OnEnemyDestroyed?.Invoke(this);
-            Destroy(gameObject);
         }
         #endregion
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    [CreateAssetMenu(fileName = "NewGuard", menuName = "Cars/Guard", order = 20)]
+    [CreateAssetMenu(fileName = "NewGuard", menuName = "Configs/Cars/Guard", order = -98)]
     public class GuardScheme : CarScheme
     {
         #region FIELDS INSPECTOR
@@ -13,12 +13,12 @@ namespace BossCortege
         [SerializeField, Tooltip("Сила тарана")] private uint _ramDamage;
 
         [Space(10)]
-        [SerializeField] private CarLevel _level;
+        [SerializeField] private PowerLevel _level;
         #endregion
 
         #region PROPERTIES
         public uint Damage => _ramDamage;
-        public CarLevel Level => _level;
+        public PowerLevel Level => _level;
         public GuardParkingController Prefab => _prefab;
         #endregion
     }

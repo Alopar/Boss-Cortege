@@ -15,7 +15,7 @@ namespace BossCortege
         #endregion
     }
 
-    public enum CarLevel
+    public enum PowerLevel
     {
         Level01 = 1,
         Level02 = 2,

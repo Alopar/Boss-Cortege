@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    [CreateAssetMenu(fileName = "NewLimo", menuName = "Cars/Limo", order = 21)]
+    [CreateAssetMenu(fileName = "NewLimo", menuName = "Configs/Cars/Limo", order = -99)]
     public class LimoScheme : CarScheme
     {
         #region FIELDS INSPECTOR

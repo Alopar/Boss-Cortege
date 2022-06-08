@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    [CreateAssetMenu(fileName = "NewProjectile", menuName = "Projectiles/Projectile", order = 20)]
+    [CreateAssetMenu(fileName = "NewProjectile", menuName = "Configs/Projectiles/Projectile", order = -90)]
     public class ProjectileSchema : ScriptableObject
     {
         #region FIELDS INSPECTOR

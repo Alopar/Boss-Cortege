@@ -36,26 +36,38 @@ namespace BossCortege
             if(transform.position == _currentPoint.transform.position)
             {
                 transform.DORotate(new Vector3(0, 0, 0), 0.1f);
-                CortegeController.Instance.DropAttack();
+                RaidManager.Instance.DropAttack();
             }
         }
 
         protected virtual void OnCollisionEnter(Collision collision)
         {
-            var suicideEnemy = collision.gameObject.GetComponentInParent<SuicideEnemyController>();
-            if(suicideEnemy != null)
-            {
-                SetDamage(suicideEnemy.RamDamage);
-                suicideEnemy.Die();
-
-                GameManager.Instance.SetMoney(suicideEnemy.Config.Money);
-            }
-
             var projectile = collision.gameObject.GetComponent<ProjectileController>();
-            if(projectile != null)
+            if (projectile != null)
             {
                 SetDamage(projectile.Damage);
                 Destroy(projectile.gameObject);
+            }
+
+            var suicideEnemy = collision.gameObject.GetComponentInParent<SuicideEnemyController>();
+            if(suicideEnemy != null)
+            {
+                if (!suicideEnemy.IsDie)
+                {
+                    SetDamage(suicideEnemy.RamDamage);
+                    suicideEnemy.Die();
+
+                    GameManager.Instance.SetMoney(suicideEnemy.Config.Money);
+                }
+            }
+
+            var barricadeEnemy = collision.gameObject.GetComponentInParent<BarricadeEnemyController>();
+            if (barricadeEnemy != null)
+            {
+                SetDamage(barricadeEnemy.ExplosionDamage);
+                barricadeEnemy.Die();
+
+                GameManager.Instance.SetMoney(barricadeEnemy.Config.Money);
             }
         }
         #endregion

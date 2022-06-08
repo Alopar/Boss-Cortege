@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Shoot03
   m_EditorClassIdentifier: 
   _money: 80
-  _speed: 6
+  _level: 3
   _prefab: {fileID: 1939295805654080282, guid: 9f29e37d716fd14469c9a53c614a19c8, type: 3}
+  _speed: 12
   _durability: 120
   _shootDamage: 20
   _rateOfFire: 1

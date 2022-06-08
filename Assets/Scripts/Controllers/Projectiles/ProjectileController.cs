@@ -8,6 +8,7 @@ namespace BossCortege
         private float _speed;
         private uint _damage;
         private Transform _aim;
+        private Vector3 _aimPoint;
 
         private bool _initialized = false;
         #endregion

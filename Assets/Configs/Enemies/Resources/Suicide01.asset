@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Suicide01
   m_EditorClassIdentifier: 
   _money: 10
-  _speed: 8
+  _level: 1
   _prefab: {fileID: 2229783855411144896, guid: f3568c0f2896cfd488f1b13e1680011c, type: 3}
+  _speed: 6
   _ramDamage: 25

@@ -38,12 +38,33 @@ namespace BossCortege
         #region UNITY CALLBACKS
         private void FixedUpdate()
         {
+            if (IsDie) return;
+
             transform.position = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _speed * Time.fixedDeltaTime);
 
             if (transform.position == _currentPoint.transform.position)
             {
                 Die();
             }
+        }
+        #endregion
+
+        #region METHODS PUBLIC
+        public override void Die()
+        {
+            if (IsDie) return;
+
+            base.Die();
+
+            _rigidbody.isKinematic = false;
+
+            _rigidbody.AddForce(-transform.forward * 1000f, ForceMode.Impulse);
+            _rigidbody.AddForce(transform.up * 800f, ForceMode.Impulse);
+
+            var randomTorque = new Vector3(Random.value, Random.value, Random.value);
+            _rigidbody.AddTorque(randomTorque * 200f, ForceMode.Impulse);
+
+            Destroy(gameObject, 1.5f);
         }
         #endregion
     }

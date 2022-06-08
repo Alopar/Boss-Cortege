@@ -22,7 +22,7 @@ namespace BossCortege
         private int _money;
         private List<CortegePlace> _cortegePlace;
         private List<ParkingPlace> _parkingPlace;
-        private CortegeController _cortege;
+        private RaidManager _cortege;
         #endregion
 
         #region PROPERTIES
@@ -52,7 +52,7 @@ namespace BossCortege
 
         private void Start()
         {
-            _cortege = FindObjectOfType<CortegeController>();
+            _cortege = FindObjectOfType<RaidManager>();
             _cortegePlace = FindObjectsOfType<CortegePlace>().ToList();
             _parkingPlace = FindObjectsOfType<ParkingPlace>().OrderBy(e => e.Number).ToList();
 
@@ -138,22 +138,22 @@ namespace BossCortege
             string carSchemeName;
             switch (dominantCar.Parking.Config.Level)
             {
-                case CarLevel.Level01:
+                case PowerLevel.Level01:
                     carSchemeName = "Guard02";
                     break;
-                case CarLevel.Level02:
+                case PowerLevel.Level02:
                     carSchemeName = "Guard03";
                     break;
-                case CarLevel.Level03:
+                case PowerLevel.Level03:
                     carSchemeName = "Guard04";
                     break;
-                case CarLevel.Level04:
+                case PowerLevel.Level04:
                     carSchemeName = "Guard05";
                     break;
-                case CarLevel.Level05:
+                case PowerLevel.Level05:
                     carSchemeName = "Guard06";
                     break;
-                case CarLevel.Level06:
+                case PowerLevel.Level06:
                     carSchemeName = "Guard06";
                     break;
                 default:
