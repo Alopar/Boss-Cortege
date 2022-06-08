@@ -5,6 +5,10 @@ namespace BossCortege
     [SelectionBase]
     public class SuicideEnemyController : EnemyController
     {
+        #region FIELDS INSPECTOR
+        [SerializeField] private GameObject _explosionVfxPrefab;
+        #endregion
+
         #region FIELDS PRIVATE
         private SuicideEnemyScheme _config;
 
@@ -44,8 +48,16 @@ namespace BossCortege
 
             if (transform.position == _currentPoint.transform.position)
             {
-                Die();
+                base.Die();
+                Destroy(gameObject);
             }
+        }
+        #endregion
+
+        #region METHODS PRIVATE
+        private void ShowExplosion()
+        {
+            Instantiate(_explosionVfxPrefab, transform.position, transform.rotation);
         }
         #endregion
 
@@ -64,6 +76,7 @@ namespace BossCortege
             var randomTorque = new Vector3(Random.value, Random.value, Random.value);
             _rigidbody.AddTorque(randomTorque * 200f, ForceMode.Impulse);
 
+            Invoke(nameof(ShowExplosion), 1.4f);
             Destroy(gameObject, 1.5f);
         }
         #endregion

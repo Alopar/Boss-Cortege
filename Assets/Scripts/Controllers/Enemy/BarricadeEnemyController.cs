@@ -5,6 +5,10 @@ namespace BossCortege
 {
     public class BarricadeEnemyController : EnemyController
     {
+        #region FIELDS INSPECTOR
+        [SerializeField] private GameObject _explosionVfxPrefab;
+        #endregion
+
         #region FIELDS PRIVATE
         private BarricadeEnemyScheme _config;
 
@@ -41,12 +45,21 @@ namespace BossCortege
         }
         #endregion
 
+        #region METHODS PRIVATE
+        private void ShowExplosion()
+        {
+            Instantiate(_explosionVfxPrefab, transform.position, transform.rotation);
+        }
+        #endregion
+
         #region METHODS PUBLIC
         public override void Die()
         {
             if (IsDie) return;
 
             base.Die();
+
+            ShowExplosion();
             Destroy(gameObject);
         }
         #endregion
