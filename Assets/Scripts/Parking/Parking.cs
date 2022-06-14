@@ -23,12 +23,12 @@ namespace BossCortege
 
         private void Start()
         {
-            UnlockPlace();
+            Init();
         }
         #endregion
 
         #region METHODS PRIVATE
-        public void UnlockPlace()
+        private void UnlockPlaces()
         {
             foreach (var place in _parkingPlaces)
             {
@@ -41,10 +41,15 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
+        public void Init()
+        {
+            UnlockPlaces();
+        }
+
         public void AddPlace()
         {
             _currentAvailableParkingPlaces++;
-            UnlockPlace();
+            UnlockPlaces();
         }
         #endregion
     }

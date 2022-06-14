@@ -114,7 +114,7 @@ namespace BossCortege
 
             base.Die();
 
-            GameManager.Instance.SetMoney(_config.Money);
+            GameManager.Instance.Wallet.SetMoney(_config.Money);
 
             transform.DOKill();
             StopAllCoroutines();

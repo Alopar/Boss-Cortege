@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using BossCortege.EventHolder;
 
 namespace BossCortege
 {
@@ -19,80 +20,87 @@ namespace BossCortege
         [SerializeField] private Button _stopButton;
         #endregion
 
+        #region HANDLERS
+        private void StartRaceHandler(RaceStartInfo info)
+        {
+            EnableRaceButtons(true);
+            EnableParkingButtons(false);
+        }
+
+        private void StopRaceHandler(RaceStopInfo info)
+        {
+            EnableRaceButtons(false);
+            EnableParkingButtons(true);
+        }
+
+        private void MoneyChangeHandler(MoneyChangeInfo info)
+        {
+            _moneyText.text = $"Money: {info.Value}";
+        }
+
+        private void DistanceChangeHandler(DistanceChangeInfo info)
+        {
+            _distanceText.text = $"Distance: {info.Value}";
+        }
+        #endregion
+
         #region UNITY CALLBACKS
         private void OnEnable()
         {
-            GameManager.Instance.OnCortegeStop += GameManager_OnCortegeStop;
-            GameManager.Instance.OnMoneyChange += GameManager_OnMoneyChange;
-            GameManager.Instance.OnDistanceChange += GameManager_OnDistanceChange;
+            EventHolder<MoneyChangeInfo>.AddListener(MoneyChangeHandler, true);
+            EventHolder<DistanceChangeInfo>.AddListener(DistanceChangeHandler, true);
+            EventHolder<RaceStartInfo>.AddListener(StartRaceHandler, false);
+            EventHolder<RaceStopInfo>.AddListener(StopRaceHandler, false);
         }
 
         private void OnDisable()
         {
-            GameManager.Instance.OnMoneyChange -= GameManager_OnMoneyChange;
-            GameManager.Instance.OnDistanceChange -= GameManager_OnDistanceChange;
-        }
-        #endregion
-
-        #region HANDLERS
-        private void GameManager_OnCortegeStop()
-        {
-            ChangeButtons(true);
+            EventHolder<MoneyChangeInfo>.RemoveListener(MoneyChangeHandler);
+            EventHolder<DistanceChangeInfo>.RemoveListener(DistanceChangeHandler);
+            EventHolder<RaceStartInfo>.RemoveListener(StartRaceHandler);
+            EventHolder<RaceStopInfo>.RemoveListener(StopRaceHandler);
         }
 
-        private void GameManager_OnMoneyChange(int value)
+        private void Awake()
         {
-            _moneyText.text = $"Money: {value}";
-        }
-
-        private void GameManager_OnDistanceChange(int value)
-        {
-            _distanceText.text = $"Distance: {value}";
+            EnableRaceButtons(false);
+            EnableParkingButtons(true);
         }
         #endregion
 
         #region METHODS PRIVATE
-        private void ChangeButtons(bool parking)
+        private void EnableParkingButtons(bool on)
         {
-            if (parking)
-            {
-                _addCarButton.gameObject.SetActive(true);
-                _addPlaceButton.gameObject.SetActive(true);
-                
-                _goButton.gameObject.SetActive(true);
-                _stopButton.gameObject.SetActive(false);
-            }
-            else
-            {
-                _addCarButton.gameObject.SetActive(false);
-                _addPlaceButton.gameObject.SetActive(false);
+            _addCarButton.gameObject.SetActive(on);
+            _addPlaceButton.gameObject.SetActive(on);
+            _goButton.gameObject.SetActive(on);
+        }
 
-                _goButton.gameObject.SetActive(false);
-                _stopButton.gameObject.SetActive(true);
-            }
+        private void EnableRaceButtons(bool on)
+        {
+            _stopButton.gameObject.SetActive(on);
         }
         #endregion
 
         #region METHODS PUBLIC
         public void AddCar()
         {
-            GameManager.Instance.BuyCar(100);
+            EventHolder<BuyCarInfo>.NotifyListeners(new BuyCarInfo(100));
         }
 
         public void AddPlace()
         {
-            GameManager.Instance.BuyPlace(1000);
+            EventHolder<BuyPlaceInfo>.NotifyListeners(new BuyPlaceInfo(1000));
         }
 
         public void Go()
         {
-            GameManager.Instance.GoCortege();
-            ChangeButtons(false);
+            EventHolder<RaceStartInfo>.NotifyListeners(null);
         }
 
         public void Stop()
         {
-            GameManager.Instance.StopCortege();
+            EventHolder<RaceStopInfo>.NotifyListeners(null);
         }
         #endregion
     }

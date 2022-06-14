@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using BossCortege.EventHolder;
 
 namespace BossCortege
 {
@@ -23,21 +24,124 @@ namespace BossCortege
         private List<CortegePlace> _cortegePlace;
         private List<ParkingPlace> _parkingPlace;
         private RaidManager _cortege;
+
+        private Wallet _wallet = new Wallet();
+        private DistanceData _distance = new DistanceData();
         #endregion
 
         #region PROPERTIES
         public static GameManager Instance => _instance;
-
-        public int Money => _money;
+        
+        public Wallet Wallet => _wallet;
+        public DistanceData Distance => _distance;
         #endregion
 
-        #region EVENTS
-        public event Action OnCortegeStop;
-        public event Action<int> OnMoneyChange;
-        public event Action<int> OnDistanceChange;
+        #region HANDLERS
+        private void BuyCarHandler(BuyCarInfo info)
+        {
+            foreach (var place in _parkingPlace)
+            {
+                if (place.IsVacant && place.IsEmpty)
+                {
+                    if (_wallet.TryGetMoney(info.Cost))
+                    {
+                        var scheme = Resources.Load<GuardScheme>("Guard01");
+                        SpawnCar(scheme, place);
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        private void BuyPlaceHandler(BuyPlaceInfo info)
+        {
+            if (_wallet.TryGetMoney(info.Cost))
+            {
+                _parking.AddPlace();
+            }
+        }
+
+        public void StartRaceHandler(RaceStartInfo info)
+        {
+            var predicates = new List<Predicate<CortegePlace>>();
+            predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Two);
+            predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Three);
+            predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Four);
+            predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Two);
+            predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Three);
+            predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Four);
+            predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Two);
+            predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Three);
+            predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Four);
+
+            foreach (var p in predicates)
+            {
+                var place = _cortegePlace.Find(p);
+                if (!place.IsEmpty)
+                {
+                    var car = place.Vechicle.GetCar();
+                    car.gameObject.SetActive(false);
+
+                    if (car.GetType() == typeof(GuardParkingController))
+                    {
+                        var scheme = (car as GuardParkingController).Config;
+                        _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
+
+                        continue;
+                    }
+
+                    if (car.GetType() == typeof(LimoParkingController))
+                    {
+                        var scheme = (car as LimoParkingController).Config;
+                        _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
+
+                        continue;
+                    }
+                }
+            }
+
+            _cortege.Go();
+            _cortegeCamera.Priority = 30;
+            _barrieController.UpBarrier();
+        }
+
+        public void StopRaceHandler(RaceStopInfo info)
+        {
+            _cortege.Stop();
+            _cortegeCamera.Priority = 10;
+            _barrieController.DownBarrier();
+
+            foreach (var place in _cortegePlace)
+            {
+                var vechicle = place.Vechicle;
+                if (vechicle == null) continue;
+
+                var car = vechicle.GetCar();
+                if (car == null) continue;
+
+                car.gameObject.SetActive(true);
+            }
+        }
         #endregion
 
         #region UNITY CALLBACKS
+        private void OnEnable()
+        {
+            EventHolder<BuyCarInfo>.AddListener(BuyCarHandler, false);
+            EventHolder<BuyPlaceInfo>.AddListener(BuyPlaceHandler, false);
+            EventHolder<RaceStartInfo>.AddListener(StartRaceHandler, false);
+            EventHolder<RaceStopInfo>.AddListener(StopRaceHandler, false);
+        }
+
+        private void OnDisable()
+        {
+            EventHolder<BuyCarInfo>.RemoveListener(BuyCarHandler);
+            EventHolder<BuyPlaceInfo>.RemoveListener(BuyPlaceHandler);
+            EventHolder<RaceStartInfo>.RemoveListener(StartRaceHandler);
+            EventHolder<RaceStopInfo>.RemoveListener(StopRaceHandler);
+        }
+
         private void Awake()
         {
             if(_instance == null)
@@ -60,7 +164,7 @@ namespace BossCortege
             var limoScheme = Resources.Load<LimoScheme>("Limo01");
             SpawnCar(limoScheme, limoPlace);
 
-            SetMoney(1000);
+            _wallet.SetMoney(1000);
         }
         #endregion
 
@@ -81,58 +185,9 @@ namespace BossCortege
 
             place.TryPlaceVechicle(car);
         }
-
-        private bool GetMoney(uint coins)
-        {
-            if(_money >= coins)
-            {
-                _money -= (int)coins;
-                OnMoneyChange?.Invoke(_money);
-
-                return true;
-            }
-
-            return false;
-        }
         #endregion
 
         #region METHODS PUBLIC
-        public void SetDistance(int value)
-        {
-            OnDistanceChange?.Invoke(value);
-        }
-
-        public void SetMoney(uint coins)
-        {
-            _money += (int)coins;
-            OnMoneyChange?.Invoke(_money);
-        }
-
-        public void BuyPlace(uint cost)
-        {
-            if (GetMoney(cost))
-            {
-                _parking.AddPlace();
-            }
-        }
-
-        public void BuyCar(uint cost)
-        {
-            foreach (var place in _parkingPlace)
-            {
-                if(place.IsVacant && place.IsEmpty)
-                {   
-                    if (GetMoney(cost))
-                    {
-                        var scheme = Resources.Load<GuardScheme>("Guard01");
-                        SpawnCar(scheme, place);
-                    }
-
-                    return;
-                }
-            }
-        }
-
         public void MergeCar(Merger dominantCar, Merger submissiveCar)
         {
             string carSchemeName;
@@ -178,75 +233,11 @@ namespace BossCortege
             submissiveCarPlace.TryPlaceVechicle(dominantCar.Parking);
         }
 
-        public void GoCortege()
-        {
-            var predicates = new List<Predicate<CortegePlace>>();
-            predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Two);
-            predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Three);
-            predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Four);
-            predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Two);
-            predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Three);
-            predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Four);
-            predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Two);
-            predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Three);
-            predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Four);
-
-            foreach (var p in predicates)
-            {
-                var place = _cortegePlace.Find(p);
-                if (!place.IsEmpty)
-                {
-                    var car = place.Vechicle.GetCar();
-                    car.gameObject.SetActive(false);
-
-                    if(car.GetType() == typeof(GuardParkingController))
-                    {
-                        var scheme = (car as GuardParkingController).Config;
-                        _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
-
-                        continue;
-                    }
-
-                    if (car.GetType() == typeof(LimoParkingController))
-                    {
-                        var scheme = (car as LimoParkingController).Config;
-                        _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
-
-                        continue;
-                    }
-                }
-            }
-
-            _cortege.Go();
-            _cortegeCamera.Priority = 30;
-            _barrieController.UpBarrier();
-        }
-
-        public void StopCortege()
-        {
-            _cortege.Stop();
-            _cortegeCamera.Priority = 10;
-            _barrieController.DownBarrier();
-
-            foreach (var place in _cortegePlace)
-            {
-                var vechicle = place.Vechicle;
-                if (vechicle == null) continue;
-
-                var car = vechicle.GetCar();
-                if (car == null) continue;
-
-                car.gameObject.SetActive(true);
-            }
-
-            OnCortegeStop?.Invoke();
-        }
-
 #if UNITY_EDITOR
         [ContextMenu("cheat: MoreMoney")]
         public void MoreMoney()
         {
-            SetMoney(1000);
+            _wallet.SetMoney(1000);
         }
 #endif
         #endregion

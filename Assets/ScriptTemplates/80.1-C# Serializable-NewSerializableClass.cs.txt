@@ -1,0 +1,13 @@
+using System;
+using UnityEngine;
+
+#ROOTNAMESPACEBEGIN#
+    [Serializable]
+    public class #SCRIPTNAME#
+    {
+        public #SCRIPTNAME#()
+        {
+            #NOTRIM#
+        }
+    }
+#ROOTNAMESPACEEND#

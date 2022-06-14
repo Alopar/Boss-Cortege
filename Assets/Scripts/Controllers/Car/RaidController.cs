@@ -57,7 +57,7 @@ namespace BossCortege
                     SetDamage(suicideEnemy.RamDamage);
                     suicideEnemy.Die();
 
-                    GameManager.Instance.SetMoney(suicideEnemy.Config.Money);
+                    GameManager.Instance.Wallet.SetMoney(suicideEnemy.Config.Money);
                 }
             }
 
@@ -67,7 +67,7 @@ namespace BossCortege
                 SetDamage(barricadeEnemy.ExplosionDamage);
                 barricadeEnemy.Die();
 
-                GameManager.Instance.SetMoney(barricadeEnemy.Config.Money);
+                GameManager.Instance.Wallet.SetMoney(barricadeEnemy.Config.Money);
             }
         }
         #endregion

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BossCortege.EventHolder;
 
 namespace BossCortege
 {
@@ -112,7 +113,7 @@ namespace BossCortege
 
         private void Limo_OnLimoDestroyed()
         {
-            GameManager.Instance.StopCortege();
+            EventHolder<RaceStopInfo>.NotifyListeners(null);
         }
 
         private void Raid_OnRam()
@@ -194,7 +195,7 @@ namespace BossCortege
                 transform.position += Vector3.forward * _speed * Time.fixedDeltaTime;
             }
 
-            GameManager.Instance.SetDistance((int)Vector3.Distance(_startPosition, transform.position));
+            GameManager.Instance.Distance.SetDistance((uint)Vector3.Distance(_startPosition, transform.position));
         }
 
         private void OnEnable()
@@ -430,7 +431,7 @@ namespace BossCortege
             StopCoroutine(_spawnBarricadeEnemies);
 
             var coins = Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit;
-            GameManager.Instance.SetMoney((uint)coins);
+            GameManager.Instance.Wallet.SetMoney((uint)coins);
 
             transform.position = _startPosition;
 
