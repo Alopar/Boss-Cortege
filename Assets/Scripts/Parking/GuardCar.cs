@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace BossCortege
 {
-    public class GuardParkingController : ParkingController
+    public class GuardCar : AbstractCar
     {
         #region FIELDS PRIVATE
         private GuardScheme _config;
@@ -21,11 +22,6 @@ namespace BossCortege
 
             _config = scheme as GuardScheme;
             _place = place;
-        }
-
-        public override ParkingController GetCar()
-        {
-            return this;
         }
         #endregion
     }

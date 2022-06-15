@@ -62,4 +62,28 @@ namespace BossCortege.EventHolder
             Value = value;
         }
     }
+
+    public class MergeCarInfo
+    {
+        public GuardCar FirstCar { get; private set; }
+        public GuardCar SecondCar { get; private set; }
+
+        public MergeCarInfo(GuardCar firstCar, GuardCar secondCar)
+        {
+            FirstCar = firstCar;
+            SecondCar = secondCar;
+        }
+    }
+
+    public class SwapCarInfo
+    {
+        public AbstractCar FirstCar { get; private set; }
+        public AbstractCar SecondCar { get; private set; }
+
+        public SwapCarInfo(AbstractCar firstCar, AbstractCar secondCar)
+        {
+            FirstCar = firstCar;
+            SecondCar = secondCar;
+        }
+    }
 }

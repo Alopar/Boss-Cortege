@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    public class LimoParkingController : ParkingController
+    public class BossCar : AbstractCar
     {
         #region FIELDS PRIVATE
-        private LimoScheme _config;
+        private BossScheme _config;
         #endregion
 
         #region PROPERTIES
-        public LimoScheme Config => _config;
+        public BossScheme Config => _config;
         #endregion
 
         #region METHODS PUBLIC
@@ -19,13 +19,8 @@ namespace BossCortege
             if (_initialized) return;
             _initialized = true;
 
-            _config = scheme as LimoScheme;
+            _config = scheme as BossScheme;
             _place = place;
-        }
-
-        public override ParkingController GetCar()
-        {
-            return this;
         }
         #endregion
     }

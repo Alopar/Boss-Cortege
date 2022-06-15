@@ -267,9 +267,9 @@ namespace BossCortege
                 return;
             }
 
-            if (typeof(T) == typeof(LimoScheme))
+            if (typeof(T) == typeof(BossScheme))
             {
-                var raidSchema = carScheme as LimoScheme;
+                var raidSchema = carScheme as BossScheme;
                 var raidCar = Instantiate(raidSchema.Prefab);
                 raidCar.transform.SetParent(_raidsContainer);
                 raidCar.enabled = false;
@@ -431,7 +431,7 @@ namespace BossCortege
             StopCoroutine(_spawnBarricadeEnemies);
 
             var coins = Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit;
-            GameManager.Instance.Wallet.SetMoney((uint)coins);
+            GameManager.Instance.Wallet.SetCash((uint)coins);
 
             transform.position = _startPosition;
 

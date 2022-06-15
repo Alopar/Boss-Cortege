@@ -7,7 +7,7 @@ namespace BossCortege
     public class GuardScheme : CarScheme
     {
         #region FIELDS INSPECTOR
-        [SerializeField] private GuardParkingController _prefab;
+        [SerializeField] private GuardCar _prefab;
 
         [Space(10)]
         [SerializeField, Tooltip("Сила тарана")] private uint _ramDamage;
@@ -19,7 +19,7 @@ namespace BossCortege
         #region PROPERTIES
         public uint Damage => _ramDamage;
         public PowerLevel Level => _level;
-        public GuardParkingController Prefab => _prefab;
+        public GuardCar Prefab => _prefab;
         #endregion
     }
 }

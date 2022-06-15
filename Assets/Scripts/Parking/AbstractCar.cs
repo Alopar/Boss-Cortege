@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    public abstract class ParkingController : MonoBehaviour, IReplacementable
+    public abstract class AbstractCar : MonoBehaviour, IReplacementable
     {
         #region FIELDS PRIVATE
         protected Place _place;
@@ -14,7 +14,6 @@ namespace BossCortege
         #region EVENTS
         public event Action OnReplaced;
         #endregion
-
 
         #region PROPERTIES
         public Place Place => _place;
@@ -50,8 +49,6 @@ namespace BossCortege
         {
             transform.position = _place.SpawnPoint.position;
         }
-
-        public abstract ParkingController GetCar();
         #endregion
     }
 }

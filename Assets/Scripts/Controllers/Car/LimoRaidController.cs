@@ -7,11 +7,11 @@ namespace BossCortege
     public class LimoRaidController : RaidController, IDamageable
     {
         #region FIELDS PRIVATE
-        private LimoScheme _config;
+        private BossScheme _config;
         #endregion
 
         #region PROPERTIES
-        public LimoScheme Config => _config;
+        public BossScheme Config => _config;
         #endregion
 
         #region EVENTS
@@ -23,7 +23,7 @@ namespace BossCortege
         {
             base.Initialize(scheme);
 
-            _config = scheme as LimoScheme;
+            _config = scheme as BossScheme;
         }
 
         public override void Die()

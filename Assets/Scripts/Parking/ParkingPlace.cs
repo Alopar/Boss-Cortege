@@ -37,6 +37,5 @@ namespace BossCortege
             _renderer.material = _openPlaceMaterial;
         }
         #endregion
-
     }
 }

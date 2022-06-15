@@ -7,7 +7,8 @@ namespace BossCortege
     public interface IReplacementable
     {
         public event Action OnReplaced;
+
+        public Place Replace();
         public void SetPlace(Place place);
-        public ParkingController GetCar();
     }
 }

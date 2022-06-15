@@ -4,14 +4,14 @@ using UnityEngine;
 namespace BossCortege
 {
     [CreateAssetMenu(fileName = "NewLimo", menuName = "Configs/Cars/Limo", order = -99)]
-    public class LimoScheme : CarScheme
+    public class BossScheme : CarScheme
     {
         #region FIELDS INSPECTOR
-        [SerializeField] private LimoParkingController _prefab;
+        [SerializeField] private BossCar _prefab;
         #endregion
 
         #region PROPERTIES
-        public LimoParkingController Prefab => _prefab;
+        public BossCar Prefab => _prefab;
         #endregion
     }
 }

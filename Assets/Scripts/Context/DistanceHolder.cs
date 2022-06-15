@@ -4,19 +4,22 @@ using BossCortege.EventHolder;
 
 namespace BossCortege
 {
-    public class DistanceData
+    public class DistanceHolder
     {
-        #region FIELDS PRIVATE
+        private AbstractStorage<int> _storage;
+
         private uint _currentDistance;
         private uint _bestDistance;
-        #endregion
 
-        #region PROPERTIES
         public uint CurrentDistance => _currentDistance;
         public uint BestDistance => _bestDistance;
-        #endregion
 
-        #region METHODS PUBLIC
+        public DistanceHolder(AbstractStorage<int> storage)
+        {
+            _storage = storage;
+            _bestDistance = (uint)_storage.Load();
+        }
+
         public void SetDistance(uint value)
         {
             _currentDistance = value;
@@ -25,9 +28,9 @@ namespace BossCortege
             if(_currentDistance > _bestDistance)
             {
                 _bestDistance = _currentDistance;
+                _storage.Save((int)_bestDistance);
                 EventHolder<BestDistanceChangeInfo>.NotifyListeners(new BestDistanceChangeInfo(_bestDistance));
             }
         }
-        #endregion
     }
 }

@@ -1,26 +1,27 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using BossCortege.EventHolder;
 
 namespace BossCortege
 {
-    [RequireComponent(typeof(GuardParkingController))]
+    [RequireComponent(typeof(GuardCar))]
     public class Merger : MonoBehaviour, IBeginDragHandler, IDragHandler , IEndDragHandler
     {
         #region FIELDS PRIVATE
         private Camera _camera;
+        private GuardCar _car;
         private BoxCollider _collider;
-        private GuardParkingController _parkingController;
         #endregion
 
         #region PROPERTIES
-        public GuardParkingController Parking => _parkingController;
+        public GuardCar Car => _car;
         #endregion
 
         #region UNITY CALLBACKS
         private void Awake()
         {
+            _car = GetComponent<GuardCar>();
             _collider = GetComponentInChildren<BoxCollider>();
-            _parkingController = GetComponent<GuardParkingController>();
         }
 
         private void Start()
@@ -52,31 +53,31 @@ namespace BossCortege
             {
                 _collider.enabled = true;
 
-                var car = hit.collider.GetComponentInParent<Merger>();
-                if (car != null)
+                var merger = hit.collider.GetComponentInParent<Merger>();
+                if (merger != null)
                 {
-                    if(car.Parking.Config.Level == _parkingController.Config.Level)
+                    if(merger.Car.Config.Level == _car.Config.Level)
                     {
-                        GameManager.Instance.MergeCar(this, car);
+                        EventHolder<MergeCarInfo>.NotifyListeners(new MergeCarInfo(_car, merger.Car));
                     }
                     else
                     {
-                        GameManager.Instance.SwapCar(this, car);
+                        EventHolder<SwapCarInfo>.NotifyListeners(new SwapCarInfo(_car, merger.Car));
                     }
 
                     return;
                 }
 
                 var place = hit.collider.GetComponent<Place>();
-                if (place != null && place != _parkingController.Place && place.IsVacant)
+                if (place != null && place != _car.Place && place.IsVacant)
                 {
-                    _parkingController.Replace();
-                    place.TryPlaceVechicle(_parkingController);
+                    _car.Replace();
+                    place.TryPlaceVechicle(_car);
                     return;                    
                 }
             }
 
-            _parkingController.ReturnToPlace();
+            _car.ReturnToPlace();
         }
         #endregion
     }
