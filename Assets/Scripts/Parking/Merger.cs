@@ -68,7 +68,7 @@ namespace BossCortege
                     return;
                 }
 
-                var place = hit.collider.GetComponent<Place>();
+                var place = hit.collider.GetComponent<AbstractPlace>();
                 if (place != null && place != _car.Place && place.IsVacant)
                 {
                     _car.Replace();

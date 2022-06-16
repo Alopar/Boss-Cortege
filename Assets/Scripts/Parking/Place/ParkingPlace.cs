@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    public class ParkingPlace : Place
+    public class ParkingPlace : AbstractPlace
     {
         #region FIELDS INSPECTOR
         [SerializeField, Tooltip("Parking place order number"), Min(1)] private uint _number = 1;

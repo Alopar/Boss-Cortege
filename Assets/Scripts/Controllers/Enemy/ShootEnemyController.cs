@@ -145,8 +145,8 @@ namespace BossCortege
             while (true)
             {
                 var projectile = Instantiate(_config.ProjectileScheme.Prefab, transform.position, transform.rotation);
-                projectile.transform.SetParent(RaidManager.Instance.ProjectilesContainer);
-                projectile.Initialize(_config.ProjectileScheme.Speed, _currentShootDamage, RaidManager.Instance.Limo.transform);
+                projectile.transform.SetParent(RaceManager.Instance.ProjectilesContainer);
+                projectile.Initialize(_config.ProjectileScheme.Speed, _currentShootDamage, RaceManager.Instance.Limo.transform);
 
                 yield return new WaitForSeconds(delay);
 
@@ -163,7 +163,7 @@ namespace BossCortege
                 if (_isLeaving) break;
 
                 var row = (CortegeRow)UnityEngine.Random.Range(1, 4);
-                _currentPoint = RaidManager.Instance.GetCortegePoint(row, _currentPoint.CortegeColumn);
+                _currentPoint = RaceManager.Instance.GetCortegePoint(row, _currentPoint.CortegeColumn);
             }
         }
 
@@ -173,7 +173,7 @@ namespace BossCortege
 
             _isLeaving = true;
             _currentSpeed *= 1.5f;
-            _currentPoint = RaidManager.Instance.GetCortegePoint(CortegeRow.Front, _currentPoint.CortegeColumn);
+            _currentPoint = RaceManager.Instance.GetCortegePoint(CortegeRow.Front, _currentPoint.CortegeColumn);
         }
         #endregion
     }

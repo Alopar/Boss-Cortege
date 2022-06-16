@@ -6,7 +6,7 @@ namespace BossCortege
     public class CortegeCell
     {
         #region FIELDS PRIVATE
-        private CortegePoint _point;
+        private RacePoint _point;
         private RaidController _raid;
         
         private CortegePosition _vertical;
@@ -22,13 +22,13 @@ namespace BossCortege
         #region PROPERTIES
         public RaidController Raid { get { return _raid; } set { _raid = value; } }
 
-        public CortegePoint Point => _point;
+        public RacePoint Point => _point;
         public CortegePosition Vertical => _vertical;
         public CortegePosition Horizontal => _horizontal;
         #endregion
 
         #region METHODS PUBLIC
-        public void SetPoint(CortegePoint point)
+        public void SetPoint(RacePoint point)
         {
             _point = point;
 

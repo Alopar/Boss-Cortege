@@ -15,13 +15,12 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public override void Initialize(CarScheme scheme, Place place)
+        public override void Initialize(CarScheme scheme)
         {
             if (_initialized) return;
             _initialized = true;
 
             _config = scheme as GuardScheme;
-            _place = place;
         }
         #endregion
     }

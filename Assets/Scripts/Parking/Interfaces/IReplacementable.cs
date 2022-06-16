@@ -8,7 +8,7 @@ namespace BossCortege
     {
         public event Action OnReplaced;
 
-        public Place Replace();
-        public void SetPlace(Place place);
+        public AbstractPlace Replace();
+        public void SetPlace(AbstractPlace place);
     }
 }

@@ -12,13 +12,13 @@ namespace BossCortege
         private uint _maxHP;
         private int _currentHP;
 
-        private CortegePoint _currentPoint;
+        private RacePoint _currentPoint;
 
         private bool _initialized = false;
         #endregion
 
         #region PROPERTIES
-        public CortegePoint CortegePoint => _currentPoint;
+        public RacePoint CortegePoint => _currentPoint;
         public float Speed { get { return _speed; } set { _speed = value; } }
         #endregion
 
@@ -36,7 +36,7 @@ namespace BossCortege
             if(transform.position == _currentPoint.transform.position)
             {
                 transform.DORotate(new Vector3(0, 0, 0), 0.1f);
-                RaidManager.Instance.DropAttack();
+                RaceManager.Instance.DropAttack();
             }
         }
 
@@ -100,7 +100,7 @@ namespace BossCortege
             }
         }
 
-        public void SetPoint(CortegePoint point)
+        public void SetPoint(RacePoint point)
         {
             if(_currentPoint != null && _currentPoint.RaidController == this)
             {
@@ -128,6 +128,5 @@ namespace BossCortege
             OnRaidDestroyed?.Invoke(this);
         }
         #endregion
-
     }
 }

@@ -12,7 +12,7 @@ namespace BossCortege
 
         #region PROPERTIES
         public bool IsDie => _isDie;
-        public CortegePoint CortegePoint => _currentPoint;
+        public RacePoint CortegePoint => _currentPoint;
         #endregion
 
         #region EVENTS
@@ -27,11 +27,11 @@ namespace BossCortege
         #endregion
 
         #region METHODS PRIVATE
-        protected CortegePoint _currentPoint;
+        protected RacePoint _currentPoint;
         #endregion
 
         #region METHODS PUBLIC
-        public void SetPoint(CortegePoint point)
+        public void SetPoint(RacePoint point)
         {
             _currentPoint = point;
         }

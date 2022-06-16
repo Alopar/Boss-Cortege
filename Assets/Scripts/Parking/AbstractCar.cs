@@ -7,7 +7,7 @@ namespace BossCortege
     public abstract class AbstractCar : MonoBehaviour, IReplacementable
     {
         #region FIELDS PRIVATE
-        protected Place _place;
+        protected AbstractPlace _place;
         protected bool _initialized = false;
         #endregion
 
@@ -16,7 +16,7 @@ namespace BossCortege
         #endregion
 
         #region PROPERTIES
-        public Place Place => _place;
+        public AbstractPlace Place => _place;
         #endregion
 
         #region UNITY CALLBACKS
@@ -27,15 +27,15 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public abstract void Initialize(CarScheme scheme, Place place);
+        public abstract void Initialize(CarScheme scheme);
 
-        public void SetPlace(Place place)
+        public void SetPlace(AbstractPlace place)
         {
             _place = place;
             ReturnToPlace();
         }
 
-        public Place Replace()
+        public AbstractPlace Replace()
         {
             var place = _place;
 

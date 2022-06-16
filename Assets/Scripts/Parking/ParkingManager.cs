@@ -19,9 +19,11 @@ namespace BossCortege
         #region FIELDS PRIVATE
         private List<CortegePlace> _cortegePlaces;
         private List<ParkingPlace> _parkingPlaces;
-        private RaidManager _cortege;
+        private RaceManager _raceManager;
 
         private uint _currentAvailableParkingPlaces;
+
+        private ICarFactory _carFactory = new CarFactory();
         #endregion
 
         #region HANDLERS
@@ -33,8 +35,7 @@ namespace BossCortege
                 {
                     if (GameManager.Instance.Wallet.TryGetCash(info.Cost))
                     {
-                        var scheme = Resources.Load<GuardScheme>("Guard01");
-                        SpawnCar(scheme, place);
+                        SpawnCar(new GuardCarFactoryStrategy(PowerLevel.Level01), place);
                     }
 
                     return;
@@ -50,62 +51,24 @@ namespace BossCortege
 
         private void StartRaceHandler(RaceStartInfo info)
         {
-            //var predicates = new List<Predicate<CortegePlace>>();
-            //predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Two);
-            //predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Three);
-            //predicates.Add(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Four);
-            //predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Two);
-            //predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Three);
-            //predicates.Add(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Four);
-            //predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Two);
-            //predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Three);
-            //predicates.Add(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Four);
+            var cortegeCars = GetCortegeCars();
+            foreach (var car in cortegeCars)
+            {
+                car.gameObject.SetActive(false);
+                //_raceManager.SetCar();
+            }
 
-            //foreach (var p in predicates)
-            //{
-            //    var place = _cortegePlace.Find(p);
-            //    if (!place.IsEmpty)
-            //    {
-            //        var car = place.Vechicle.GetCar();
-            //        car.gameObject.SetActive(false);
-
-            //        if (car.GetType() == typeof(GuardCar))
-            //        {
-            //            var scheme = (car as GuardCar).Config;
-            //            _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
-
-            //            continue;
-            //        }
-
-            //        if (car.GetType() == typeof(BossCar))
-            //        {
-            //            var scheme = (car as BossCar).Config;
-            //            _cortege.SetCar(place.CortegeRow, place.CortegeColumn, scheme);
-
-            //            continue;
-            //        }
-            //    }
-            //}
-
-            //_cortege.Go();
-            //_barrieController.UpBarrier();
+            _raceManager.Go();
+            _barrieController.Invoke(nameof(_barrieController.UpBarrier), 0.5f);
         }
 
         private void StopRaceHandler(RaceStopInfo info)
         {
-            //_cortege.Stop();
-            //_barrieController.DownBarrier();
+            _raceManager.Stop();
+            _barrieController.DownBarrier();
 
-            //foreach (var place in _cortegePlace)
-            //{
-            //    var vechicle = place.Vechicle;
-            //    if (vechicle == null) continue;
-
-            //    var car = vechicle.GetCar();
-            //    if (car == null) continue;
-
-            //    car.gameObject.SetActive(true);
-            //}
+            var cortegeCars = GetCortegeCars();
+            cortegeCars.ForEach(e => e.gameObject.SetActive(true));
         }
 
         private void MergeCarHandler(MergeCarInfo info)
@@ -113,38 +76,14 @@ namespace BossCortege
             var dominantCar = info.FirstCar;
             var submissiveCar = info.SecondCar;
 
-            string carSchemeName;
-            switch (dominantCar.Config.Level)
-            {
-                case PowerLevel.Level01:
-                    carSchemeName = "Guard02";
-                    break;
-                case PowerLevel.Level02:
-                    carSchemeName = "Guard03";
-                    break;
-                case PowerLevel.Level03:
-                    carSchemeName = "Guard04";
-                    break;
-                case PowerLevel.Level04:
-                    carSchemeName = "Guard05";
-                    break;
-                case PowerLevel.Level05:
-                    carSchemeName = "Guard06";
-                    break;
-                case PowerLevel.Level06:
-                    carSchemeName = "Guard06";
-                    break;
-                default:
-                    carSchemeName = "Guard06";
-                    break;
-            }
-            var nextLevelCarScheme = Resources.Load<GuardScheme>(carSchemeName);
+            var nextLevel = (PowerLevel)Mathf.Clamp((int)dominantCar.Config.Level + 1, 1, 6);
+            var place = submissiveCar.Replace();
 
             dominantCar.Replace();
             Destroy(dominantCar.gameObject);
-
-            SpawnCar(nextLevelCarScheme, submissiveCar.Replace());
             Destroy(submissiveCar.gameObject);
+
+            SpawnCar(new GuardCarFactoryStrategy(nextLevel), place);
         }
 
         private void SwapCarHandler(SwapCarInfo info)
@@ -195,16 +134,22 @@ namespace BossCortege
         #region METHODS PRIVATE
         private void Init()
         {
-            _cortege = FindObjectOfType<RaidManager>();
+            _raceManager = FindObjectOfType<RaceManager>();
 
             _cortegePlaces = FindObjectsOfType<CortegePlace>().ToList();
             _parkingPlaces = FindObjectsOfType<ParkingPlace>().OrderBy(e => e.Number).ToList();
 
             var bossPlace = _cortegePlaces.Find(e => e.IsBoss);
-            var bossScheme = Resources.Load<BossScheme>("Limo01");
-            SpawnCar(bossScheme, bossPlace);
-
+            SpawnCar(new BossCarFactoryStrategy(), bossPlace);
             UnlockPlaces();
+        }
+
+        private List<AbstractCar> GetCortegeCars()
+        {
+            var parkingCars = FindObjectsOfType<AbstractCar>(true).ToList();
+            var cortegeCars = parkingCars.FindAll(e => e.Place != null && e.Place is CortegePlace);
+
+            return cortegeCars;
         }
 
         private void UnlockPlaces()
@@ -218,21 +163,18 @@ namespace BossCortege
             }
         }
 
-        private void SpawnCar(BossScheme scheme, Place place)
+        private void SpawnCar(ICarFactoryStrategy strategy, AbstractPlace place)
         {
-            var car = Instantiate(scheme.Prefab);
-            car.Initialize(scheme, place);
-            place.TryPlaceVechicle(car);
-        }
-
-        private void SpawnCar(GuardScheme scheme, Place place)
-        {
-            var car = Instantiate(scheme.Prefab);
-            car.Initialize(scheme, place);
-
-            car.gameObject.AddComponent<Merger>();
-
-            place.TryPlaceVechicle(car);
+            var car = _carFactory.CreateCar(strategy);
+            if (place.TryPlaceVechicle(car))
+            {
+                car.SetPlace(place);
+            }
+            else
+            {
+                print("Place not available");
+                Destroy(car.gameObject);
+            }
         }
         #endregion
     }

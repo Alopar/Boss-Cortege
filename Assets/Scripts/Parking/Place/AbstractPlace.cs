@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    public class Place : MonoBehaviour
+    public abstract class AbstractPlace : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField] private Transform _spawnPoint;

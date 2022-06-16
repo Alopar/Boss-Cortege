@@ -773,7 +773,7 @@ Transform:
   m_Children:
   - {fileID: 480165831}
   m_Father: {fileID: 665215864}
-  m_RootOrder: 28
+  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 50, y: 0, z: 0}
 --- !u!1 &415731177
 GameObject:
@@ -1248,7 +1248,7 @@ GameObject:
   - component: {fileID: 665215864}
   - component: {fileID: 665215865}
   m_Layer: 0
-  m_Name: Cortege
+  m_Name: Race
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1291,9 +1291,6 @@ Transform:
   - {fileID: 1487576185}
   - {fileID: 1863626004}
   - {fileID: 77466911}
-  - {fileID: 1943391168}
-  - {fileID: 704576627}
-  - {fileID: 1928012793}
   - {fileID: 355521553}
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -1314,9 +1311,9 @@ MonoBehaviour:
   _speed: 8
   _shiftSpeed: 6
   _powerUpDistance: 200
-  _raidsContainer: {fileID: 1943391168}
-  _enemiesContainer: {fileID: 704576627}
-  _projectilesContainer: {fileID: 1928012793}
+  _raidsContainer: {fileID: 0}
+  _enemiesContainer: {fileID: 0}
+  _projectilesContainer: {fileID: 0}
 --- !u!1001 &679396952
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1488,37 +1485,6 @@ MonoBehaviour:
   _leftPoint: {fileID: 1463043045}
   _rightPoint: {fileID: 0}
   _bottomPoint: {fileID: 1424512001}
---- !u!1 &704576626
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 704576627}
-  m_Layer: 0
-  m_Name: EnemiesContainer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &704576627
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 704576626}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 665215864}
-  m_RootOrder: 26
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -4578,37 +4544,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1926841228}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1928012792
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1928012793}
-  m_Layer: 0
-  m_Name: ProjectilesContainer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1928012793
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1928012792}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 665215864}
-  m_RootOrder: 27
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1932586847
 GameObject:
   m_ObjectHideFlags: 0
@@ -4717,37 +4652,6 @@ Transform:
   - {fileID: 1403589657}
   m_Father: {fileID: 1384263166}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1943391167
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1943391168}
-  m_Layer: 0
-  m_Name: RaidsContainer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1943391168
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1943391167}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 665215864}
-  m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1963327948
 GameObject:

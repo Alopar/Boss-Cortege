@@ -7,18 +7,13 @@ using BossCortege.EventHolder;
 
 namespace BossCortege
 {
-    public class RaidManager : MonoBehaviour
+    public class RaceManager : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField, Range(1, 100), Tooltip("Монет за расстояние")] private uint _moneyPerUnit = 1;
         [SerializeField, Range(1, 100), Tooltip("Скорость всего кортежа")] private float _speed = 5;
         [SerializeField, Range(1, 100), Tooltip("Скорость перестроения машин")] private float _shiftSpeed = 3;
         [SerializeField, Tooltip("Расстояние через которое усиливаются враги на один уровень")] private int _powerUpDistance = 200;
-
-        [Space(10)]
-        [SerializeField] private Transform _raidsContainer;
-        [SerializeField] private Transform _enemiesContainer;
-        [SerializeField] private Transform _projectilesContainer;
         #endregion
 
         #region FIELDS PRIVATE
@@ -27,7 +22,7 @@ namespace BossCortege
 
         private bool _go = false;
         private Vector3 _startPosition;
-        private List<CortegePoint> _points = new List<CortegePoint>();
+        private List<RacePoint> _points = new List<RacePoint>();
         private List<RaidController> _raids = new List<RaidController>();
         private List<EnemyController> _enemies = new List<EnemyController>();
 
@@ -38,18 +33,14 @@ namespace BossCortege
         private Cortege _cortege;
         private RaidController _limo;
 
-        private static RaidManager _instance;
+        private static RaceManager _instance;
         #endregion
 
         #region PROPERTIES
         public float Speed => _speed;
         public RaidController Limo => _limo;
 
-        public Transform RaidsContainer => _raidsContainer;
-        public Transform EnemiesContainer => _enemiesContainer;
-        public Transform ProjectilesContainer => _projectilesContainer;
-
-        public static RaidManager Instance => _instance;
+        public static RaceManager Instance => _instance;
         #endregion
 
         #region HANDLERS
@@ -105,10 +96,6 @@ namespace BossCortege
                     _cortege.MoveRight();
                 }
             }
-
-            //ShiftCarRow(CortegeRow.One, (int)direction.x);
-            //ShiftCarRow(CortegeRow.Two, (int)direction.x);
-            //ShiftCarRow(CortegeRow.Three, (int)direction.x);
         }
 
         private void Limo_OnLimoDestroyed()
@@ -180,7 +167,7 @@ namespace BossCortege
             {
                 _instance = this;
                 _startPosition = transform.position;
-                _points = FindObjectsOfType<CortegePoint>().ToList();
+                _points = FindObjectsOfType<RacePoint>().ToList();
             }
             else
             {
@@ -223,7 +210,7 @@ namespace BossCortege
             _isAttackRight = false;
         }
 
-        public CortegePoint GetCortegePoint(CortegeRow row, CortegeColumn column)
+        public RacePoint GetCortegePoint(CortegeRow row, CortegeColumn column)
         {
             return _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
         }
@@ -234,7 +221,6 @@ namespace BossCortege
             {
                 var raidSchema = carScheme as GuardScheme;
                 var raidCar = Instantiate(raidSchema.Prefab);
-                raidCar.transform.SetParent(_raidsContainer);
                 raidCar.enabled = false;
 
                 var raidController = raidCar.gameObject.GetComponent<GuardRaidController>();
@@ -249,7 +235,7 @@ namespace BossCortege
                 var healthBar = raidCar.GetComponentInChildren<Healthbar>(true);
                 healthBar.gameObject.SetActive(true);
 
-                CortegePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
+                RacePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
                 if (point != null)
                 {
                     point.RaidController = raidController;
@@ -271,7 +257,6 @@ namespace BossCortege
             {
                 var raidSchema = carScheme as BossScheme;
                 var raidCar = Instantiate(raidSchema.Prefab);
-                raidCar.transform.SetParent(_raidsContainer);
                 raidCar.enabled = false;
 
                 var raidController = raidCar.GetComponent<LimoRaidController>();
@@ -286,7 +271,7 @@ namespace BossCortege
                 var healthBar = raidCar.GetComponentInChildren<Healthbar>(true);
                 healthBar.gameObject.SetActive(true);
 
-                CortegePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
+                RacePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
                 if (point != null)
                 {
                     point.RaidController = raidController;
@@ -317,8 +302,6 @@ namespace BossCortege
                 var randowRow = UnityEngine.Random.Range(1, 4);
                 var finishPoint = _points.Find(e => e.CortegeRow == (CortegeRow)randowRow && e.CortegeColumn == column);
                 enemy.SetPoint(finishPoint);
-
-                //enemy.transform.SetParent(_enemiesContainer);
             }
 
             if (typeof(T) == typeof(SuicideEnemyScheme))
@@ -328,8 +311,6 @@ namespace BossCortege
 
                 var finishPoint = _points.Find(e => e.CortegeRow == CortegeRow.Back && e.CortegeColumn == column);
                 enemy.SetPoint(finishPoint);
-
-                //enemy.transform.SetParent(_enemiesContainer);
             }
 
             if (typeof(T) == typeof(BarricadeEnemyScheme))
@@ -371,7 +352,7 @@ namespace BossCortege
             _cortege = new Cortege();
 
             CortegeCell cell;
-            CortegePoint point;
+            RacePoint point;
 
             // front
             cell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Left);

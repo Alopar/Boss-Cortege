@@ -2,8 +2,22 @@ using UnityEngine;
 
 namespace BossCortege
 {
-    public abstract class CarFactory
+    public class CarFactory : ICarFactory
     {
-        public abstract RaidController BuildCar();
+        public AbstractCar CreateCar(ICarFactoryStrategy strategy)
+        {
+            return strategy.BuildCar();
+        }
+    }
+
+    public interface ICarFactory
+    {
+        public AbstractCar CreateCar(ICarFactoryStrategy strategy);
+    }
+
+    public enum CarType
+    {
+        Boss,
+        Guard
     }
 }
