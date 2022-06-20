@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using BossCortege.EventHolder;
 
 namespace BossCortege
 {
@@ -13,10 +14,6 @@ namespace BossCortege
 
         private bool isSwiping;
         private bool isMobile;
-        #endregion
-
-        #region EVENTS
-        public static event Action<Vector2> OnSwipe;
         #endregion
 
         #region UNITY CALLBACKS
@@ -78,16 +75,13 @@ namespace BossCortege
 
             if (swipeDelta.magnitude > deadZone)
             {
-                if (OnSwipe != null)
+                if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
                 {
-                    if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
-                    {
-                        OnSwipe(swipeDelta.x > 0 ? Vector2.right : Vector2.left);
-                    }
-                    else
-                    {
-                        OnSwipe(swipeDelta.y > 0 ? Vector2.up : Vector2.down);
-                    }
+                    EventHolder<InputSwipeInfo>.NotifyListeners(new InputSwipeInfo(swipeDelta.x > 0 ? Vector2.right : Vector2.left));
+                }
+                else
+                {
+                    EventHolder<InputSwipeInfo>.NotifyListeners(new InputSwipeInfo(swipeDelta.y > 0 ? Vector2.up : Vector2.down));
                 }
 
                 ResetSwipe();

@@ -7,10 +7,9 @@ namespace BossCortege
         #region FIELDS PRIVATE
         private float _speed;
         private uint _damage;
-        private Transform _aim;
         private Vector3 _aimPoint;
 
-        private bool _initialized = false;
+        private Rigidbody _rigidbody;
         #endregion
 
         #region PROPERTIES
@@ -18,28 +17,42 @@ namespace BossCortege
         #endregion
 
         #region UNITY CALLBACKS
-        private void OnDisable()
-        {
-            _initialized = false;
-        }
-
         private void FixedUpdate()
         {
-            transform.position = Vector3.MoveTowards(transform.position, _aim.position, _speed * Time.fixedDeltaTime);
+            var currentPosition = Vector3.MoveTowards(transform.position, _aimPoint, _speed * Time.deltaTime);
+            _rigidbody.MovePosition(currentPosition);
+        }
+
+        protected virtual void OnCollisionEnter(Collision collision)
+        {
+            var healthComponent = collision.gameObject.GetComponent<IDamageable>();
+            if (healthComponent != null)
+            {
+                healthComponent.SetDamage(_damage);
+                Destroy(gameObject);
+                Hit();
+            }
+        }
+        #endregion
+
+        #region METHODS PRIVATE
+        private void Hit()
+        {
+            //TODO: show vfx
         }
         #endregion
 
         #region METHODS PUBLIC
-        public void Initialize(float speed, uint damage, Transform aim)
+        public void Init(float speed, uint damage, Transform aim)
         {
-            if (_initialized) return;
-            _initialized = true;
-
             _speed = speed;
             _damage = damage;
-            
-            _aim = aim;
-            transform.LookAt(_aim);
+
+            _aimPoint = aim.position;
+            _aimPoint.z += 1f;
+
+            transform.LookAt(aim);
+            Destroy(gameObject, 2f);
         }
         #endregion
     }

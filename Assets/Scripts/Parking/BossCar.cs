@@ -14,11 +14,8 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public override void Initialize(CarScheme scheme)
-        {
-            if (_initialized) return;
-            _initialized = true;
-
+        public override void Init(CarScheme scheme)
+        {   
             _config = scheme as BossScheme;
         }
         #endregion

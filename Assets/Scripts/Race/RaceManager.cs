@@ -14,6 +14,8 @@ namespace BossCortege
         [SerializeField, Range(1, 100), Tooltip("—корость всего кортежа")] private float _speed = 5;
         [SerializeField, Range(1, 100), Tooltip("—корость перестроени€ машин")] private float _shiftSpeed = 3;
         [SerializeField, Tooltip("–ассто€ние через которое усиливаютс€ враги на один уровень")] private int _powerUpDistance = 200;
+
+        [SerializeField, Space(10)] private ParkingManager _parkingManager;
         #endregion
 
         #region FIELDS PRIVATE
@@ -23,7 +25,7 @@ namespace BossCortege
         private bool _go = false;
         private Vector3 _startPosition;
         private List<RacePoint> _points = new List<RacePoint>();
-        private List<RaidController> _raids = new List<RaidController>();
+        private List<MoveComponent> _raids = new List<MoveComponent>();
         private List<EnemyController> _enemies = new List<EnemyController>();
 
         private Coroutine _spawnSuicideEnemies;
@@ -31,14 +33,14 @@ namespace BossCortege
         private Coroutine _spawnBarricadeEnemies;
 
         private Cortege _cortege;
-        private RaidController _limo;
+        private MoveComponent _limo;
 
         private static RaceManager _instance;
         #endregion
 
         #region PROPERTIES
         public float Speed => _speed;
-        public RaidController Limo => _limo;
+        public MoveComponent Limo => _limo;
 
         public static RaceManager Instance => _instance;
         #endregion
@@ -116,7 +118,7 @@ namespace BossCortege
             }
         }
 
-        private void Raid_OnRaidDestroyed(RaidController raid)
+        private void Raid_OnRaidDestroyed(MoveComponent raid)
         {
             var cell = _cortege.GetCellByRaid(raid);
             if(cell != null)
@@ -184,20 +186,10 @@ namespace BossCortege
 
             GameManager.Instance.Distance.SetDistance((uint)Vector3.Distance(_startPosition, transform.position));
         }
-
-        private void OnEnable()
-        {
-            SwipeDetection.OnSwipe += SwipeDetection_OnSwipe;
-        }
-
-        private void OnDisable()
-        {
-            SwipeDetection.OnSwipe -= SwipeDetection_OnSwipe;
-        }
         #endregion
 
         #region METHODS PRIVATE
-        private RaidController GetCortegeCar(CortegeRow row, CortegeColumn column)
+        private MoveComponent GetCortegeCar(CortegeRow row, CortegeColumn column)
         {
             return _raids.Find(e => e.CortegePoint.CortegeRow == row && e.CortegePoint.CortegeColumn == column);
         }
@@ -223,7 +215,7 @@ namespace BossCortege
                 var raidCar = Instantiate(raidSchema.Prefab);
                 raidCar.enabled = false;
 
-                var raidController = raidCar.gameObject.GetComponent<GuardRaidController>();
+                var raidController = raidCar.gameObject.GetComponent<GuardComponent>();
                 raidController.enabled = true;
 
                 raidController.Initialize(raidSchema);
@@ -259,7 +251,7 @@ namespace BossCortege
                 var raidCar = Instantiate(raidSchema.Prefab);
                 raidCar.enabled = false;
 
-                var raidController = raidCar.GetComponent<LimoRaidController>();
+                var raidController = raidCar.GetComponent<BossComponent>();
                 raidController.enabled = true;
 
                 raidController.Initialize(raidSchema);
@@ -326,7 +318,7 @@ namespace BossCortege
             _enemies.Add(enemy);
         }
 
-        public void DeleteCar(RaidController raid)
+        public void DeleteCar(MoveComponent raid)
         {
             _raids.Remove(raid);
             raid.OnRaidDestroyed -= Raid_OnRaidDestroyed;
@@ -343,7 +335,7 @@ namespace BossCortege
         public void Go()
         {
             _go = true;
-            _limo = _raids.Find(e => e.GetType() == typeof(LimoRaidController));
+            _limo = _raids.Find(e => e.GetType() == typeof(BossComponent));
 
             _spawnShootEnemies = StartCoroutine(SpawnShootEnemies());
             _spawnSuicideEnemies = StartCoroutine(SpawnSuicideEnemies());
@@ -351,7 +343,7 @@ namespace BossCortege
 
             _cortege = new Cortege();
 
-            CortegeCell cell;
+            CortegeElem cell;
             RacePoint point;
 
             // front
@@ -447,7 +439,7 @@ namespace BossCortege
 
             foreach (var raid in _raids)
             {
-                if(raid is GuardRaidController guard)
+                if(raid is GuardComponent guard)
                 {
                     levelSum += (int)guard.Config.Level;
                 }
@@ -553,23 +545,5 @@ namespace BossCortege
             }
         }
         #endregion
-    }
-
-    public enum CortegeRow
-    {
-        Back = 0,
-        One = 1,
-        Two = 2,
-        Three = 3,
-        Front = 4
-    }
-
-    public enum CortegeColumn
-    {
-        One = 0,
-        Two = 1,
-        Three = 2,
-        Four = 3,
-        Five = 4
     }
 }

@@ -19,7 +19,6 @@ namespace BossCortege
         #region FIELDS PRIVATE
         private List<CortegePlace> _cortegePlaces;
         private List<ParkingPlace> _parkingPlaces;
-        private RaceManager _raceManager;
 
         private uint _currentAvailableParkingPlaces;
 
@@ -51,35 +50,32 @@ namespace BossCortege
 
         private void StartRaceHandler(RaceStartInfo info)
         {
-            var cortegeCars = GetCortegeCars();
-            foreach (var car in cortegeCars)
-            {
-                car.gameObject.SetActive(false);
-                //_raceManager.SetCar();
-            }
+            var cortegeCars = GetCortegeCarPlaces();
+            cortegeCars.ForEach(e => e.gameObject.SetActive(false));
 
-            _raceManager.Go();
             _barrieController.Invoke(nameof(_barrieController.UpBarrier), 0.5f);
         }
 
         private void StopRaceHandler(RaceStopInfo info)
         {
-            _raceManager.Stop();
-            _barrieController.DownBarrier();
-
-            var cortegeCars = GetCortegeCars();
+            var cortegeCars = GetCortegeCarPlaces();
             cortegeCars.ForEach(e => e.gameObject.SetActive(true));
+
+            _barrieController.DownBarrier();
         }
 
         private void MergeCarHandler(MergeCarInfo info)
         {
             var dominantCar = info.FirstCar;
+            var dominantPlace = info.FirstPlace;
+
             var submissiveCar = info.SecondCar;
+            var submissivePlace = info.SecondPlace;
 
             var nextLevel = (PowerLevel)Mathf.Clamp((int)dominantCar.Config.Level + 1, 1, 6);
-            var place = submissiveCar.Replace();
+            var place = submissivePlace.Replace();
 
-            dominantCar.Replace();
+            dominantPlace.Replace();
             Destroy(dominantCar.gameObject);
             Destroy(submissiveCar.gameObject);
 
@@ -88,14 +84,14 @@ namespace BossCortege
 
         private void SwapCarHandler(SwapCarInfo info)
         {
-            var dominantCar = info.FirstCar;
-            var submissiveCar = info.SecondCar;
+            var dominantPlaceComponent = info.FirstPlace;
+            var submissivePlaceComponent = info.SecondPlace;
 
-            var dominantCarPlace = dominantCar.Replace();
-            var submissiveCarPlace = submissiveCar.Replace();
+            var dominantCarPlace = dominantPlaceComponent.Replace();
+            var submissiveCarPlace = submissivePlaceComponent.Replace();
 
-            dominantCarPlace.TryPlaceVechicle(submissiveCar);
-            submissiveCarPlace.TryPlaceVechicle(dominantCar);
+            dominantCarPlace.PlaceVechicle(submissivePlaceComponent);
+            submissiveCarPlace.PlaceVechicle(dominantPlaceComponent);
         }
         #endregion
 
@@ -134,8 +130,6 @@ namespace BossCortege
         #region METHODS PRIVATE
         private void Init()
         {
-            _raceManager = FindObjectOfType<RaceManager>();
-
             _cortegePlaces = FindObjectsOfType<CortegePlace>().ToList();
             _parkingPlaces = FindObjectsOfType<ParkingPlace>().OrderBy(e => e.Number).ToList();
 
@@ -144,9 +138,9 @@ namespace BossCortege
             UnlockPlaces();
         }
 
-        private List<AbstractCar> GetCortegeCars()
+        private List<PlaceComponent> GetCortegeCarPlaces()
         {
-            var parkingCars = FindObjectsOfType<AbstractCar>(true).ToList();
+            var parkingCars = FindObjectsOfType<PlaceComponent>(true).ToList();
             var cortegeCars = parkingCars.FindAll(e => e.Place != null && e.Place is CortegePlace);
 
             return cortegeCars;
@@ -166,15 +160,7 @@ namespace BossCortege
         private void SpawnCar(ICarFactoryStrategy strategy, AbstractPlace place)
         {
             var car = _carFactory.CreateCar(strategy);
-            if (place.TryPlaceVechicle(car))
-            {
-                car.SetPlace(place);
-            }
-            else
-            {
-                print("Place not available");
-                Destroy(car.gameObject);
-            }
+            place.PlaceVechicle(car);
         }
         #endregion
     }

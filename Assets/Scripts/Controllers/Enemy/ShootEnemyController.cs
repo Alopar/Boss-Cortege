@@ -146,7 +146,7 @@ namespace BossCortege
             {
                 var projectile = Instantiate(_config.ProjectileScheme.Prefab, transform.position, transform.rotation);
                 projectile.transform.SetParent(RaceManager.Instance.ProjectilesContainer);
-                projectile.Initialize(_config.ProjectileScheme.Speed, _currentShootDamage, RaceManager.Instance.Limo.transform);
+                projectile.Init(_config.ProjectileScheme.Speed, _currentShootDamage, RaceManager.Instance.Limo.transform);
 
                 yield return new WaitForSeconds(delay);
 

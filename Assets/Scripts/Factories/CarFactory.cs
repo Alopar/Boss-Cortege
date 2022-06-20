@@ -4,7 +4,7 @@ namespace BossCortege
 {
     public class CarFactory : ICarFactory
     {
-        public AbstractCar CreateCar(ICarFactoryStrategy strategy)
+        public IReplacementable CreateCar(ICarFactoryStrategy strategy)
         {
             return strategy.BuildCar();
         }
@@ -12,7 +12,7 @@ namespace BossCortege
 
     public interface ICarFactory
     {
-        public AbstractCar CreateCar(ICarFactoryStrategy strategy);
+        public IReplacementable CreateCar(ICarFactoryStrategy strategy);
     }
 
     public enum CarType

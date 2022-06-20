@@ -12,15 +12,16 @@ namespace BossCortege
             _level = level;
         }
 
-        public AbstractCar BuildCar()
+        public IReplacementable BuildCar()
         {
             string schemeName = $"Guard0{(int)_level}";
             var guardScheme = Resources.Load<GuardScheme>(schemeName);
             var car = GameObject.Instantiate(guardScheme.Prefab);
-            car.Initialize(guardScheme);
-            car.gameObject.AddComponent<Merger>();
+            car.Init(guardScheme);
+            car.gameObject.AddComponent<MergeComponent>();
+            var placeComponent = car.gameObject.AddComponent<PlaceComponent>();
 
-            return car;
+            return placeComponent;
         }
     }
 }

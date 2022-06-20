@@ -29,15 +29,11 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public bool TryPlaceVechicle(IReplacementable vechicle)
+        public void PlaceVechicle(IReplacementable vechicle)
         {
-            if (_vechicle != null) return false;
-
             _vechicle = vechicle;
             _vechicle.SetPlace(this);
             _vechicle.OnReplaced += Vechicle_OnReplaced;
-
-            return true;
         }
         #endregion
     }

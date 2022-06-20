@@ -2,6 +2,6 @@
 {
     public interface ICarFactoryStrategy
     {
-        public AbstractCar BuildCar();
+        public IReplacementable BuildCar();
     }
 }

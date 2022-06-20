@@ -5,22 +5,27 @@ using BossCortege.EventHolder;
 namespace BossCortege
 {
     [RequireComponent(typeof(GuardCar))]
-    public class Merger : MonoBehaviour, IBeginDragHandler, IDragHandler , IEndDragHandler
+    public class MergeComponent : MonoBehaviour, IBeginDragHandler, IDragHandler , IEndDragHandler
     {
         #region FIELDS PRIVATE
         private Camera _camera;
+
         private GuardCar _car;
+        private PlaceComponent _place;
+
         private BoxCollider _collider;
         #endregion
 
         #region PROPERTIES
         public GuardCar Car => _car;
+        public PlaceComponent Place => _place;
         #endregion
 
         #region UNITY CALLBACKS
         private void Awake()
         {
             _car = GetComponent<GuardCar>();
+            _place = GetComponent<PlaceComponent>();
             _collider = GetComponentInChildren<BoxCollider>();
         }
 
@@ -53,31 +58,31 @@ namespace BossCortege
             {
                 _collider.enabled = true;
 
-                var merger = hit.collider.GetComponentInParent<Merger>();
+                var merger = hit.collider.GetComponentInParent<MergeComponent>();
                 if (merger != null)
                 {
                     if(merger.Car.Config.Level == _car.Config.Level)
                     {
-                        EventHolder<MergeCarInfo>.NotifyListeners(new MergeCarInfo(_car, merger.Car));
+                        EventHolder<MergeCarInfo>.NotifyListeners(new MergeCarInfo(_car, _place, merger.Car, merger.Place));
                     }
                     else
                     {
-                        EventHolder<SwapCarInfo>.NotifyListeners(new SwapCarInfo(_car, merger.Car));
+                        EventHolder<SwapCarInfo>.NotifyListeners(new SwapCarInfo(_place, merger.Place));
                     }
 
                     return;
                 }
 
                 var place = hit.collider.GetComponent<AbstractPlace>();
-                if (place != null && place != _car.Place && place.IsVacant)
+                if (place != null && place != _place && place.IsVacant)
                 {
-                    _car.Replace();
-                    place.TryPlaceVechicle(_car);
+                    _place.Replace();
+                    place.PlaceVechicle(_place);
                     return;                    
                 }
             }
 
-            _car.ReturnToPlace();
+            _place.ReturnToPlace();
         }
         #endregion
     }

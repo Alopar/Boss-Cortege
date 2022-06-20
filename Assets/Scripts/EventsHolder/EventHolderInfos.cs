@@ -3,6 +3,16 @@ using UnityEngine;
 
 namespace BossCortege.EventHolder
 {
+    public class InputSwipeInfo
+    {
+        public Vector2 Direction { get; private set; }
+
+        public InputSwipeInfo(Vector2 direction)
+        {
+            Direction = direction;
+        }
+    }
+
     public class BuyCarInfo
     {
         public uint Cost { get; private set; }
@@ -66,24 +76,28 @@ namespace BossCortege.EventHolder
     public class MergeCarInfo
     {
         public GuardCar FirstCar { get; private set; }
+        public PlaceComponent FirstPlace { get; private set; }
         public GuardCar SecondCar { get; private set; }
+        public PlaceComponent SecondPlace { get; private set; }
 
-        public MergeCarInfo(GuardCar firstCar, GuardCar secondCar)
+        public MergeCarInfo(GuardCar firstCar, PlaceComponent firstPlace, GuardCar secondCar, PlaceComponent secondPlace)
         {
             FirstCar = firstCar;
+            FirstPlace = firstPlace;
             SecondCar = secondCar;
+            SecondPlace = secondPlace;
         }
     }
 
     public class SwapCarInfo
     {
-        public AbstractCar FirstCar { get; private set; }
-        public AbstractCar SecondCar { get; private set; }
+        public PlaceComponent FirstPlace { get; private set; }
+        public PlaceComponent SecondPlace { get; private set; }
 
-        public SwapCarInfo(AbstractCar firstCar, AbstractCar secondCar)
+        public SwapCarInfo(PlaceComponent firstPlace, PlaceComponent secondPlace)
         {
-            FirstCar = firstCar;
-            SecondCar = secondCar;
+            FirstPlace = firstPlace;
+            SecondPlace = secondPlace;
         }
     }
 }
