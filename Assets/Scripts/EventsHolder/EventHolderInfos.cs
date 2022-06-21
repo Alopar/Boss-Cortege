@@ -100,4 +100,14 @@ namespace BossCortege.EventHolder
             SecondPlace = secondPlace;
         }
     }
+
+    public class RamInfo
+    {
+        //TODO: ram cooldown
+    }
+
+    public class BossDieInfo
+    {
+        // no info
+    }
 }

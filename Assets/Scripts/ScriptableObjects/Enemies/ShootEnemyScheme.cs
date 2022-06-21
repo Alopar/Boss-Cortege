@@ -16,6 +16,9 @@ namespace BossCortege
         [SerializeField] private uint _shootDamage;
         [SerializeField] private float _rateOfFire;
         [SerializeField] private ProjectileSchema _projectileScheme;
+
+        [Space(10)]
+        [SerializeField] private uint _relocateNumber;
         #endregion
 
         #region PROPERTIES
@@ -23,17 +26,8 @@ namespace BossCortege
         public uint Durability => _durability;
         public uint ShootDamage => _shootDamage;
         public float RateOfFire => _rateOfFire;
+        public uint RelocateNumber => _relocateNumber;
         public ProjectileSchema ProjectileScheme => _projectileScheme;
-        #endregion
-
-        #region METHODS PUBLIC
-        public override EnemyController Factory()
-        {
-            var enemy = Instantiate(Prefab) as ShootEnemyController;
-            enemy.Config = this;
-
-            return enemy;
-        }
         #endregion
     }
 }

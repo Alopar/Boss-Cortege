@@ -1,13 +1,16 @@
 using System;
 using UnityEngine;
-using BossCortege.EventHolder;
 
 namespace BossCortege
 {
-    public class RamComponent : MonoBehaviour
+    public class ExplosionComponent : MonoBehaviour
     {
         #region FIELDS PRIVATE
-        protected uint _damage;
+        private uint _damage;
+        #endregion
+
+        #region EVENTS
+        public event Action OnExplosion;
         #endregion
 
         #region UNITY CALLBACKS
@@ -18,7 +21,7 @@ namespace BossCortege
             {
                 damageable.SetDamage(_damage);
 
-                EventHolder<RamInfo>.NotifyListeners(new RamInfo());
+                OnExplosion?.Invoke();
             }
         }
         #endregion

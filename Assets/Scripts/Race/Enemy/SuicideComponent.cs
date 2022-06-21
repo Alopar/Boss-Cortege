@@ -4,10 +4,10 @@ using BossCortege.EventHolder;
 
 namespace BossCortege
 {
-    public class RamComponent : MonoBehaviour
+    public class SuicideComponent : RamComponent
     {
-        #region FIELDS PRIVATE
-        protected uint _damage;
+        #region EVENTS
+        public event Action OnSuicide;
         #endregion
 
         #region UNITY CALLBACKS
@@ -18,15 +18,8 @@ namespace BossCortege
             {
                 damageable.SetDamage(_damage);
 
-                EventHolder<RamInfo>.NotifyListeners(new RamInfo());
+                OnSuicide?.Invoke();
             }
-        }
-        #endregion
-
-        #region METHODS PUBLIC
-        public void Init(uint damage)
-        {
-            _damage = damage;
         }
         #endregion
     }

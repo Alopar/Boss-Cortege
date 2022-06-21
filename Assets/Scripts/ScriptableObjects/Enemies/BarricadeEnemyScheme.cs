@@ -13,15 +13,5 @@ namespace BossCortege
         #region PROPERTIES
         public uint ExplosionDamage => _explosionDamage;
         #endregion
-
-        #region METHODS PUBLIC
-        public override EnemyController Factory()
-        {
-            var enemy = Instantiate(Prefab) as BarricadeEnemyController;
-            enemy.Config = this;
-
-            return enemy;
-        }
-        #endregion
     }
 }

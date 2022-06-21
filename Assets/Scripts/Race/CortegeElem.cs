@@ -16,8 +16,13 @@ namespace BossCortege
 
         private List<CortegeElem> _spareElem;
 
-        public CortegeElem(AbstractCar car)
+        private uint _row;
+        private uint _column;
+
+        public CortegeElem(AbstractCar car, uint row, uint column)
         {
+            _row = row;
+            _column = column;
             SetCar(car);
         }
         #endregion
@@ -27,11 +32,14 @@ namespace BossCortege
         #endregion
 
         #region PROPERTIES
+        public uint Row => _row;
+        public uint Column => _column;
+        public RacePoint Point => _point;
         #endregion
 
         #region HANDLERS
         private void Spare_OnCortegeElemDestroy(CortegeElem spare)
-        {   
+        {
             _spareElem.Remove(spare);
             spare.OnCortegeElemDestroy -= Spare_OnCortegeElemDestroy;
         }

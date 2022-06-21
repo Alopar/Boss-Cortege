@@ -18,6 +18,7 @@ namespace BossCortege
         public override void Init(CarScheme scheme)
         {
             _config = scheme as GuardScheme;
+            _place = GetComponent<PlaceComponent>();
         }
         #endregion
     }

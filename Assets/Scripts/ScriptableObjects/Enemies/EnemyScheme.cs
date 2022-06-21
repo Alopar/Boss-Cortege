@@ -7,18 +7,13 @@ namespace BossCortege
         #region FIELDS INSPECTOR
         [SerializeField] private uint _money;
         [SerializeField] private PowerLevel _level;
-        [SerializeField] private EnemyController _prefab;
+        [SerializeField] private AbstractEnemy _prefab;
         #endregion
 
         #region PROPERTIES
         public uint Money => _money;
         public PowerLevel Level => _level;
-        public EnemyController Prefab => _prefab;
+        public AbstractEnemy Prefab => _prefab;
         #endregion
-
-        #region METHODS PUBLIC
-        public abstract EnemyController Factory();
-        #endregion
-
     }
 }

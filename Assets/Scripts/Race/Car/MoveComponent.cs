@@ -18,6 +18,10 @@ namespace BossCortege
         public RacePoint Point => _currentPoint;
         #endregion
 
+        #region EVENTS
+        public event Action OnPointReached;
+        #endregion
+
         #region UNITY CALLBACKS
         private void Awake()
         {
@@ -32,6 +36,8 @@ namespace BossCortege
             if(transform.position == _currentPoint.transform.position)
             {
                 transform.DORotate(new Vector3(0, 0, 0), 0.1f);
+
+                OnPointReached?.Invoke();
             }
         }
 
@@ -65,6 +71,11 @@ namespace BossCortege
             }
 
             _currentPoint = point;
+        }
+
+        public void SetSpeed(float value)
+        {
+            _speed = value;
         }
         #endregion
     }

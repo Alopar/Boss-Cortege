@@ -17,15 +17,5 @@ namespace BossCortege
         public float Speed => _speed;
         public uint RamDamage => _ramDamage;
         #endregion
-
-        #region METHODS PUBLIC
-        public override EnemyController Factory()
-        {
-            var enemy = Instantiate(Prefab) as SuicideEnemyController;
-            enemy.Config = this;
-
-            return enemy;
-        }
-        #endregion
     }
 }

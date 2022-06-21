@@ -23,6 +23,12 @@ namespace BossCortege
         private uint _currentAvailableParkingPlaces;
 
         private ICarFactory _carFactory = new CarFactory();
+
+        private static ParkingManager _instance;
+        #endregion
+
+        #region PROPERTIES
+        public static ParkingManager Instance => _instance;
         #endregion
 
         #region HANDLERS
@@ -48,17 +54,17 @@ namespace BossCortege
             UnlockPlaces();
         }
 
-        private void StartRaceHandler(RaceStartInfo info)
+        private void RaceStartHandler(RaceStartInfo info)
         {
-            var cortegeCars = GetCortegeCarPlaces();
+            var cortegeCars = GetCortegeCar();
             cortegeCars.ForEach(e => e.gameObject.SetActive(false));
 
             _barrieController.Invoke(nameof(_barrieController.UpBarrier), 0.5f);
         }
 
-        private void StopRaceHandler(RaceStopInfo info)
+        private void RaceStopHandler(RaceStopInfo info)
         {
-            var cortegeCars = GetCortegeCarPlaces();
+            var cortegeCars = GetCortegeCar();
             cortegeCars.ForEach(e => e.gameObject.SetActive(true));
 
             _barrieController.DownBarrier();
@@ -100,8 +106,8 @@ namespace BossCortege
         {
             EventHolder<BuyCarInfo>.AddListener(BuyCarHandler, false);
             EventHolder<BuyPlaceInfo>.AddListener(BuyPlaceHandler, false);
-            EventHolder<RaceStartInfo>.AddListener(StartRaceHandler, false);
-            EventHolder<RaceStopInfo>.AddListener(StopRaceHandler, false);
+            EventHolder<RaceStartInfo>.AddListener(RaceStartHandler, false);
+            EventHolder<RaceStopInfo>.AddListener(RaceStopHandler, false);
             EventHolder<MergeCarInfo>.AddListener(MergeCarHandler, false);
             EventHolder<SwapCarInfo>.AddListener(SwapCarHandler, false);
         }
@@ -110,15 +116,22 @@ namespace BossCortege
         {
             EventHolder<BuyCarInfo>.RemoveListener(BuyCarHandler);
             EventHolder<BuyPlaceInfo>.RemoveListener(BuyPlaceHandler);
-            EventHolder<RaceStartInfo>.RemoveListener(StartRaceHandler);
-            EventHolder<RaceStopInfo>.RemoveListener(StopRaceHandler);
+            EventHolder<RaceStartInfo>.RemoveListener(RaceStartHandler);
+            EventHolder<RaceStopInfo>.RemoveListener(RaceStopHandler);
             EventHolder<MergeCarInfo>.RemoveListener(MergeCarHandler);
             EventHolder<SwapCarInfo>.RemoveListener(SwapCarHandler);
         }
 
         private void Awake()
         {
-            _currentAvailableParkingPlaces = _baseAvailableParkingPlaces;
+            if (!_instance)
+            {
+                _instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
 
         private void Start()
@@ -130,20 +143,14 @@ namespace BossCortege
         #region METHODS PRIVATE
         private void Init()
         {
+            _currentAvailableParkingPlaces = _baseAvailableParkingPlaces;
+
             _cortegePlaces = FindObjectsOfType<CortegePlace>().ToList();
             _parkingPlaces = FindObjectsOfType<ParkingPlace>().OrderBy(e => e.Number).ToList();
 
             var bossPlace = _cortegePlaces.Find(e => e.IsBoss);
             SpawnCar(new BossCarFactoryStrategy(), bossPlace);
             UnlockPlaces();
-        }
-
-        private List<PlaceComponent> GetCortegeCarPlaces()
-        {
-            var parkingCars = FindObjectsOfType<PlaceComponent>(true).ToList();
-            var cortegeCars = parkingCars.FindAll(e => e.Place != null && e.Place is CortegePlace);
-
-            return cortegeCars;
         }
 
         private void UnlockPlaces()
@@ -161,6 +168,37 @@ namespace BossCortege
         {
             var car = _carFactory.CreateCar(strategy);
             place.PlaceVechicle(car);
+        }
+        #endregion
+
+        #region METHODS PUBLIC
+        public List<AbstractCar> GetCortegeCar()
+        {
+            var parkingCars = FindObjectsOfType<AbstractCar>(true).ToList();
+            var cortegeCars = parkingCars.FindAll(e => e.Place.Place != null && e.Place.Place is CortegePlace);
+
+            return cortegeCars;
+        }
+
+        public int GetCortegeLevel()
+        {
+            var levelCount = 8;
+            var levelSum = 0;
+
+            var cortegeCars = GetCortegeCar();
+
+            foreach (var car in cortegeCars)
+            {
+                if (car is GuardCar guard)
+                {
+                    levelSum += (int)guard.Config.Level;
+                }
+            }
+
+            var cortegeLevel = levelSum / levelCount;
+            cortegeLevel = cortegeLevel <= 0 ? 1 : cortegeLevel;
+
+            return cortegeLevel;
         }
         #endregion
     }
