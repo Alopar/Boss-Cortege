@@ -19,10 +19,11 @@ namespace BossCortege
         private uint _row;
         private uint _column;
 
-        public CortegeElem(AbstractCar car, uint row, uint column)
+        public CortegeElem(AbstractCar car, uint row, uint column, RacePoint point)
         {
             _row = row;
             _column = column;
+            _point = point;
             SetCar(car);
         }
         #endregion
@@ -35,6 +36,7 @@ namespace BossCortege
         public uint Row => _row;
         public uint Column => _column;
         public RacePoint Point => _point;
+        public AbstractCar Car => _car;
         #endregion
 
         #region HANDLERS
@@ -60,7 +62,10 @@ namespace BossCortege
         {
             _car = car;
             _carMove = _car.GetComponent<MoveComponent>();
+            _carMove.SetPoint(_point);
+
             _carHealth = _car.GetComponent<HealthComponent>();
+            
 
             _carHealth.OnDie += Car_OnDie;
         }

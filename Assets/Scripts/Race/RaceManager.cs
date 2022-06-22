@@ -18,8 +18,8 @@ namespace BossCortege
         #region FIELDS PRIVATE
         private bool _go = false;
         private Vector3 _startPosition;
-        private List<RacePoint> _points = new List<RacePoint>();
-        private List<AbstractEnemy> _enemies = new List<AbstractEnemy>();
+        private List<RacePoint> _points;
+        private List<AbstractEnemy> _enemies;
 
         private Coroutine _spawnSuicideEnemies;
         private Coroutine _spawnShootEnemies;
@@ -41,17 +41,22 @@ namespace BossCortege
         #region HANDLERS
         private void RaceStartHandler(RaceStartInfo info)
         {
-
+            StartRace();
         }
 
         private void RaceStopHandler(RaceStopInfo info)
         {
-
+            StopRace();
         }
 
         private void BossDieHandler(BossDieInfo info)
         {
             EventHolder<RaceStopInfo>.NotifyListeners(null);
+        }
+
+        private void Enemy_OnEnemyDestroyed(AbstractEnemy enemy)
+        {
+            _enemies.Remove(enemy);
         }
         #endregion
 
@@ -82,6 +87,11 @@ namespace BossCortege
             }
         }
 
+        private void Start()
+        {
+            Init();
+        }
+
         private void FixedUpdate()
         {
             if (_go)
@@ -98,85 +108,71 @@ namespace BossCortege
         {
             _startPosition = transform.position;
             _points = FindObjectsOfType<RacePoint>().ToList();
+            _enemies = new List<AbstractEnemy>();
+        }
+
+        private CortegeCar SpawnCar(IBuildCarStrategy builder, CortegePlace place)
+        {
+            var car = builder.BuildCar();
+            car.transform.position = place.StartRacePoint.transform.position;
+
+            return new CortegeCar { Car = car, Row = place.Row, Column = place.Column, Spares = place.Spares, RacePoint = place.StartRacePoint };
+        }
+
+        private void StartRace()
+        {
+            _go = true;
+            
+            _cortege = new Cortege();
+            var carSpeed = _speed * 1f;
+            var parkingCars = ParkingManager.Instance.GetCortegeCars();
+            var cortegeCars = new List<CortegeCar>();
+            foreach (var parkingCar in parkingCars)
+            {
+                var place = parkingCar.GetComponent<PlaceComponent>().Place as CortegePlace;
+                if (place.IsBoss)
+                {
+                    var car = parkingCar as BossCar;
+                    var cortegeCar = SpawnCar(new BuildRaceBoss(car.Config, carSpeed), place);
+                    cortegeCars.Add(cortegeCar);
+
+                    _boss = cortegeCar.Car as BossCar;
+                }
+                else
+                {
+                    var car = parkingCar as GuardCar;
+                    var cortegeCar = SpawnCar(new BuildRaceGuard(car.Config, carSpeed), place);
+                    cortegeCars.Add(cortegeCar);
+                }
+            }
+            _cortege.Init(cortegeCars);
+
+            //_spawnShootEnemies = StartCoroutine(SpawnShootEnemies());
+            //_spawnSuicideEnemies = StartCoroutine(SpawnSuicideEnemies());
+            //_spawnBarricadeEnemies = StartCoroutine(SpawnBarricadeEnemies());
+        }
+
+        private void StopRace()
+        {
+            _go = false;
+
+            _cortege.Dispose();
+
+            //StopCoroutine(_spawnShootEnemies);
+            //StopCoroutine(_spawnSuicideEnemies);
+            //StopCoroutine(_spawnBarricadeEnemies);
+
+            var coins = Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit;
+            GameManager.Instance.Wallet.SetCash((uint)coins);
+
+            _enemies.ForEach(e => Destroy(e.gameObject));
+            _enemies.Clear();
+
+            transform.position = _startPosition;
         }
         #endregion
 
         #region METHODS PUBLIC
-        //public void SetCar<T>(CortegeRow row, CortegeColumn column, T carScheme) where T : CarScheme
-        //{
-        //    if (typeof(T) == typeof(GuardScheme))
-        //    {
-        //        var raidSchema = carScheme as GuardScheme;
-        //        var raidCar = Instantiate(raidSchema.Prefab);
-        //        raidCar.enabled = false;
-
-        //        var raidController = raidCar.gameObject.GetComponent<GuardComponent>();
-        //        raidController.enabled = true;
-
-        //        raidController.Initialize(raidSchema);
-        //        raidController.Speed = _shiftSpeed;
-
-        //        raidController.OnRam += Raid_OnRam;
-        //        raidController.OnRaidDestroyed += Raid_OnRaidDestroyed;
-
-        //        var healthBar = raidCar.GetComponentInChildren<Healthbar>(true);
-        //        healthBar.gameObject.SetActive(true);
-
-        //        RacePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
-        //        if (point != null)
-        //        {
-        //            point.RaidController = raidController;
-
-        //            raidController.transform.position = point.transform.position;
-        //            raidController.SetPoint(point);
-
-        //            _raids.Add(raidController);
-        //        }
-        //        else
-        //        {
-        //            throw new NullReferenceException();
-        //        }
-
-        //        return;
-        //    }
-
-        //    if (typeof(T) == typeof(BossScheme))
-        //    {
-        //        var raidSchema = carScheme as BossScheme;
-        //        var raidCar = Instantiate(raidSchema.Prefab);
-        //        raidCar.enabled = false;
-
-        //        var raidController = raidCar.GetComponent<BossComponent>();
-        //        raidController.enabled = true;
-
-        //        raidController.Initialize(raidSchema);
-        //        raidController.Speed = _shiftSpeed;
-
-        //        raidController.OnRaidDestroyed += Raid_OnRaidDestroyed;
-        //        raidController.OnLimoDestroyed += Limo_OnLimoDestroyed;
-
-        //        var healthBar = raidCar.GetComponentInChildren<Healthbar>(true);
-        //        healthBar.gameObject.SetActive(true);
-
-        //        RacePoint point = _points.Find(e => e.CortegeRow == row && e.CortegeColumn == column);
-        //        if (point != null)
-        //        {
-        //            point.RaidController = raidController;
-
-        //            raidController.transform.position = point.transform.position;
-        //            raidController.SetPoint(point);
-
-        //            _raids.Add(raidController);
-        //        }
-        //        else
-        //        {
-        //            throw new NullReferenceException();
-        //        }
-
-        //        return;
-        //    }
-        //}
-        
         //public void SetEnemy<T>(CortegeColumn column, T enemySchema) where T : EnemyScheme
         //{
         //    var enemy = enemySchema.Factory();
@@ -213,108 +209,6 @@ namespace BossCortege
         //    _enemies.Add(enemy);
         //}
 
-        public void DeleteEnemy(AbstractEnemy enemy)
-        {
-            _enemies.Remove(enemy);
-        }
-
-        public void Go()
-        {
-            _go = true;
-            _limo = _raids.Find(e => e.GetType() == typeof(BossComponent));
-
-            _spawnShootEnemies = StartCoroutine(SpawnShootEnemies());
-            _spawnSuicideEnemies = StartCoroutine(SpawnSuicideEnemies());
-            _spawnBarricadeEnemies = StartCoroutine(SpawnBarricadeEnemies());
-
-            _cortege = new Cortege();
-
-            CortegeElem cell;
-            RacePoint point;
-
-            // front
-            cell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Left);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Two);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-
-            cell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Center);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Three);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-
-            cell = _cortege.GetCellByPosition(CortegePosition.Front, CortegePosition.Right);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.Three && e.CortegeColumn == CortegeColumn.Four);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-
-            // middle
-            cell = _cortege.GetCellByPosition(CortegePosition.Middle, CortegePosition.Left);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Two);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-
-            cell = _cortege.GetCellByPosition(CortegePosition.Middle, CortegePosition.Center);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Three);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-
-            cell = _cortege.GetCellByPosition(CortegePosition.Middle, CortegePosition.Right);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.Two && e.CortegeColumn == CortegeColumn.Four);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-
-            // back
-            cell = _cortege.GetCellByPosition(CortegePosition.Back, CortegePosition.Left);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Two);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-
-            cell = _cortege.GetCellByPosition(CortegePosition.Back, CortegePosition.Center);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Three);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-
-            cell = _cortege.GetCellByPosition(CortegePosition.Back, CortegePosition.Right);
-            point = _points.Find(e => e.CortegeRow == CortegeRow.One && e.CortegeColumn == CortegeColumn.Four);
-            cell.Raid = point.RaidController;
-            cell.SetPoint(point);
-        }
-
-        public void Stop()
-        {
-            _go = false;
-
-            StopCoroutine(_spawnShootEnemies);
-            StopCoroutine(_spawnSuicideEnemies);
-            StopCoroutine(_spawnBarricadeEnemies);
-
-            var coins = Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit;
-            GameManager.Instance.Wallet.SetCash((uint)coins);
-
-            transform.position = _startPosition;
-
-            var raidsToDelete = _raids.ToArray();
-            foreach (var raid in raidsToDelete)
-            {
-                raid.Die();
-            }
-
-            var enemiesToDelete = _enemies.ToArray();
-            foreach (var enemy in enemiesToDelete)
-            {
-                enemy.Die();
-            }
-
-            var bullets = FindObjectsOfType<ProjectileController>();
-            foreach (var bullet in bullets)
-            {
-                Destroy(bullet.gameObject);
-            }
-        }
-
-
-
         public RacePoint GetRacePoint(uint row, uint column)
         {
             return _points.Find(e => e.Row == row && e.Column == column);
@@ -322,74 +216,74 @@ namespace BossCortege
         #endregion
 
         #region COROUTINES
-        IEnumerator SpawnShootEnemies()
-        {
-            var cortegeLevel = GetCortegeLevel();
+        //IEnumerator SpawnShootEnemies()
+        //{
+        //    var cortegeLevel = GetCortegeLevel();
 
-            var timeDelay = 5f;
-            while (true)
-            {
-                yield return new WaitForSeconds(timeDelay);
+        //    var timeDelay = 5f;
+        //    while (true)
+        //    {
+        //        yield return new WaitForSeconds(timeDelay);
 
-                var distance = Vector3.Distance(_startPosition, transform.position);
-                var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
-                var enemyName = $"Shoot0{cortegeLevel + enemyPowerUp}";
+        //        var distance = Vector3.Distance(_startPosition, transform.position);
+        //        var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
+        //        var enemyName = $"Shoot0{cortegeLevel + enemyPowerUp}";
 
-                var enemySchema = Resources.Load<ShootEnemyScheme>(enemyName);
-                var column = UnityEngine.Random.Range(0f, 1f) < 0.5f ? CortegeColumn.One : CortegeColumn.Five;
+        //        var enemySchema = Resources.Load<ShootEnemyScheme>(enemyName);
+        //        var column = UnityEngine.Random.Range(0f, 1f) < 0.5f ? CortegeColumn.One : CortegeColumn.Five;
 
-                var enemy = _enemies.Find(e => e.CortegePoint.CortegeColumn == column);
-                var raid = _raids.Find(e => e.CortegePoint.CortegeColumn == column);
-                if (enemy == null && raid == null)
-                {
-                    SetEnemy(column, enemySchema);
-                }
-            }
-        }
+        //        var enemy = _enemies.Find(e => e.CortegePoint.CortegeColumn == column);
+        //        var raid = _raids.Find(e => e.CortegePoint.CortegeColumn == column);
+        //        if (enemy == null && raid == null)
+        //        {
+        //            SetEnemy(column, enemySchema);
+        //        }
+        //    }
+        //}
 
-        IEnumerator SpawnSuicideEnemies()
-        {
-            var cortegeLevel = GetCortegeLevel();
+        //IEnumerator SpawnSuicideEnemies()
+        //{
+        //    var cortegeLevel = GetCortegeLevel();
 
-            var timeDelay = 3f;
-            while (true)
-            {
-                yield return new WaitForSeconds(timeDelay);
+        //    var timeDelay = 3f;
+        //    while (true)
+        //    {
+        //        yield return new WaitForSeconds(timeDelay);
 
-                var distance = Vector3.Distance(_startPosition, transform.position);
-                var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
-                var enemyName = $"Suicide0{cortegeLevel + enemyPowerUp}";
+        //        var distance = Vector3.Distance(_startPosition, transform.position);
+        //        var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
+        //        var enemyName = $"Suicide0{cortegeLevel + enemyPowerUp}";
 
-                var enemySchema = Resources.Load<SuicideEnemyScheme>(enemyName);
-                var randomColumn = UnityEngine.Random.Range(1, 4);
+        //        var enemySchema = Resources.Load<SuicideEnemyScheme>(enemyName);
+        //        var randomColumn = UnityEngine.Random.Range(1, 4);
 
-                SetEnemy((CortegeColumn)randomColumn, enemySchema);
-            }
-        }
+        //        SetEnemy((CortegeColumn)randomColumn, enemySchema);
+        //    }
+        //}
 
-        IEnumerator SpawnBarricadeEnemies()
-        {
-            var cortegeLevel = GetCortegeLevel();
+        //IEnumerator SpawnBarricadeEnemies()
+        //{
+        //    var cortegeLevel = GetCortegeLevel();
 
-            var timeDelay = 4f;
-            while (true)
-            {
-                yield return new WaitForSeconds(timeDelay);
+        //    var timeDelay = 4f;
+        //    while (true)
+        //    {
+        //        yield return new WaitForSeconds(timeDelay);
 
-                var distance = Vector3.Distance(_startPosition, transform.position);
-                var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
-                var enemyName = $"Barricade0{cortegeLevel + enemyPowerUp}";
+        //        var distance = Vector3.Distance(_startPosition, transform.position);
+        //        var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
+        //        var enemyName = $"Barricade0{cortegeLevel + enemyPowerUp}";
 
-                var enemySchema = Resources.Load<BarricadeEnemyScheme>(enemyName);
-                var randomColumn = UnityEngine.Random.Range(1, 4);
+        //        var enemySchema = Resources.Load<BarricadeEnemyScheme>(enemyName);
+        //        var randomColumn = UnityEngine.Random.Range(1, 4);
 
-                var enemy = _enemies.Find(e => e.CortegePoint.CortegeColumn == (CortegeColumn)randomColumn);
-                if (enemy == null)
-                {
-                    SetEnemy((CortegeColumn)randomColumn, enemySchema);
-                }
-            }
-        }
+        //        var enemy = _enemies.Find(e => e.CortegePoint.CortegeColumn == (CortegeColumn)randomColumn);
+        //        if (enemy == null)
+        //        {
+        //            SetEnemy((CortegeColumn)randomColumn, enemySchema);
+        //        }
+        //    }
+        //}
         #endregion
     }
 }

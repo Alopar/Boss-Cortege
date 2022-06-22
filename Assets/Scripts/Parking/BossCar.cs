@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BossCortege
 {
+    [SelectionBase]
     public class BossCar : AbstractCar
     {
         #region FIELDS PRIVATE
@@ -14,10 +14,9 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public override void Init(CarScheme scheme)
+        public override void SetScheme(CarScheme scheme)
         {   
             _config = scheme as BossScheme;
-            _place = GetComponent<PlaceComponent>();
         }
         #endregion
     }

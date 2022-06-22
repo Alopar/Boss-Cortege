@@ -23,19 +23,15 @@ namespace BossCortege
         #endregion
 
         #region UNITY CALLBACKS
-        private void Awake()
-        {
-            _rigidbody = GetComponent<Rigidbody>();
-        }
-
         private void FixedUpdate()
         {
-            var currentPosition = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _speed * Time.deltaTime);
+            var currentPosition = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _speed * 0.5f * Time.deltaTime);
+            currentPosition += transform.forward * _speed * Time.deltaTime;
             _rigidbody.MovePosition(currentPosition);
 
-            if(transform.position == _currentPoint.transform.position)
+            if (Vector3.Distance(transform.position, _currentPoint.transform.position) < 0.1f)
             {
-                transform.DORotate(new Vector3(0, 0, 0), 0.1f);
+                _rigidbody.DORotate(new Vector3(0, 0, 0), 0.1f);
 
                 OnPointReached?.Invoke();
             }
@@ -51,6 +47,7 @@ namespace BossCortege
         public void Init(float speed)
         {
             _speed = speed;
+            _rigidbody = GetComponent<Rigidbody>();
         }
 
         public void SetPoint(RacePoint point)
@@ -61,11 +58,11 @@ namespace BossCortege
                 {
                     if (_currentPoint.transform.position.x > point.transform.position.x)
                     {
-                        transform.DORotate(new Vector3(0, -7, 0), 0.2f);
+                        _rigidbody.DORotate(new Vector3(0, -7, 0), 0.2f);
                     }
                     else
                     {
-                        transform.DORotate(new Vector3(0, 7, 0), 0.2f);
+                        _rigidbody.DORotate(new Vector3(0, 7, 0), 0.2f);
                     }
                 }
             }

@@ -22,18 +22,6 @@ namespace BossCortege
         #endregion
 
         #region UNITY CALLBACKS
-        private void Awake()
-        {
-            _car = GetComponent<GuardCar>();
-            _place = GetComponent<PlaceComponent>();
-            _collider = GetComponentInChildren<BoxCollider>();
-        }
-
-        private void Start()
-        {
-            _camera = Camera.main;
-        }
-
         public void OnBeginDrag(PointerEventData eventData)
         {
             var hoverPosition = transform.position;
@@ -85,5 +73,17 @@ namespace BossCortege
             _place.ReturnToPlace();
         }
         #endregion
+
+        #region METHODS PUBLIC
+        public void Init(GuardCar car, PlaceComponent place)
+        {
+            _car = car;
+            _place = place;
+
+            _camera = Camera.main;
+            _collider = GetComponentInChildren<BoxCollider>();
+        }
+        #endregion
+
     }
 }

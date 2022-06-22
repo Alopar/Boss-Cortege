@@ -15,13 +15,11 @@ namespace BossCortege
         private Vector2 _lastMoveDirection = Vector2.zero;
 
         public Cortege()
-        {
+        {   
             EventHolder<InputSwipeInfo>.AddListener(InputSwipeHandler, false);
+            EventHolder<RaceStopInfo>.AddListener(RaceStopHandler, false);
             EventHolder<RamInfo>.AddListener(RamHandler, false);
         }
-        #endregion
-
-        #region PROPERTIES
         #endregion
 
         #region HANDLERS
@@ -38,6 +36,11 @@ namespace BossCortege
         #endregion
 
         #region METHODS PRIVATE
+        private void RaceStopHandler(RaceStopInfo info)
+        {
+            _elems.ForEach(e => GameObject.Destroy(e.Car.gameObject));
+        }
+
         private void HandleInput(Vector2 direction)
         {
             if (direction.x < 0)
@@ -79,20 +82,22 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public void Init(List<(AbstractCar car, CortegePlace place)> cars_places)
+        public void Init(List<CortegeCar> cortegeCars)
         {
-            foreach (var car_place in cars_places)
+            _elems = new List<CortegeElem>();
+
+            foreach (var car in cortegeCars)
             {
-                var cortegeElem = new CortegeElem(car_place.car, car_place.place.Row, car_place.place.Column);
+                var cortegeElem = new CortegeElem(car.Car, car.Row, car.Column, car.RacePoint);
                 _elems.Add(cortegeElem);
             }
 
-            foreach (var car_place in cars_places)
+            foreach (var car in cortegeCars)
             {
-                var elem = _elems.Find(e => e.Row == car_place.place.Row && e.Column == car_place.place.Column);
+                var elem = _elems.Find(e => e.Row == car.Row && e.Column == car.Column);
 
                 var spares = new List<CortegeElem>();
-                foreach (var spare in car_place.place.Sparses)
+                foreach (var spare in car.Spares)
                 {
                     var elemSpare = _elems.Find(e => e.Row == spare.Row && e.Column == spare.Column);
 
@@ -109,7 +114,18 @@ namespace BossCortege
         public void Dispose()
         {
             EventHolder<InputSwipeInfo>.RemoveListener(InputSwipeHandler);
+            EventHolder<RaceStopInfo>.RemoveListener(RaceStopHandler);
+            EventHolder<RamInfo>.RemoveListener(RamHandler);
         }
         #endregion
+    }
+
+    public struct CortegeCar
+    {
+        public AbstractCar Car;
+        public uint Row;
+        public uint Column;
+        public RacePoint RacePoint;
+        public List<CortegePlace> Spares;
     }
 }

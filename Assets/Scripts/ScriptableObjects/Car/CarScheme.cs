@@ -7,11 +7,19 @@ namespace BossCortege
         #region FIELDS INSPECTOR
         [SerializeField] private string _name;
         [SerializeField] private uint _durability;
+
+        [Space(10)]
+        [SerializeField] private Healthbar _healthBarPref;
+        [SerializeField] private Smoker _smokePref;
+        [SerializeField] private GameObject _explosionPref;
         #endregion
 
         #region PROPERTIES
         public string Name => _name;
         public uint Durability => _durability;
+        public Healthbar HealthBarPrefab => _healthBarPref;
+        public Smoker SmokePrefab => _smokePref;
+        public GameObject ExplosionPrefab => _explosionPref;
         #endregion
     }
 

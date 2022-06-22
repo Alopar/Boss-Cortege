@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Guard 05
   _durability: 300
+  _healthBarPref: {fileID: 6840670707789683813, guid: 396b99676f0252840899058ae83a6c61,
+    type: 3}
+  _smokePref: {fileID: 915196302776555465, guid: 60a37993912c6174c8e68790bb6ab58b,
+    type: 3}
+  _explosionPref: {fileID: 395031058680739610, guid: 41656e00aa3440847803124fe19bda71,
+    type: 3}
   _prefab: {fileID: 1813767106728686996, guid: 0d488bb77969a1e49802db4e9d8f2f37, type: 3}
   _ramDamage: 30
   _level: 5

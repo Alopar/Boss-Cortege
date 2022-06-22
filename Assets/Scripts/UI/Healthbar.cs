@@ -14,10 +14,13 @@ namespace BossCortege
         #endregion
 
         #region UNITY CALLBACKS
-        private void OnEnable()
+        private void Awake()
         {
             _damageable = GetComponentInParent<IDamageable>();
+        }
 
+        private void OnEnable()
+        {
             if (_damageable == null) return;
             _damageable.OnDamage += Damageable_OnDamage;
         }

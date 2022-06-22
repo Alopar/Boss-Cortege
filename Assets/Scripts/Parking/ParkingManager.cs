@@ -22,8 +22,6 @@ namespace BossCortege
 
         private uint _currentAvailableParkingPlaces;
 
-        private ICarFactory _carFactory = new CarFactory();
-
         private static ParkingManager _instance;
         #endregion
 
@@ -40,7 +38,7 @@ namespace BossCortege
                 {
                     if (GameManager.Instance.Wallet.TryGetCash(info.Cost))
                     {
-                        SpawnCar(new GuardCarFactoryStrategy(PowerLevel.Level01), place);
+                        SpawnCar(new BuildParkingGuard(PowerLevel.Level01), place);
                     }
 
                     return;
@@ -56,7 +54,7 @@ namespace BossCortege
 
         private void RaceStartHandler(RaceStartInfo info)
         {
-            var cortegeCars = GetCortegeCar();
+            var cortegeCars = GetCortegeCars();
             cortegeCars.ForEach(e => e.gameObject.SetActive(false));
 
             _barrieController.Invoke(nameof(_barrieController.UpBarrier), 0.5f);
@@ -64,7 +62,7 @@ namespace BossCortege
 
         private void RaceStopHandler(RaceStopInfo info)
         {
-            var cortegeCars = GetCortegeCar();
+            var cortegeCars = GetCortegeCars();
             cortegeCars.ForEach(e => e.gameObject.SetActive(true));
 
             _barrieController.DownBarrier();
@@ -85,7 +83,7 @@ namespace BossCortege
             Destroy(dominantCar.gameObject);
             Destroy(submissiveCar.gameObject);
 
-            SpawnCar(new GuardCarFactoryStrategy(nextLevel), place);
+            SpawnCar(new BuildParkingGuard(nextLevel), place);
         }
 
         private void SwapCarHandler(SwapCarInfo info)
@@ -149,7 +147,7 @@ namespace BossCortege
             _parkingPlaces = FindObjectsOfType<ParkingPlace>().OrderBy(e => e.Number).ToList();
 
             var bossPlace = _cortegePlaces.Find(e => e.IsBoss);
-            SpawnCar(new BossCarFactoryStrategy(), bossPlace);
+            SpawnCar(new BuildParkingBoss(), bossPlace);
             UnlockPlaces();
         }
 
@@ -164,18 +162,19 @@ namespace BossCortege
             }
         }
 
-        private void SpawnCar(ICarFactoryStrategy strategy, AbstractPlace place)
+        private void SpawnCar(IBuildCarStrategy builder, AbstractPlace place)
         {
-            var car = _carFactory.CreateCar(strategy);
-            place.PlaceVechicle(car);
+            var car = builder.BuildCar();
+            var replacement = car.GetComponent<IReplacementable>();
+            place.PlaceVechicle(replacement);
         }
         #endregion
 
         #region METHODS PUBLIC
-        public List<AbstractCar> GetCortegeCar()
+        public List<AbstractCar> GetCortegeCars()
         {
             var parkingCars = FindObjectsOfType<AbstractCar>(true).ToList();
-            var cortegeCars = parkingCars.FindAll(e => e.Place.Place != null && e.Place.Place is CortegePlace);
+            var cortegeCars = parkingCars.FindAll(e => e.TryGetComponent<PlaceComponent>(out PlaceComponent component) && component.Place != null && component.Place is CortegePlace);
 
             return cortegeCars;
         }
@@ -185,7 +184,7 @@ namespace BossCortege
             var levelCount = 8;
             var levelSum = 0;
 
-            var cortegeCars = GetCortegeCar();
+            var cortegeCars = GetCortegeCars();
 
             foreach (var car in cortegeCars)
             {

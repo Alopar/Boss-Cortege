@@ -12,21 +12,21 @@ namespace BossCortege
         protected Rigidbody _rigidbody;
         #endregion
 
-        #region UNITY CALLBACKS
-        private void Awake()
-        {
-            _rigidbody = GetComponent<Rigidbody>();
-        }
-        #endregion
-
         #region METHODS PRIVATE
         protected void ShowExplosion()
         {
+            if (_explosionVfxPrefab == null) return;
             Instantiate(_explosionVfxPrefab, transform.position, transform.rotation);
         }
         #endregion
 
         #region METHODS PUBLIC
+        public void Init(GameObject explosionPrefab)
+        {
+            _explosionVfxPrefab = explosionPrefab;
+            _rigidbody = GetComponent<Rigidbody>();
+        }
+
         public virtual void Die()
         {
             _rigidbody.isKinematic = false;
