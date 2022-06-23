@@ -11,7 +11,8 @@ namespace BossCortege
         #endregion
 
         #region EVENTS
-        public event Action<uint, int> OnDamage;
+        public event Action<uint, int> OnChangeHP;
+        public event Action<uint> OnDamage;
         public event Action OnDie;
         #endregion
 
@@ -25,13 +26,15 @@ namespace BossCortege
         public void AddHealth(uint value)
         {
             _currentHP = Mathf.Clamp(_currentHP + (int)value, 0, (int)_maxHP);
-            OnDamage?.Invoke(_maxHP, _currentHP);
+            OnChangeHP?.Invoke(_maxHP, _currentHP);
         }
 
         public void SetDamage(uint damage)
         {
             _currentHP -= (int)damage;
-            OnDamage?.Invoke(_maxHP, _currentHP);
+
+            OnDamage?.Invoke(damage);
+            OnChangeHP?.Invoke(_maxHP, _currentHP);
 
             if (_currentHP <= 0)
             {
@@ -43,7 +46,7 @@ namespace BossCortege
 
     public interface IDamageable
     {
-        public event Action<uint, int> OnDamage;
+        public event Action<uint> OnDamage;
         public void SetDamage(uint damage);
     }
 

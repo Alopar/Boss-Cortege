@@ -30,17 +30,16 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public void Init(BarricadeEnemyScheme scheme)
+        public override void Init(EnemyScheme scheme)
         {
-            _scheme = scheme;
+            _scheme = scheme as BarricadeEnemyScheme;
 
             _explosion = GetComponent<ExplosionComponent>();
-            _explosion.Init(_scheme.ExplosionDamage);
             _explosion.OnExplosion += Explosion_OnExplosion;
 
             _die = GetComponent<BarricadeDieComponent>();
 
-            Invoke(nameof(Escape), 3f);
+            Invoke(nameof(Escape), 5f);
         }
         #endregion
     }

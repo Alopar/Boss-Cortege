@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace BossCortege
 {   
@@ -18,8 +19,25 @@ namespace BossCortege
         public Transform LevelPoint => _levelPoint;
         #endregion
 
+        #region EVENTS
+        public event Action<AbstractCar> OnCarDestroyed;
+        #endregion
+
+        #region METHODS PRIVATE
+        protected void Escape()
+        {
+            Die();
+            Destroy(gameObject);
+        }
+
+        protected virtual void Die()
+        {
+            OnCarDestroyed?.Invoke(this);
+        }
+        #endregion
+
         #region METHODS PUBLIC
-        public abstract void SetScheme(CarScheme scheme);
+        public abstract void Init(CarScheme scheme);
         #endregion
     }
 }

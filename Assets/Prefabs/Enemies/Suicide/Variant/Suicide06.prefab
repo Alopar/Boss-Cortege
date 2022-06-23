@@ -5,12 +5,12 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 5555833800921963169}
+    m_TransformParent: {fileID: 8823449050442387394}
     m_Modifications:
     - target: {fileID: 2782478966712990802, guid: 5f3a7fb1d814f2043b8e17f68036afd9,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2782478966712990802, guid: 5f3a7fb1d814f2043b8e17f68036afd9,
         type: 3}
@@ -50,17 +50,17 @@ PrefabInstance:
     - target: {fileID: 2782478966712990802, guid: 5f3a7fb1d814f2043b8e17f68036afd9,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2782478966712990802, guid: 5f3a7fb1d814f2043b8e17f68036afd9,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2782478966712990802, guid: 5f3a7fb1d814f2043b8e17f68036afd9,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2782478966712990802, guid: 5f3a7fb1d814f2043b8e17f68036afd9,
         type: 3}
@@ -185,11 +185,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Suicide06
       objectReference: {fileID: 0}
+    - target: {fileID: 3303396492925368798, guid: 93370b7f088c8b94085f754792f9c85b,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4996459586373735806, guid: 93370b7f088c8b94085f754792f9c85b,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93370b7f088c8b94085f754792f9c85b, type: 3}
---- !u!4 &5555833800921963169 stripped
+--- !u!4 &8823449050442387394 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 2259284235302926206, guid: 93370b7f088c8b94085f754792f9c85b,
+  m_CorrespondingSourceObject: {fileID: 2896920965410808349, guid: 93370b7f088c8b94085f754792f9c85b,
     type: 3}
   m_PrefabInstance: {fileID: 5926981670775369183}
   m_PrefabAsset: {fileID: 0}

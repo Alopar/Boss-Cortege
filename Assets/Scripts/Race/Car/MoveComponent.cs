@@ -39,7 +39,7 @@ namespace BossCortege
 
         private void OnDestroy()
         {
-            transform.DOKill();
+            _rigidbody.DOKill();
         }
         #endregion
 

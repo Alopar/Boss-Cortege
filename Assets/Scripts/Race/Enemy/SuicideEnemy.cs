@@ -40,12 +40,11 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public void Init(SuicideEnemyScheme scheme)
+        public override void Init(EnemyScheme scheme)
         {
-            _scheme = scheme;
+            _scheme = scheme as SuicideEnemyScheme;
             
             _suicide = GetComponent<SuicideComponent>();
-            _suicide.Init(_scheme.RamDamage);
             _suicide.OnSuicide += Suicide_OnSuicide;
 
             _move = GetComponent<MoveComponent>();

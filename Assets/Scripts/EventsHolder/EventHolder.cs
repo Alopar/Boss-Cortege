@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace BossCortege.EventHolder
@@ -12,7 +13,8 @@ namespace BossCortege.EventHolder
         public static void NotifyListeners(T info)
         {
             _currentInfo = info;
-            foreach (var listener in _listeners)
+            var currentListeners = _listeners.ToList();
+            foreach (var listener in currentListeners)
             {
                 listener?.Invoke(info);
             }

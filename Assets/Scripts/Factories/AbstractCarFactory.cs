@@ -14,7 +14,7 @@ namespace BossCortege
             string schemeName = $"Guard0{(int)level}";
             var guardScheme = Resources.Load<GuardScheme>(schemeName);
             var car = GameObject.Instantiate(guardScheme.Prefab);
-            car.SetScheme(guardScheme);
+            car.Init(guardScheme);
             car.gameObject.AddComponent<MergeComponent>();
             car.gameObject.AddComponent<PlaceComponent>();
 
@@ -29,7 +29,7 @@ namespace BossCortege
             string schemeName = $"Guard0{(int)level}";
             var guardScheme = Resources.Load<GuardScheme>(schemeName);
             var car = GameObject.Instantiate(guardScheme.Prefab);
-            car.SetScheme(guardScheme);
+            car.Init(guardScheme);
             car.gameObject.AddComponent<MergeComponent>();
             car.gameObject.AddComponent<PlaceComponent>();
 
@@ -44,7 +44,7 @@ namespace BossCortege
             string schemeName = $"Limo0{(int)level}";
             var bossScheme = Resources.Load<BossScheme>(schemeName);
             var car = GameObject.Instantiate(bossScheme.Prefab);
-            car.SetScheme(bossScheme);
+            car.Init(bossScheme);
             car.gameObject.AddComponent<PlaceComponent>();
 
             return car;

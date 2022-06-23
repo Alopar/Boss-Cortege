@@ -13,6 +13,12 @@ namespace BossCortege
         [SerializeField, Range(1, 100), Tooltip("Монет за расстояние")] private uint _moneyPerUnit = 1;
         [SerializeField, Range(1, 100), Tooltip("Скорость всего кортежа")] private float _speed = 5;
         [SerializeField, Tooltip("Расстояние через которое усиливаются враги на один уровень")] private int _powerUpDistance = 200;
+
+        [Space(10)]
+        [Header("Spawner setting")]
+        [SerializeField] private float _shootSpawnDelay = 3f;
+        [SerializeField] private float _suicideSpawnDelay = 3f;
+        [SerializeField] private float _barricadeSpawnDelay = 3f;
         #endregion
 
         #region FIELDS PRIVATE
@@ -21,8 +27,8 @@ namespace BossCortege
         private List<RacePoint> _points;
         private List<AbstractEnemy> _enemies;
 
-        private Coroutine _spawnSuicideEnemies;
         private Coroutine _spawnShootEnemies;
+        private Coroutine _spawnSuicideEnemies;
         private Coroutine _spawnBarricadeEnemies;
 
         private Cortege _cortege;
@@ -149,7 +155,7 @@ namespace BossCortege
 
             //_spawnShootEnemies = StartCoroutine(SpawnShootEnemies());
             //_spawnSuicideEnemies = StartCoroutine(SpawnSuicideEnemies());
-            //_spawnBarricadeEnemies = StartCoroutine(SpawnBarricadeEnemies());
+            _spawnBarricadeEnemies = StartCoroutine(SpawnBarricadeEnemies(_barricadeSpawnDelay));
         }
 
         private void StopRace()
@@ -160,7 +166,7 @@ namespace BossCortege
 
             //StopCoroutine(_spawnShootEnemies);
             //StopCoroutine(_spawnSuicideEnemies);
-            //StopCoroutine(_spawnBarricadeEnemies);
+            StopCoroutine(_spawnBarricadeEnemies);
 
             var coins = Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit;
             GameManager.Instance.Wallet.SetCash((uint)coins);
@@ -173,10 +179,18 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
+        private AbstractEnemy SpawnEnemy(IBuildEnemyStrategy builder)
+        {
+            var enemy = builder.BuildEnemy();
+            enemy.OnEnemyDestroyed += Enemy_OnEnemyDestroyed;
+
+            _enemies.Add(enemy);
+
+            return enemy;
+        }
+
         //public void SetEnemy<T>(CortegeColumn column, T enemySchema) where T : EnemyScheme
         //{
-        //    var enemy = enemySchema.Factory();
-
         //    if (typeof(T) == typeof(ShootEnemyScheme))
         //    {
         //        var startPoint = _points.Find(e => e.CortegeRow == CortegeRow.Back && e.CortegeColumn == column);
@@ -195,18 +209,6 @@ namespace BossCortege
         //        var finishPoint = _points.Find(e => e.CortegeRow == CortegeRow.Back && e.CortegeColumn == column);
         //        enemy.SetPoint(finishPoint);
         //    }
-
-        //    if (typeof(T) == typeof(BarricadeEnemyScheme))
-        //    {
-        //        var startPoint = _points.Find(e => e.CortegeRow == CortegeRow.Front && e.CortegeColumn == column);
-        //        enemy.transform.position = startPoint.transform.position;
-
-        //        var finishPoint = _points.Find(e => e.CortegeRow == CortegeRow.Back && e.CortegeColumn == column);
-        //        enemy.SetPoint(finishPoint);
-        //    }
-
-        //    enemy.OnEnemyDestroyed += Enemy_OnEnemyDestroyed;
-        //    _enemies.Add(enemy);
         //}
 
         public RacePoint GetRacePoint(uint row, uint column)
@@ -261,29 +263,27 @@ namespace BossCortege
         //    }
         //}
 
-        //IEnumerator SpawnBarricadeEnemies()
-        //{
-        //    var cortegeLevel = GetCortegeLevel();
+        IEnumerator SpawnBarricadeEnemies(float delay)
+        {
+            var cortegeLevel = ParkingManager.Instance.GetCortegeLevel();
 
-        //    var timeDelay = 4f;
-        //    while (true)
-        //    {
-        //        yield return new WaitForSeconds(timeDelay);
+            while (true)
+            {
+                yield return new WaitForSeconds(delay);
 
-        //        var distance = Vector3.Distance(_startPosition, transform.position);
-        //        var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
-        //        var enemyName = $"Barricade0{cortegeLevel + enemyPowerUp}";
+                var distance = Vector3.Distance(_startPosition, transform.position);
+                var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
+                var enemySchemeName = $"Barricade0{cortegeLevel + enemyPowerUp}";
 
-        //        var enemySchema = Resources.Load<BarricadeEnemyScheme>(enemyName);
-        //        var randomColumn = UnityEngine.Random.Range(1, 4);
+                var enemySchema = Resources.Load<BarricadeEnemyScheme>(enemySchemeName);
+                var randomColumn = UnityEngine.Random.Range(1, 3);
+                var point = _points.Find(e => e.Column == randomColumn && e.Row == 4);
 
-        //        var enemy = _enemies.Find(e => e.CortegePoint.CortegeColumn == (CortegeColumn)randomColumn);
-        //        if (enemy == null)
-        //        {
-        //            SetEnemy((CortegeColumn)randomColumn, enemySchema);
-        //        }
-        //    }
-        //}
+                var enemy = SpawnEnemy(new BuildBarricadeEnemy(enemySchema));
+
+                enemy.transform.position = point.transform.position;
+            }
+        }
         #endregion
     }
 }

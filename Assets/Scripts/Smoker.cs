@@ -10,32 +10,20 @@ namespace BossCortege
         #endregion
 
         #region FIELDS PRIVATE
-        private IDamageable _damageable;
+        private HealthComponent _health;
         #endregion
 
         #region HANDLERS
-        private void Damageable_OnDamage(uint maxHP, int currentHP)
+        private void Health_OnChangeHP(uint maxHP, int currentHP)
         {
             CheckDamage(maxHP, currentHP);
         }
         #endregion
 
         #region UNITY CALLBACKS
-        private void Awake()
+        private void OnDestroy()
         {
-            _damageable = GetComponentInParent<IDamageable>();
-        }
-
-        private void OnEnable()
-        {
-            if (_damageable == null) return;
-            _damageable.OnDamage += Damageable_OnDamage;
-        }
-
-        private void OnDisable()
-        {
-            if (_damageable == null) return;
-            _damageable.OnDamage -= Damageable_OnDamage;
+            _health.OnChangeHP -= Health_OnChangeHP;
         }
         #endregion
 
@@ -50,5 +38,14 @@ namespace BossCortege
             }
         }
         #endregion
+
+        #region METHODS PUBLIC
+        public void Init(HealthComponent health)
+        {
+            _health = health;
+            _health.OnChangeHP += Health_OnChangeHP;
+        }
+        #endregion
+
     }
 }

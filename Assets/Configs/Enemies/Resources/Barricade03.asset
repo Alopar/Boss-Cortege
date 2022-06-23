@@ -15,4 +15,8 @@ MonoBehaviour:
   _money: 20
   _level: 3
   _prefab: {fileID: 6170318975708102642, guid: 573e2a9a63c10a84c8011233046e4f99, type: 3}
+  _healthBarPref: {fileID: 0}
+  _smokePref: {fileID: 0}
+  _explosionPref: {fileID: 725748389856807714, guid: ac78eb3a3fac56f4ba09861ade6b39de,
+    type: 3}
   _explosionDamage: 5

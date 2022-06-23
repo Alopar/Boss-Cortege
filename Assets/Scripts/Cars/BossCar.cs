@@ -14,7 +14,7 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public override void SetScheme(CarScheme scheme)
+        public override void Init(CarScheme scheme)
         {   
             _config = scheme as BossScheme;
         }

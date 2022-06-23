@@ -8,10 +8,6 @@ namespace BossCortege
 {
     public class ShootEnemy : AbstractEnemy
     {
-        #region FIELDS INSPECTOR
-        [SerializeField] private Transform _body;
-        #endregion
-
         #region FIELDS PRIVATE
         private ShootEnemyScheme _scheme;
 
@@ -29,9 +25,9 @@ namespace BossCortege
         #endregion
 
         #region HANDLERS
-        private void Health_OnDamage(uint maxHP, int currentHP)
+        private void Health_OnDamage(uint damage)
         {
-            _body.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), vibrato: 20);
+            Body.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), vibrato: 20);
         }
 
         private void Health_OnDie()
@@ -96,17 +92,15 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public void Init(ShootEnemyScheme scheme)
+        public override void Init(EnemyScheme scheme)
         {
-            _scheme = scheme;
+            _scheme = scheme as ShootEnemyScheme;
 
             _health = GetComponent<HealthComponent>();
-            _health.Init(_scheme.Durability);
             _health.OnDamage += Health_OnDamage;
-            _health.OnDie += Health_OnDie; ;
+            _health.OnDie += Health_OnDie;
 
             _move = GetComponent<MoveComponent>();
-            _move.Init(_scheme.Speed);
             _move.OnPointReached += Move_OnPointReached;
 
             _shoot = GetComponent<ShootComponent>();

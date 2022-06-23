@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _money: 160
   _level: 5
-  _prefab: {fileID: 2229783855411144896, guid: ed016ab9f851d6e4ba29ab7f76f6d316, type: 3}
+  _prefab: {fileID: 8091229675778167791, guid: ed016ab9f851d6e4ba29ab7f76f6d316, type: 3}
+  _healthBarPref: {fileID: 0}
+  _smokePref: {fileID: 0}
+  _explosionPref: {fileID: 395031058680739610, guid: 41656e00aa3440847803124fe19bda71,
+    type: 3}
   _speed: 6
   _ramDamage: 400
