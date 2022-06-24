@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace BossCortege
@@ -8,6 +9,7 @@ namespace BossCortege
         #region FIELDS PRIVATE
         private uint _maxHP;
         private int _currentHP;
+        private bool _isInvulnerability = false;
         #endregion
 
         #region EVENTS
@@ -29,9 +31,12 @@ namespace BossCortege
             OnChangeHP?.Invoke(_maxHP, _currentHP);
         }
 
-        public void SetDamage(uint damage)
+        public bool TrySetDamage(uint damage)
         {
+            if (_isInvulnerability) return false;
+
             _currentHP -= (int)damage;
+            StartCoroutine(InvulnerabilityTimer(0.5f));
 
             OnDamage?.Invoke(damage);
             OnChangeHP?.Invoke(_maxHP, _currentHP);
@@ -40,6 +45,17 @@ namespace BossCortege
             {
                 OnDie?.Invoke();
             }
+
+            return true;
+        }
+        #endregion
+
+        #region COROUTINES
+        IEnumerator InvulnerabilityTimer(float delay)
+        {
+            _isInvulnerability = true;
+            yield return new WaitForSeconds(delay);
+            _isInvulnerability = false;
         }
         #endregion
     }
@@ -47,7 +63,7 @@ namespace BossCortege
     public interface IDamageable
     {
         public event Action<uint> OnDamage;
-        public void SetDamage(uint damage);
+        public bool TrySetDamage(uint damage);
     }
 
     public interface IHealthable

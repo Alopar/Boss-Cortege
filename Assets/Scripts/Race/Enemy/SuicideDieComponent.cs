@@ -9,8 +9,8 @@ namespace BossCortege
         {
             _rigidbody.isKinematic = false;
 
-            _rigidbody.AddForce(-transform.forward * 1000f, ForceMode.Impulse);
-            _rigidbody.AddForce(transform.up * 800f, ForceMode.Impulse);
+            _rigidbody.AddForce(-transform.forward * 2000f, ForceMode.Impulse);
+            _rigidbody.AddForce(transform.up * 1000f, ForceMode.Impulse);
 
             var randomTorque = new Vector3(Random.value, Random.value, Random.value);
             _rigidbody.AddTorque(randomTorque * 200f, ForceMode.Impulse);

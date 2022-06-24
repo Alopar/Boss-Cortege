@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using DG.Tweening;
 
 namespace BossCortege
 {   
@@ -12,32 +13,40 @@ namespace BossCortege
         [SerializeField] private Transform _levelPoint;
         #endregion
 
+        #region FIELDS PRIVATE
+        private ICarState _state;
+        #endregion
+
         #region PROPERTIES
         public Transform Body => _body;
         public Transform HealthPoint => _healthPoint;
         public Transform SmokePoint => _smokePoint;
         public Transform LevelPoint => _levelPoint;
+        public ICarState State => _state;
         #endregion
 
         #region EVENTS
         public event Action<AbstractCar> OnCarDestroyed;
         #endregion
 
-        #region METHODS PRIVATE
-        protected void Escape()
+        #region METHODS PUBLIC
+        public void Escape()
         {
             Die();
             Destroy(gameObject);
         }
 
-        protected virtual void Die()
+        public virtual void Die()
         {
+            _body.DOKill();
             OnCarDestroyed?.Invoke(this);
         }
-        #endregion
 
-        #region METHODS PUBLIC
-        public abstract void Init(CarScheme scheme);
+        public virtual void Init(CarScheme scheme, ICarState state)
+        {
+            _state = state;
+            _state.Init(this);
+        }
         #endregion
     }
 }

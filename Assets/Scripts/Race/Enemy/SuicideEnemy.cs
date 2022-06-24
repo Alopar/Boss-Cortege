@@ -32,6 +32,9 @@ namespace BossCortege
         #region METHODS PRIVATE
         protected override void Die()
         {
+            GameObject.Destroy(_move);
+            GameObject.Destroy(_suicide);
+
             base.Die();
             _die.Die();
 

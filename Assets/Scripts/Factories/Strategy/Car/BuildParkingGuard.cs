@@ -17,7 +17,7 @@ namespace BossCortege
             string schemeName = $"Guard0{(int)_level}";
             var guardScheme = Resources.Load<GuardScheme>(schemeName);
             var car = GameObject.Instantiate(guardScheme.Prefab);
-            car.Init(guardScheme);
+            car.Init(guardScheme, new ParkingState());
 
             var place = car.gameObject.AddComponent<PlaceComponent>();
             car.gameObject.AddComponent<MergeComponent>().Init(car, place);

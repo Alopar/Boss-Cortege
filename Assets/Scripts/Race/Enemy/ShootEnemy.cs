@@ -11,13 +11,15 @@ namespace BossCortege
         #region FIELDS PRIVATE
         private ShootEnemyScheme _scheme;
 
-        private HealthComponent _health;
-        private ShootComponent _shoot;
         private MoveComponent _move;
+        private ShootComponent _shoot;
+        private HealthComponent _health;
         private ShootDieComponent _die;
 
         private int _relocateCounter = 0;
         private bool _isLeaving = false;
+
+        private Coroutine _relocateTimer;
         #endregion
 
         #region PROPERTIES
@@ -27,6 +29,7 @@ namespace BossCortege
         #region HANDLERS
         private void Health_OnDamage(uint damage)
         {
+            Body.DOComplete();
             Body.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), vibrato: 20);
         }
 
@@ -48,29 +51,25 @@ namespace BossCortege
                 _shoot.ShootOn();
             }
 
-            StartCoroutine(RelocateTimer(3f));
+            if(_relocateTimer == null)
+            {
+                _relocateTimer = StartCoroutine(RelocateTimer(3f));
+            }
         }
         #endregion
 
         #region METHODS PRIVATE
         private void Relocate()
         {
-            if(_move.Point.TopPoint == null)
+            int randomRow;
+            while (true)
             {
-                _move.SetPoint(_move.Point.BottomPoint);
+                randomRow = Random.Range(1, 4);
+                if (randomRow != _move.Point.Row) break;
             }
-            else if(_move.Point.BottomPoint == null)
-            {
-                _move.SetPoint(_move.Point.TopPoint);
-            }
-            else if (Random.value >= 0.5f)
-            {
-                _move.SetPoint(_move.Point.TopPoint);
-            }
-            else
-            {
-                _move.SetPoint(_move.Point.BottomPoint);
-            }
+            
+            var randomPoint = RaceManager.Instance.GetRacePoint((uint)randomRow, _move.Point.Column);
+            _move.SetPoint(randomPoint);
         }
 
         private void Leave()
@@ -84,6 +83,10 @@ namespace BossCortege
 
         protected override void Die()
         {
+            GameObject.Destroy(_move);
+            GameObject.Destroy(_shoot);
+            GameObject.Destroy(_health);
+
             base.Die();
             _die.Die();
 
@@ -113,6 +116,8 @@ namespace BossCortege
         IEnumerator RelocateTimer(float delay)
         {
             yield return new WaitForSeconds(delay);
+
+            _relocateTimer = null;
 
             _relocateCounter++;
             if (_relocateCounter < _scheme.RelocateNumber)

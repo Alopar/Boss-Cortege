@@ -14,26 +14,11 @@ namespace BossCortege
         public GuardScheme Config => _config;
         #endregion
 
-        #region HANDLERS
-        private void Health_OnDie()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Health_OnDamage(uint obj)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
         #region METHODS PUBLIC
-        public override void Init(CarScheme scheme)
+        public override void Init(CarScheme scheme, ICarState state)
         {
+            base.Init(scheme, state);
             _config = scheme as GuardScheme;
-
-            var health = GetComponent<HealthComponent>();
-            health.OnDamage += Health_OnDamage;
-            health.OnDie += Health_OnDie;
         }
         #endregion
     }

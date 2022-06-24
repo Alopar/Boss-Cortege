@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using BossCortege.EventHolder;
 
 namespace BossCortege
 {
@@ -14,8 +15,15 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public override void Init(CarScheme scheme)
-        {   
+        public override void Die()
+        {
+            base.Die();
+            EventHolder<BossDieInfo>.NotifyListeners(new BossDieInfo());
+        }
+
+        public override void Init(CarScheme scheme, ICarState state)
+        {
+            base.Init(scheme, state);
             _config = scheme as BossScheme;
         }
         #endregion

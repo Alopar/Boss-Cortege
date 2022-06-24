@@ -33,14 +33,20 @@ namespace BossCortege
             _lastMoveDirection.x = _lastMoveDirection.x == 0 ? 0 : _lastMoveDirection.x < 0 ? 1 : -1;
             HandleInput(_lastMoveDirection);
         }
-        #endregion
 
-        #region METHODS PRIVATE
         private void RaceStopHandler(RaceStopInfo info)
         {
             _elems.ForEach(e => GameObject.Destroy(e.Car.gameObject));
         }
 
+        private void CortegeElem_OnCortegeElemDestroy(CortegeElem elem)
+        {
+            elem.OnCortegeElemDestroy -= CortegeElem_OnCortegeElemDestroy;
+            _elems.Remove(elem);
+        }
+        #endregion
+
+        #region METHODS PRIVATE
         private void HandleInput(Vector2 direction)
         {
             if (direction.x < 0)
@@ -89,6 +95,8 @@ namespace BossCortege
             foreach (var car in cortegeCars)
             {
                 var cortegeElem = new CortegeElem(car.Car, car.Row, car.Column, car.RacePoint);
+                cortegeElem.OnCortegeElemDestroy += CortegeElem_OnCortegeElemDestroy;
+
                 _elems.Add(cortegeElem);
             }
 
@@ -109,6 +117,15 @@ namespace BossCortege
 
                 elem.SetSpares(spares);
             }
+        }
+
+        public List<RacePoint> GetOccupiedPoints()
+        {
+            var points = new List<RacePoint>();
+
+            _elems.ForEach(e => points.Add(e.Point));
+
+            return points;
         }
 
         public void Dispose()

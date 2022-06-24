@@ -48,10 +48,22 @@ namespace BossCortege
         {
             while (true)
             {
-                var projectile = Instantiate(_projectileSchema.Prefab, transform.position, transform.rotation);
-                projectile.Init(_projectileSchema.Speed, _damage, RaceManager.Instance.Boss.transform);
+                StartCoroutine(BursFire(3));
 
                 yield return new WaitForSeconds(delay);
+            }
+        }
+
+        IEnumerator BursFire(uint number)
+        {
+            var fireCounter = number;
+            while(fireCounter > 0)
+            {
+                fireCounter--;
+                var projectile = Instantiate(_projectileSchema.Prefab, transform.position, transform.rotation);
+                projectile.Init(_projectileSchema.Speed, _damage, RaceManager.Instance.Boss);
+
+                yield return new WaitForSeconds(0.05f);
             }
         }
         #endregion

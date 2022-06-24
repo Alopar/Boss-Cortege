@@ -19,16 +19,18 @@ namespace BossCortege
         #region UNITY CALLBACKS
         private void FixedUpdate()
         {
-            var currentPosition = Vector3.MoveTowards(transform.position, _aimPoint, _speed * Time.deltaTime);
+            var currentPosition = transform.position + (transform.forward * _speed * Time.deltaTime);
             _rigidbody.MovePosition(currentPosition);
         }
 
         protected virtual void OnCollisionEnter(Collision collision)
         {
+            if (collision.gameObject.tag == "Enemy") return;
+
             var healthComponent = collision.gameObject.GetComponent<IDamageable>();
             if (healthComponent != null)
             {
-                healthComponent.SetDamage(_damage);
+                healthComponent.TrySetDamage(_damage);
                 Destroy(gameObject);
                 Hit();
             }
@@ -43,15 +45,17 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public void Init(float speed, uint damage, Transform aim)
+        public void Init(float speed, uint damage, BossCar car)
         {
             _speed = speed;
             _damage = damage;
 
-            _aimPoint = aim.position;
+            _aimPoint = car.transform.position;
             _aimPoint.z += 1f;
+            transform.LookAt(_aimPoint);
 
-            transform.LookAt(aim);
+            _rigidbody = GetComponent<Rigidbody>();
+
             Destroy(gameObject, 2f);
         }
         #endregion

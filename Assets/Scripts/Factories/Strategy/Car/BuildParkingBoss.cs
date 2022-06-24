@@ -8,7 +8,7 @@ namespace BossCortege
         {
             var bossScheme = Resources.Load<BossScheme>("Limo01");
             var car = GameObject.Instantiate(bossScheme.Prefab);
-            car.Init(bossScheme);
+            car.Init(bossScheme, new ParkingState());
 
             car.gameObject.AddComponent<PlaceComponent>();
 

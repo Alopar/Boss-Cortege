@@ -8,12 +8,8 @@ namespace BossCortege
     public class CortegeElem
     {
         #region FIELDS PRIVATE
-        private RacePoint _point;
-        
         private AbstractCar _car;
-        private MoveComponent _carMove;
-        private HealthComponent _carHealth;
-
+        private RacePoint _point;
         private List<CortegeElem> _spareElem;
 
         private uint _row;
@@ -46,9 +42,10 @@ namespace BossCortege
             spare.OnCortegeElemDestroy -= Spare_OnCortegeElemDestroy;
         }
 
-        private void Car_OnDie()
+        private void Car_OnCarDestroyed(AbstractCar car)
         {
-            _carHealth.OnDie -= Car_OnDie;
+            _car = null;
+            car.OnCarDestroyed -= Car_OnCarDestroyed;
 
             if (!TryChangeCar())
             {
@@ -61,13 +58,8 @@ namespace BossCortege
         private void SetCar(AbstractCar car)
         {
             _car = car;
-            _carMove = _car.GetComponent<MoveComponent>();
-            _carMove.SetPoint(_point);
-
-            _carHealth = _car.GetComponent<HealthComponent>();
-            
-
-            _carHealth.OnDie += Car_OnDie;
+            _car.OnCarDestroyed += Car_OnCarDestroyed;
+            _car.GetComponent<MoveComponent>().SetPoint(_point);
         }
 
         private bool TryChangeCar()
@@ -78,6 +70,14 @@ namespace BossCortege
             SetCar(spareCar);
 
             return true;
+        }
+
+        private void CarSetPoint(RacePoint point)
+        {
+            if (_car != null)
+            {
+                _car.GetComponent<MoveComponent>().SetPoint(point);
+            }
         }
         #endregion
 
@@ -94,18 +94,19 @@ namespace BossCortege
         public void ShiftLeft()
         {
             _point = _point.LeftPoint;
-            _carMove.SetPoint(_point);
+            CarSetPoint(_point);
         }
 
         public void ShiftRight()
         {
             _point = _point.RightPoint;
-            _carMove.SetPoint(_point);
+            CarSetPoint(_point);
         }
 
         public AbstractCar ExtractCar()
         {
             var car = _car;
+            _car = null;
 
             if (!TryChangeCar())
             {

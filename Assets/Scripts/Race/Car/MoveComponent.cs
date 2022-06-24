@@ -7,10 +7,11 @@ namespace BossCortege
     public class MoveComponent : MonoBehaviour
     {
         #region FIELDS PRIVATE
-        private float _speed;
-        private RacePoint _currentPoint;
+        protected float _speed;
+        protected RacePoint _currentPoint;
+        protected bool _isPointReached;
 
-        private Rigidbody _rigidbody;
+        protected Rigidbody _rigidbody;
         #endregion
 
         #region PROPERTIES
@@ -29,17 +30,29 @@ namespace BossCortege
             currentPosition += transform.forward * _speed * Time.deltaTime;
             _rigidbody.MovePosition(currentPosition);
 
-            if (Vector3.Distance(transform.position, _currentPoint.transform.position) < 0.1f)
+            if (!_isPointReached)
             {
-                _rigidbody.DORotate(new Vector3(0, 0, 0), 0.1f);
+                if (Vector3.Distance(transform.position, _currentPoint.transform.position) < 0.1f)
+                {
+                    _rigidbody.DORotate(new Vector3(0, 0, 0), 0.1f);
 
-                OnPointReached?.Invoke();
+                    OnPointReachedInvoke();
+
+                    _isPointReached = true;
+                }
             }
         }
 
         private void OnDestroy()
         {
             _rigidbody.DOKill();
+        }
+        #endregion
+
+        #region METHODS PRIVATE
+        protected void OnPointReachedInvoke()
+        {
+            OnPointReached?.Invoke();
         }
         #endregion
 
@@ -50,7 +63,7 @@ namespace BossCortege
             _rigidbody = GetComponent<Rigidbody>();
         }
 
-        public void SetPoint(RacePoint point)
+        public virtual void SetPoint(RacePoint point)
         {
             if(_currentPoint != null)
             {
@@ -68,6 +81,7 @@ namespace BossCortege
             }
 
             _currentPoint = point;
+            _isPointReached = false;
         }
 
         public void SetSpeed(float value)

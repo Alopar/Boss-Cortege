@@ -16,10 +16,12 @@ namespace BossCortege
         #region UNITY CALLBACKS
         private void OnCollisionEnter(Collision collision)
         {
-            var damageable = collision.gameObject.GetComponentInParent<IDamageable>();
+            if (collision.gameObject.tag == "Enemy") return;
+
+            var damageable = collision.gameObject.GetComponent<IDamageable>();
             if (damageable != null)
             {
-                damageable.SetDamage(_damage);
+                damageable.TrySetDamage(_damage);
 
                 OnExplosion?.Invoke();
             }

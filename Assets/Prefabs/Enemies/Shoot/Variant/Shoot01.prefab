@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &735836279282351481
+--- !u!1001 &5327723013057452555
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -40,7 +40,7 @@ PrefabInstance:
     - target: {fileID: 8796212616749238896, guid: f75f09a0ad3140c49b56b6bb58af7330,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.37684014
+      value: -0.37132144
       objectReference: {fileID: 0}
     - target: {fileID: 8796212616749238896, guid: f75f09a0ad3140c49b56b6bb58af7330,
         type: 3}
@@ -96,16 +96,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2259284234939057897, guid: f23e766b8d0a2704191b8d210a6dc7b5,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259284234939057898, guid: f23e766b8d0a2704191b8d210a6dc7b5,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 2b8c86df66765984ab2364f3d34276f4, type: 2}
     - target: {fileID: 2259284235302926206, guid: f23e766b8d0a2704191b8d210a6dc7b5,
         type: 3}
       propertyPath: m_RootOrder
@@ -165,21 +155,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Shoot01
-      objectReference: {fileID: 0}
-    - target: {fileID: 6215348682156568184, guid: f23e766b8d0a2704191b8d210a6dc7b5,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6542186394735472994, guid: f23e766b8d0a2704191b8d210a6dc7b5,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8724022110952874302, guid: f23e766b8d0a2704191b8d210a6dc7b5,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f23e766b8d0a2704191b8d210a6dc7b5, type: 3}

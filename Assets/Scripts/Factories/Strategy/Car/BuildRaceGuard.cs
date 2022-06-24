@@ -17,7 +17,6 @@ namespace BossCortege
         public AbstractCar BuildCar()
         {
             var car = GameObject.Instantiate(_scheme.Prefab);
-            car.Init(_scheme);
 
             car.gameObject.AddComponent<MoveComponent>().Init(_speed);
             car.gameObject.AddComponent<RamComponent>().Init(_scheme.Damage);
@@ -33,6 +32,8 @@ namespace BossCortege
             var smoke = GameObject.Instantiate(_scheme.SmokePrefab);
             smoke.transform.SetParent(car.SmokePoint, false);
             smoke.Init(health);
+
+            car.Init(_scheme, new RaceState());
 
             return car;
         }

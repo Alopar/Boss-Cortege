@@ -40,6 +40,7 @@ namespace BossCortege
         #region PROPERTIES
         public float Speed => _speed;
         public BossCar Boss => _boss;
+        public Cortege Cortege => _cortege;
 
         public static RaceManager Instance => _instance;
         #endregion
@@ -153,8 +154,8 @@ namespace BossCortege
             }
             _cortege.Init(cortegeCars);
 
-            //_spawnShootEnemies = StartCoroutine(SpawnShootEnemies());
-            //_spawnSuicideEnemies = StartCoroutine(SpawnSuicideEnemies());
+            _spawnShootEnemies = StartCoroutine(SpawnShootEnemies(_shootSpawnDelay));
+            _spawnSuicideEnemies = StartCoroutine(SpawnSuicideEnemies(_suicideSpawnDelay));
             _spawnBarricadeEnemies = StartCoroutine(SpawnBarricadeEnemies(_barricadeSpawnDelay));
         }
 
@@ -164,8 +165,8 @@ namespace BossCortege
 
             _cortege.Dispose();
 
-            //StopCoroutine(_spawnShootEnemies);
-            //StopCoroutine(_spawnSuicideEnemies);
+            StopCoroutine(_spawnShootEnemies);
+            StopCoroutine(_spawnSuicideEnemies);
             StopCoroutine(_spawnBarricadeEnemies);
 
             var coins = Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit;
@@ -189,28 +190,6 @@ namespace BossCortege
             return enemy;
         }
 
-        //public void SetEnemy<T>(CortegeColumn column, T enemySchema) where T : EnemyScheme
-        //{
-        //    if (typeof(T) == typeof(ShootEnemyScheme))
-        //    {
-        //        var startPoint = _points.Find(e => e.CortegeRow == CortegeRow.Back && e.CortegeColumn == column);
-        //        enemy.transform.position = startPoint.transform.position;
-
-        //        var randowRow = UnityEngine.Random.Range(1, 4);
-        //        var finishPoint = _points.Find(e => e.CortegeRow == (CortegeRow)randowRow && e.CortegeColumn == column);
-        //        enemy.SetPoint(finishPoint);
-        //    }
-
-        //    if (typeof(T) == typeof(SuicideEnemyScheme))
-        //    {
-        //        var startPoint = _points.Find(e => e.CortegeRow == CortegeRow.Front && e.CortegeColumn == column);
-        //        enemy.transform.position = startPoint.transform.position;
-
-        //        var finishPoint = _points.Find(e => e.CortegeRow == CortegeRow.Back && e.CortegeColumn == column);
-        //        enemy.SetPoint(finishPoint);
-        //    }
-        //}
-
         public RacePoint GetRacePoint(uint row, uint column)
         {
             return _points.Find(e => e.Row == row && e.Column == column);
@@ -218,50 +197,60 @@ namespace BossCortege
         #endregion
 
         #region COROUTINES
-        //IEnumerator SpawnShootEnemies()
-        //{
-        //    var cortegeLevel = GetCortegeLevel();
+        IEnumerator SpawnShootEnemies(float delay)
+        {
+            var cortegeLevel = ParkingManager.Instance.GetCortegeLevel();
 
-        //    var timeDelay = 5f;
-        //    while (true)
-        //    {
-        //        yield return new WaitForSeconds(timeDelay);
+            while (true)
+            {
+                yield return new WaitForSeconds(delay);
 
-        //        var distance = Vector3.Distance(_startPosition, transform.position);
-        //        var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
-        //        var enemyName = $"Shoot0{cortegeLevel + enemyPowerUp}";
+                var distance = Vector3.Distance(_startPosition, transform.position);
+                var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
+                var enemySchemeName = $"Shoot0{Mathf.Clamp(cortegeLevel + enemyPowerUp, 1, 6)}";
 
-        //        var enemySchema = Resources.Load<ShootEnemyScheme>(enemyName);
-        //        var column = UnityEngine.Random.Range(0f, 1f) < 0.5f ? CortegeColumn.One : CortegeColumn.Five;
+                var enemySchema = Resources.Load<ShootEnemyScheme>(enemySchemeName);
+                var randomColumn = UnityEngine.Random.Range(0f, 1f) < 0.5f ? 0 : 4;
 
-        //        var enemy = _enemies.Find(e => e.CortegePoint.CortegeColumn == column);
-        //        var raid = _raids.Find(e => e.CortegePoint.CortegeColumn == column);
-        //        if (enemy == null && raid == null)
-        //        {
-        //            SetEnemy(column, enemySchema);
-        //        }
-        //    }
-        //}
+                var occupiedEnemy = _enemies.Find(e => e.TryGetComponent<MoveComponent>(out var component) && component.Point.Column == randomColumn);
+                if (occupiedEnemy != null) continue;
 
-        //IEnumerator SpawnSuicideEnemies()
-        //{
-        //    var cortegeLevel = GetCortegeLevel();
+                var occupiedPoint = _cortege.GetOccupiedPoints().Find(e => e.Column == randomColumn);
+                if (occupiedPoint != null) continue;
 
-        //    var timeDelay = 3f;
-        //    while (true)
-        //    {
-        //        yield return new WaitForSeconds(timeDelay);
+                var startPoint = GetRacePoint(0, (uint)randomColumn);
+                var finishPoint = GetRacePoint(3, (uint)randomColumn);
 
-        //        var distance = Vector3.Distance(_startPosition, transform.position);
-        //        var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
-        //        var enemyName = $"Suicide0{cortegeLevel + enemyPowerUp}";
+                var enemy = SpawnEnemy(new BuildShootEnemy(enemySchema, _speed));
 
-        //        var enemySchema = Resources.Load<SuicideEnemyScheme>(enemyName);
-        //        var randomColumn = UnityEngine.Random.Range(1, 4);
+                enemy.transform.position = startPoint.transform.position;
+                enemy.GetComponent<MoveComponent>().SetPoint(finishPoint);
+            }
+        }
 
-        //        SetEnemy((CortegeColumn)randomColumn, enemySchema);
-        //    }
-        //}
+        IEnumerator SpawnSuicideEnemies(float delay)
+        {
+            var cortegeLevel = ParkingManager.Instance.GetCortegeLevel();
+
+            while (true)
+            {
+                yield return new WaitForSeconds(delay);
+
+                var distance = Vector3.Distance(_startPosition, transform.position);
+                var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
+                var enemySchemeName = $"Suicide0{Mathf.Clamp(cortegeLevel + enemyPowerUp, 1, 6)}";
+
+                var enemySchema = Resources.Load<SuicideEnemyScheme>(enemySchemeName);
+                var randomColumn = UnityEngine.Random.Range(1, 4);
+                var startPoint = GetRacePoint(4, (uint)randomColumn);
+                var finishPoint = GetRacePoint(0, (uint)randomColumn);
+
+                var enemy = SpawnEnemy(new BuildSuicideEnemy(enemySchema));
+
+                enemy.transform.position = startPoint.transform.position;
+                enemy.GetComponent<MoveComponent>().SetPoint(finishPoint);
+            }
+        }
 
         IEnumerator SpawnBarricadeEnemies(float delay)
         {
@@ -273,15 +262,15 @@ namespace BossCortege
 
                 var distance = Vector3.Distance(_startPosition, transform.position);
                 var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
-                var enemySchemeName = $"Barricade0{cortegeLevel + enemyPowerUp}";
+                var enemySchemeName = $"Barricade0{Mathf.Clamp(cortegeLevel + enemyPowerUp, 1, 6)}";
 
                 var enemySchema = Resources.Load<BarricadeEnemyScheme>(enemySchemeName);
-                var randomColumn = UnityEngine.Random.Range(1, 3);
-                var point = _points.Find(e => e.Column == randomColumn && e.Row == 4);
+                var randomColumn = UnityEngine.Random.Range(1, 4);
+                var placePoint = GetRacePoint(4, (uint)randomColumn);
 
                 var enemy = SpawnEnemy(new BuildBarricadeEnemy(enemySchema));
 
-                enemy.transform.position = point.transform.position;
+                enemy.transform.position = placePoint.transform.position;
             }
         }
         #endregion
