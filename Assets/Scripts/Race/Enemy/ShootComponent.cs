@@ -10,6 +10,7 @@ namespace BossCortege
         private uint _damage;
         private float _rateOfFire;
         private ProjectileSchema _projectileSchema;
+        private Turret _turret;
 
         private Coroutine _fireCoroutine = null;
 
@@ -21,11 +22,12 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public void Init(uint damage, float rateOfFire, ProjectileSchema projectileSchema)
+        public void Init(uint damage, float rateOfFire, ProjectileSchema projectileSchema, Turret turret)
         {
             _damage = damage;
             _rateOfFire = rateOfFire;
             _projectileSchema = projectileSchema;
+            _turret = turret;
         }
 
         public void ShootOn()
@@ -56,15 +58,17 @@ namespace BossCortege
 
         IEnumerator BursFire(uint number)
         {
+            _turret.FireOn();
             var fireCounter = number;
             while(fireCounter > 0)
             {
                 fireCounter--;
-                var projectile = Instantiate(_projectileSchema.Prefab, transform.position, transform.rotation);
-                projectile.Init(_projectileSchema.Speed, _damage, RaceManager.Instance.Boss);
+                var projectile = Instantiate(_projectileSchema.Prefab, _turret.FirePoint.transform.position, transform.rotation);
+                projectile.Init(_projectileSchema.Speed, _damage, _projectileSchema.HitPrefab, RaceManager.Instance.Boss);
 
                 yield return new WaitForSeconds(0.05f);
             }
+            _turret.FireOff();
         }
         #endregion
     }

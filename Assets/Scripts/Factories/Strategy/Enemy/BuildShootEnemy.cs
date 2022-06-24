@@ -16,10 +16,9 @@ namespace BossCortege
 
         public AbstractEnemy BuildEnemy()
         {
-            var enemy = GameObject.Instantiate(_scheme.Prefab);
+            var enemy = GameObject.Instantiate(_scheme.Prefab) as ShootEnemy;
 
             enemy.gameObject.AddComponent<MoveComponent>().Init(_speed);
-            enemy.gameObject.AddComponent<ShootComponent>().Init(_scheme.ShootDamage, _scheme.RateOfFire, _scheme.ProjectileScheme);
             enemy.gameObject.AddComponent<ShootDieComponent>().Init(_scheme.ExplosionPrefab);
 
             var health = enemy.gameObject.AddComponent<HealthComponent>();
@@ -32,6 +31,11 @@ namespace BossCortege
             var smoke = GameObject.Instantiate(_scheme.SmokePrefab);
             smoke.transform.SetParent(enemy.SmokePoint, false);
             smoke.Init(health);
+
+            var turret = GameObject.Instantiate(_scheme.TurretPrefab);
+            turret.transform.SetParent(enemy.TurretPoint, false);
+            turret.Init(RaceManager.Instance.Boss.transform);
+            enemy.gameObject.AddComponent<ShootComponent>().Init(_scheme.ShootDamage, _scheme.RateOfFire, _scheme.ProjectileScheme, turret);
 
             enemy.Init(_scheme);
 

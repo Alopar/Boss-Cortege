@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 30
   _prefab: {fileID: 8099085129823859641, guid: fd13fa87f4cf1824a90cb0ce63e98732, type: 3}
+  _hitPref: {fileID: 100002, guid: d0a5a9e7b8bcac04786c023a11472c37, type: 3}

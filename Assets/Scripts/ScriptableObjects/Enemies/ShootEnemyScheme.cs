@@ -18,6 +18,9 @@ namespace BossCortege
         [SerializeField] private ProjectileSchema _projectileScheme;
 
         [Space(10)]
+        [SerializeField] private Turret _turretPref;
+
+        [Space(10)]
         [SerializeField] private uint _relocateNumber;
         #endregion
 
@@ -28,6 +31,7 @@ namespace BossCortege
         public float RateOfFire => _rateOfFire;
         public uint RelocateNumber => _relocateNumber;
         public ProjectileSchema ProjectileScheme => _projectileScheme;
+        public Turret TurretPrefab => _turretPref;
         #endregion
     }
 }

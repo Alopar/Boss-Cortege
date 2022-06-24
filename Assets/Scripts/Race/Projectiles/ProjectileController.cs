@@ -9,6 +9,8 @@ namespace BossCortege
         private uint _damage;
         private Vector3 _aimPoint;
 
+        private GameObject _hitPrefab;
+
         private Rigidbody _rigidbody;
         #endregion
 
@@ -31,8 +33,9 @@ namespace BossCortege
             if (healthComponent != null)
             {
                 healthComponent.TrySetDamage(_damage);
-                Destroy(gameObject);
                 Hit();
+
+                Destroy(gameObject);
             }
         }
         #endregion
@@ -40,15 +43,17 @@ namespace BossCortege
         #region METHODS PRIVATE
         private void Hit()
         {
-            //TODO: show vfx
+            if (_hitPrefab == null) return;
+            Instantiate(_hitPrefab, transform.position, transform.rotation);
         }
         #endregion
 
         #region METHODS PUBLIC
-        public void Init(float speed, uint damage, BossCar car)
+        public void Init(float speed, uint damage, GameObject hitPrefab, BossCar car)
         {
             _speed = speed;
             _damage = damage;
+            _hitPrefab = hitPrefab;
 
             _aimPoint = car.transform.position;
             _aimPoint.z += 1f;

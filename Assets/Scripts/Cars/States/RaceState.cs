@@ -22,7 +22,7 @@ namespace BossCortege
             GameObject.Destroy(_ram);
             GameObject.Destroy(_move);
             GameObject.Destroy(_health);
-            GameObject.Destroy(_healthbar);
+            GameObject.Destroy(_healthbar.gameObject);
 
             _die.Die();
             _car.Die();

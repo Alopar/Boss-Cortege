@@ -110,11 +110,21 @@ PrefabInstance:
     - target: {fileID: 198317019616725152, guid: cad4e2199fa2d72438d8adc16607a89c,
         type: 3}
       propertyPath: simulationSpeed
-      value: 1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 198317019616725152, guid: cad4e2199fa2d72438d8adc16607a89c,
         type: 3}
       propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198317019616725152, guid: cad4e2199fa2d72438d8adc16607a89c,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 198317019616725152, guid: cad4e2199fa2d72438d8adc16607a89c,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.minScalar
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 199163161081401414, guid: cad4e2199fa2d72438d8adc16607a89c,

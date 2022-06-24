@@ -8,6 +8,10 @@ namespace BossCortege
 {
     public class ShootEnemy : AbstractEnemy
     {
+        #region FIELDS INSPECTOR
+        [SerializeField] private Transform _turretPoint;
+        #endregion
+
         #region FIELDS PRIVATE
         private ShootEnemyScheme _scheme;
 
@@ -23,6 +27,7 @@ namespace BossCortege
         #endregion
 
         #region PROPERTIES
+        public Transform TurretPoint => _turretPoint;
         public MoveComponent Move => _move;
         #endregion
 

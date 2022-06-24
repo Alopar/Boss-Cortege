@@ -751,7 +751,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 355521551}
   m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
-  m_LocalPosition: {x: 0, y: 15, z: -50}
+  m_LocalPosition: {x: 0, y: 14, z: -50}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1282,6 +1282,9 @@ MonoBehaviour:
   _moneyPerUnit: 1
   _speed: 8
   _powerUpDistance: 200
+  _shootSpawnDelay: 3
+  _suicideSpawnDelay: 3
+  _barricadeSpawnDelay: 3
 --- !u!1001 &679396952
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1492,19 +1495,19 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: 3
     m_CustomResolution: -1
     m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
+    m_Bias: 0
+    m_NormalBias: 0
     m_NearPlane: 0.2
     m_CullingMatrixOverride:
       e00: 1
@@ -1551,7 +1554,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 15, z: 0}
+  m_LocalPosition: {x: 0, y: 7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2031,7 +2034,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 868868466}
   m_LocalRotation: {x: 0.5, y: -0, z: -0, w: 0.8660254}
-  m_LocalPosition: {x: 0, y: 16, z: -10}
+  m_LocalPosition: {x: 0, y: 14, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2445,7 +2448,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
-  m_LocalPosition: {x: 0, y: 16, z: -10}
+  m_LocalPosition: {x: 0, y: 14, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5135,6 +5138,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1384263166}
     m_Modifications:
+    - target: {fileID: 1560547513085665016, guid: 33642309309da5640bacd3c8e2448d90,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1560547513085665016, guid: 33642309309da5640bacd3c8e2448d90,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b8a9c6601d75834448dce0fbadd82294, type: 2}
+    - target: {fileID: 1560547513085665016, guid: 33642309309da5640bacd3c8e2448d90,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: b8a9c6601d75834448dce0fbadd82294, type: 2}
     - target: {fileID: 1560547513085665022, guid: 33642309309da5640bacd3c8e2448d90,
         type: 3}
       propertyPath: m_RootOrder
@@ -5195,6 +5213,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grass
       objectReference: {fileID: 0}
+    - target: {fileID: 5013162957752803372, guid: 33642309309da5640bacd3c8e2448d90,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 254fa5e632408dc42b540de296335454, type: 2}
     - target: {fileID: 5030697883779341106, guid: 33642309309da5640bacd3c8e2448d90,
         type: 3}
       propertyPath: m_LocalRotation.w
