@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 using BossCortege.EventHolder;
 
 namespace BossCortege
@@ -9,8 +10,8 @@ namespace BossCortege
     public class GameManager : MonoBehaviour
     {
         #region FIELDS INSPECTOR
-        [SerializeField] private Cinemachine.CinemachineVirtualCamera _parkingCamera;
-        [SerializeField] private Cinemachine.CinemachineVirtualCamera _cortegeCamera;
+        [SerializeField] private CinemachineVirtualCamera _parkingCamera;
+        [SerializeField] private CinemachineVirtualCamera _cortegeCamera;
         #endregion
 
         #region FIELDS PRIVATE
@@ -35,7 +36,6 @@ namespace BossCortege
 
         public void StopRaceHandler(RaceStopInfo info)
         {
-
             _cortegeCamera.Priority = 10;
         }
         #endregion

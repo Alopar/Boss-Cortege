@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Limo01
   m_EditorClassIdentifier: 
   _name: Limo 01
-  _durability: 300
+  _durability: 400
   _healthBarPref: {fileID: 6840670707789683813, guid: 396b99676f0252840899058ae83a6c61,
     type: 3}
   _smokePref: {fileID: 915196302776555465, guid: 60a37993912c6174c8e68790bb6ab58b,

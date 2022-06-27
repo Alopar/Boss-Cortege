@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Lofelt.NiceVibrations;
 
 namespace BossCortege
 {
@@ -21,7 +22,8 @@ namespace BossCortege
             var damageable = collision.gameObject.GetComponent<IDamageable>();
             if (damageable != null)
             {
-                damageable.TrySetDamage(_damage);
+                damageable.TrySetDamage(_damage, DamageType.Explosion);
+                HapticPatterns.PlayPreset(HapticPatterns.PresetType.MediumImpact);
 
                 OnExplosion?.Invoke();
             }

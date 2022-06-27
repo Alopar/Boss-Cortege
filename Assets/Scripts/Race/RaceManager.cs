@@ -27,6 +27,8 @@ namespace BossCortege
         private List<RacePoint> _points;
         private List<AbstractEnemy> _enemies;
 
+        private uint _raceMoney = 0;
+
         private Coroutine _spawnShootEnemies;
         private Coroutine _spawnSuicideEnemies;
         private Coroutine _spawnBarricadeEnemies;
@@ -41,6 +43,7 @@ namespace BossCortege
         public float Speed => _speed;
         public BossCar Boss => _boss;
         public Cortege Cortege => _cortege;
+        public uint RaceMoney => _raceMoney;
 
         public static RaceManager Instance => _instance;
         #endregion
@@ -48,7 +51,7 @@ namespace BossCortege
         #region HANDLERS
         private void RaceStartHandler(RaceStartInfo info)
         {
-            StartRace();
+            Invoke(nameof(StartRace), 1.5f);
         }
 
         private void RaceStopHandler(RaceStopInfo info)
@@ -58,6 +61,7 @@ namespace BossCortege
 
         private void BossDieHandler(BossDieInfo info)
         {
+            _raceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
             EventHolder<RaceStopInfo>.NotifyListeners(null);
         }
 
@@ -104,9 +108,8 @@ namespace BossCortege
             if (_go)
             {
                 transform.position += Vector3.forward * _speed * Time.fixedDeltaTime;
+                GameManager.Instance.Distance.SetDistance((uint)Vector3.Distance(_startPosition, transform.position));
             }
-
-            GameManager.Instance.Distance.SetDistance((uint)Vector3.Distance(_startPosition, transform.position));
         }
         #endregion
 
@@ -129,6 +132,7 @@ namespace BossCortege
         private void StartRace()
         {
             _go = true;
+            _raceMoney = 0;
             
             _cortege = new Cortege();
             var carSpeed = _speed * 1f;
@@ -168,9 +172,6 @@ namespace BossCortege
             StopCoroutine(_spawnShootEnemies);
             StopCoroutine(_spawnSuicideEnemies);
             StopCoroutine(_spawnBarricadeEnemies);
-
-            var coins = Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit;
-            GameManager.Instance.Wallet.SetCash((uint)coins);
 
             _enemies.ForEach(e => Destroy(e.gameObject));
             _enemies.Clear();

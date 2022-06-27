@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using BossCortege.EventHolder;
+using Lofelt.NiceVibrations;
 
 namespace BossCortege
 {
@@ -18,7 +19,8 @@ namespace BossCortege
             var damageable = collision.gameObject.GetComponentInParent<IDamageable>();
             if (damageable != null)
             {
-                damageable.TrySetDamage(_damage);
+                damageable.TrySetDamage(_damage, DamageType.Ram);
+                HapticPatterns.PlayPreset(HapticPatterns.PresetType.HeavyImpact);
 
                 OnSuicide?.Invoke();
             }

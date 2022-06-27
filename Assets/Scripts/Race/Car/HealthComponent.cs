@@ -14,7 +14,7 @@ namespace BossCortege
 
         #region EVENTS
         public event Action<uint, int> OnChangeHP;
-        public event Action<uint> OnDamage;
+        public event Action<uint, DamageType> OnDamage;
         public event Action OnDie;
         #endregion
 
@@ -31,14 +31,14 @@ namespace BossCortege
             OnChangeHP?.Invoke(_maxHP, _currentHP);
         }
 
-        public bool TrySetDamage(uint damage)
+        public bool TrySetDamage(uint damage, DamageType damageType)
         {
             if (_isInvulnerability) return false;
 
             _currentHP -= (int)damage;
             StartCoroutine(InvulnerabilityTimer(0.5f));
 
-            OnDamage?.Invoke(damage);
+            OnDamage?.Invoke(damage, damageType);
             OnChangeHP?.Invoke(_maxHP, _currentHP);
 
             if (_currentHP <= 0)
@@ -62,12 +62,19 @@ namespace BossCortege
 
     public interface IDamageable
     {
-        public event Action<uint> OnDamage;
-        public bool TrySetDamage(uint damage);
+        public event Action<uint, DamageType> OnDamage;
+        public bool TrySetDamage(uint damage, DamageType damageType);
     }
 
     public interface IHealthable
     {
         public void AddHealth(uint value);
+    }
+
+    public enum DamageType
+    {
+        Ram,
+        Bullet,
+        Explosion
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
+using TMPro;
 using BossCortege.EventHolder;
 
 namespace BossCortege
@@ -9,7 +9,11 @@ namespace BossCortege
     {
         #region FIELDS INSPECTOR
         [SerializeField] private TextMeshProUGUI _moneyText;
+        [SerializeField] private GameObject _moneyBar;
+
+        [Space(10)]
         [SerializeField] private TextMeshProUGUI _distanceText;
+        [SerializeField] private GameObject _distanceBar;
 
         [Space(10)]
         [SerializeField] private Button _addCarButton;
@@ -23,24 +27,24 @@ namespace BossCortege
         #region HANDLERS
         private void StartRaceHandler(RaceStartInfo info)
         {
-            EnableRaceButtons(true);
-            EnableParkingButtons(false);
+            EnableRaceHUD(true);
+            EnableParkingHUD(false);
         }
 
         private void StopRaceHandler(RaceStopInfo info)
         {
-            EnableRaceButtons(false);
-            EnableParkingButtons(true);
+            EnableRaceHUD(false);
+            EnableParkingHUD(true);
         }
 
         private void MoneyChangeHandler(MoneyChangeInfo info)
         {
-            _moneyText.text = $"Money: {info.Value}";
+            _moneyText.text = info.Value.ToString();
         }
 
         private void DistanceChangeHandler(DistanceChangeInfo info)
         {
-            _distanceText.text = $"Distance: {info.Value}";
+            _distanceText.text = info.Value.ToString();
         }
         #endregion
 
@@ -63,22 +67,24 @@ namespace BossCortege
 
         private void Awake()
         {
-            EnableRaceButtons(false);
-            EnableParkingButtons(true);
+            EnableRaceHUD(false);
+            EnableParkingHUD(true);
         }
         #endregion
 
         #region METHODS PRIVATE
-        private void EnableParkingButtons(bool on)
+        private void EnableParkingHUD(bool on)
         {
             _addCarButton.gameObject.SetActive(on);
             _addPlaceButton.gameObject.SetActive(on);
             _goButton.gameObject.SetActive(on);
+            _moneyBar.gameObject.SetActive(on);
         }
 
-        private void EnableRaceButtons(bool on)
+        private void EnableRaceHUD(bool on)
         {
-            _stopButton.gameObject.SetActive(on);
+            //_stopButton.gameObject.SetActive(on);
+            _distanceBar.gameObject.SetActive(on);
         }
         #endregion
 

@@ -28,8 +28,10 @@ namespace BossCortege
             _car.Die();
         }
 
-        private void Health_OnDamage(uint obj)
+        private void Health_OnDamage(uint damage, DamageType damageType)
         {
+            if (damageType == DamageType.Bullet) return;
+
             _car.Body.DOComplete();
             _car.Body.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), vibrato: 20);
         }

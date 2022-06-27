@@ -14,6 +14,10 @@ namespace BossCortege
 
         [Space(10)]
         [SerializeField] private BarrieController _barrieController;
+
+        [Space(10)]
+        [SerializeField] private GameObject _spawnCarVFX;
+        [SerializeField] private GameObject _mergeCarVFX;
         #endregion
 
         #region FIELDS PRIVATE
@@ -39,6 +43,7 @@ namespace BossCortege
                     if (GameManager.Instance.Wallet.TryGetCash(info.Cost))
                     {
                         SpawnCar(new BuildParkingGuard(PowerLevel.Level01), place);
+                        Instantiate(_spawnCarVFX, place.SpawnPoint.position, Quaternion.identity);
                     }
 
                     return;
@@ -48,24 +53,23 @@ namespace BossCortege
 
         private void BuyPlaceHandler(BuyPlaceInfo info)
         {
-            _currentAvailableParkingPlaces++;
-            UnlockPlaces();
+            if (GameManager.Instance.Wallet.TryGetCash(info.Cost))
+            {
+                _currentAvailableParkingPlaces++;
+                UnlockPlaces();
+            }
         }
 
         private void RaceStartHandler(RaceStartInfo info)
         {
-            var cortegeCars = GetCortegeCars();
-            cortegeCars.ForEach(e => e.gameObject.SetActive(false));
-
-            _barrieController.Invoke(nameof(_barrieController.UpBarrier), 0.5f);
+            Invoke(nameof(UpBarrier), 1.5f);
+            Invoke(nameof(HideCortegeCars), 1.5f);
         }
 
         private void RaceStopHandler(RaceStopInfo info)
         {
-            var cortegeCars = GetCortegeCars();
-            cortegeCars.ForEach(e => e.gameObject.SetActive(true));
-
-            _barrieController.DownBarrier();
+            DownBarrier();
+            ShowCortegeCars();
         }
 
         private void MergeCarHandler(MergeCarInfo info)
@@ -84,6 +88,7 @@ namespace BossCortege
             Destroy(submissiveCar.gameObject);
 
             SpawnCar(new BuildParkingGuard(nextLevel), place);
+            Instantiate(_mergeCarVFX, place.SpawnPoint.position, Quaternion.identity);
         }
 
         private void SwapCarHandler(SwapCarInfo info)
@@ -167,6 +172,28 @@ namespace BossCortege
             var car = builder.BuildCar();
             var replacement = car.GetComponent<IReplacementable>();
             place.PlaceVechicle(replacement);
+        }
+
+        private void ShowCortegeCars()
+        {
+            var cortegeCars = GetCortegeCars();
+            cortegeCars.ForEach(e => e.gameObject.SetActive(true));
+        }
+
+        private void HideCortegeCars()
+        {
+            var cortegeCars = GetCortegeCars();
+            cortegeCars.ForEach(e => e.gameObject.SetActive(false));
+        }
+
+        private void UpBarrier()
+        {
+            _barrieController.UpBarrier();
+        }
+
+        private void DownBarrier()
+        {
+            _barrieController.DownBarrier();
         }
         #endregion
 

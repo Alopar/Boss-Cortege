@@ -32,8 +32,10 @@ namespace BossCortege
         #endregion
 
         #region HANDLERS
-        private void Health_OnDamage(uint damage)
+        private void Health_OnDamage(uint damage, DamageType damageType)
         {
+            if (damageType != DamageType.Ram) return;
+
             Body.DOComplete();
             Body.DOShakePosition(0.5f, new Vector3(0.2f, 0, 0), vibrato: 20);
         }

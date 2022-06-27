@@ -32,7 +32,7 @@ namespace BossCortege
             var healthComponent = collision.gameObject.GetComponent<IDamageable>();
             if (healthComponent != null)
             {
-                healthComponent.TrySetDamage(_damage);
+                healthComponent.TrySetDamage(_damage, DamageType.Bullet);
                 Hit();
 
                 Destroy(gameObject);

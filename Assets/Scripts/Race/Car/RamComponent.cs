@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using BossCortege.EventHolder;
+using Lofelt.NiceVibrations;
 
 namespace BossCortege
 {
@@ -18,9 +19,10 @@ namespace BossCortege
             var damageable = collision.gameObject.GetComponent<IDamageable>();
             if (damageable != null)
             {
-                if (damageable.TrySetDamage(_damage))
+                if (damageable.TrySetDamage(_damage, DamageType.Ram))
                 {
                     EventHolder<RamInfo>.NotifyListeners(new RamInfo());
+                    HapticPatterns.PlayPreset(HapticPatterns.PresetType.LightImpact);
                 }
             }
         }
