@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using BossCortege.EventHolder;
 using Random = UnityEngine.Random;
 
 namespace BossCortege
@@ -97,7 +98,7 @@ namespace BossCortege
             base.Die();
             _die.Die();
 
-            GameManager.Instance.Wallet.SetCash(_scheme.Money);
+            EventHolder<EnemyDieInfo>.NotifyListeners(new EnemyDieInfo(_scheme.Money));
         }
         #endregion
 

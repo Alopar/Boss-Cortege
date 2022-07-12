@@ -1583,7 +1583,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1.2
+  m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -3252,7 +3252,8 @@ MonoBehaviour:
   _barrieController: {fileID: 887870879}
   _spawnCarVFX: {fileID: 8748687995501502678, guid: ac66dbc90c9c03c45a43ba79c3ce7b32,
     type: 3}
-  _mergeCarVFX: {fileID: 100000, guid: 35584156cc17cc049b114b8d59b1da66, type: 3}
+  _mergeCarVFX: {fileID: 9039430469071528442, guid: 1702fc3661225f54ab6a1352b284b6d4,
+    type: 3}
 --- !u!1001 &1403589656
 PrefabInstance:
   m_ObjectHideFlags: 0

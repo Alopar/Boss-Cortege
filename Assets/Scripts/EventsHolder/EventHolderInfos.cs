@@ -110,4 +110,14 @@ namespace BossCortege.EventHolder
     {
         // no info
     }
+
+    public class EnemyDieInfo
+    {
+        public uint Money { get; private set; }
+
+        public EnemyDieInfo(uint money)
+        {
+            Money = money;
+        }
+    }
 }

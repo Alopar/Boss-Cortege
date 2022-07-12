@@ -22,6 +22,11 @@ namespace BossCortege
             var place = car.gameObject.AddComponent<PlaceComponent>();
             car.gameObject.AddComponent<MergeComponent>().Init(car, place);
 
+            var levelbarPrefab = Resources.Load<Levelbar>("Levelbar");
+            var levelbar = GameObject.Instantiate(levelbarPrefab);
+            levelbar.transform.SetParent(car.LevelPoint, false);
+            levelbar.Init(guardScheme.Level);
+
             return car;
         }
     }

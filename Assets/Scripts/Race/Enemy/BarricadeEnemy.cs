@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using BossCortege.EventHolder;
+using System.Collections;
 using UnityEngine;
 
 namespace BossCortege
@@ -25,7 +26,7 @@ namespace BossCortege
             base.Die();
             _die.Die();
 
-            GameManager.Instance.Wallet.SetCash(_scheme.Money);
+            EventHolder<EnemyDieInfo>.NotifyListeners(new EnemyDieInfo(_scheme.Money));
         }
         #endregion
 

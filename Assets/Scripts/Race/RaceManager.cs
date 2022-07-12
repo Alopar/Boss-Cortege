@@ -28,6 +28,9 @@ namespace BossCortege
         private List<AbstractEnemy> _enemies;
 
         private uint _raceMoney = 0;
+        private uint _enemyMoney = 0;
+        private uint _enemyDieCount = 0;
+        private uint _distanceMoney = 0;
 
         private Coroutine _spawnShootEnemies;
         private Coroutine _spawnSuicideEnemies;
@@ -43,7 +46,11 @@ namespace BossCortege
         public float Speed => _speed;
         public BossCar Boss => _boss;
         public Cortege Cortege => _cortege;
+
         public uint RaceMoney => _raceMoney;
+        public uint EnemyMoney => _enemyMoney;
+        public uint EnemyCount => _enemyDieCount;
+        public uint DistanceMoney => _distanceMoney;
 
         public static RaceManager Instance => _instance;
         #endregion
@@ -61,8 +68,15 @@ namespace BossCortege
 
         private void BossDieHandler(BossDieInfo info)
         {
-            _raceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
+            _distanceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
+            _raceMoney = _enemyMoney + _distanceMoney;
             EventHolder<RaceStopInfo>.NotifyListeners(null);
+        }
+
+        private void EnemyDieHandler(EnemyDieInfo info)
+        {
+            _enemyDieCount++;
+            _enemyMoney += info.Money;
         }
 
         private void Enemy_OnEnemyDestroyed(AbstractEnemy enemy)
@@ -77,6 +91,7 @@ namespace BossCortege
             EventHolder<BossDieInfo>.AddListener(BossDieHandler, false);
             EventHolder<RaceStartInfo>.AddListener(RaceStartHandler, false);
             EventHolder<RaceStopInfo>.AddListener(RaceStopHandler, false);
+            EventHolder<EnemyDieInfo>.AddListener(EnemyDieHandler, false);
         }
 
         private void OnDisable()
@@ -84,6 +99,7 @@ namespace BossCortege
             EventHolder<BossDieInfo>.RemoveListener(BossDieHandler);
             EventHolder<RaceStartInfo>.RemoveListener(RaceStartHandler);
             EventHolder<RaceStopInfo>.RemoveListener(RaceStopHandler);
+            EventHolder<EnemyDieInfo>.RemoveListener(EnemyDieHandler);
         }
 
         private void Awake()
@@ -133,7 +149,12 @@ namespace BossCortege
         {
             _go = true;
             _raceMoney = 0;
-            
+            _enemyMoney = 0;
+            _enemyDieCount = 0;
+            _distanceMoney = 0;
+
+            GameManager.Instance.Distance.SetDistance(0);
+
             _cortege = new Cortege();
             var carSpeed = _speed * 1f;
             var parkingCars = ParkingManager.Instance.GetCortegeCars();

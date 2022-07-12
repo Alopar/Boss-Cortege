@@ -12,7 +12,12 @@ namespace BossCortege
 
         [Space(10)]
         [SerializeField] private TextMeshProUGUI _currentDistanceText;
+        [SerializeField] private TextMeshProUGUI _moneyDistanceText;
         [SerializeField] private TextMeshProUGUI _bestDistanceText;
+
+        [Space(10)]
+        [SerializeField] private TextMeshProUGUI _enemiesText;
+        [SerializeField] private TextMeshProUGUI _moneyEnemiesText;
 
         [Space(10)]
         [SerializeField] private TextMeshProUGUI _moneyText;
@@ -55,10 +60,15 @@ namespace BossCortege
         private void ShowPopup()
         {
             _currentDistanceText.text = GameManager.Instance.Distance.CurrentDistance.ToString();
+            _moneyDistanceText.text = "+" + RaceManager.Instance.DistanceMoney.ToString();
+
             _bestDistanceText.text = GameManager.Instance.Distance.BestDistance.ToString();
 
-            _moneyText.text = _currentMoney.ToString();
-            _moreMoneyText.text = _moreMoney.ToString();
+            _enemiesText.text = RaceManager.Instance.EnemyCount.ToString();
+            _moneyEnemiesText.text = "+" + RaceManager.Instance.EnemyMoney.ToString();
+
+            _moneyText.text = "+" + _currentMoney.ToString();
+            _moreMoneyText.text = "+" + _moreMoney.ToString();
 
             _content.SetActive(true);
         }
