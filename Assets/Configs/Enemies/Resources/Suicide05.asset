@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7402ce06754164fb24486f18d9181c, type: 3}
   m_Name: Suicide05
   m_EditorClassIdentifier: 
-  _money: 50
+  _money: 25
   _level: 5
   _prefab: {fileID: 8091229675778167791, guid: ed016ab9f851d6e4ba29ab7f76f6d316, type: 3}
   _healthBarPref: {fileID: 0}
@@ -20,4 +20,4 @@ MonoBehaviour:
   _explosionPref: {fileID: 395031058680739610, guid: 41656e00aa3440847803124fe19bda71,
     type: 3}
   _speed: 6
-  _ramDamage: 65
+  _ramDamage: 125

@@ -4,25 +4,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BossCortege.EventHolder;
+using DG.Tweening;
 
 namespace BossCortege
 {
     public class RaceManager : MonoBehaviour
     {
         #region FIELDS INSPECTOR
-        [SerializeField, Range(1, 100), Tooltip("ћонет за рассто€ние")] private uint _moneyPerUnit = 1;
+        [SerializeField, Range(1, 100), Tooltip("ћонет за рассто€ние")] private float _moneyPerUnit = 1;
         [SerializeField, Range(1, 100), Tooltip("—корость всего кортежа")] private float _speed = 5;
-        [SerializeField, Tooltip("–ассто€ние через которое усиливаютс€ враги на один уровень")] private int _powerUpDistance = 200;
+        [SerializeField, Tooltip("–ассто€ние через которое усиливаютс€ враги на один уровень")] private int _powerUpDistance = 1000;
+        [SerializeField, Tooltip("–ассто€ние через которое увеличиваетс€ количество врагов")] private int _spawnUpDistance = 200;
 
         [Space(10)]
         [Header("Spawner setting")]
         [SerializeField] private float _shootSpawnDelay = 3f;
-        [SerializeField] private float _suicideSpawnDelay = 3f;
-        [SerializeField] private float _barricadeSpawnDelay = 3f;
+        [SerializeField] private float _suicideSpawnDelay = 2f;
+        [SerializeField] private float _barricadeSpawnDelay = 4f;
         #endregion
 
         #region FIELDS PRIVATE
         private bool _go = false;
+        private float _currentSpeed;
         private Vector3 _startPosition;
         private List<RacePoint> _points;
         private List<AbstractEnemy> _enemies;
@@ -44,6 +47,7 @@ namespace BossCortege
 
         #region PROPERTIES
         public float Speed => _speed;
+        public float CurrentSpeed => _currentSpeed;
         public BossCar Boss => _boss;
         public Cortege Cortege => _cortege;
 
@@ -58,7 +62,7 @@ namespace BossCortege
         #region HANDLERS
         private void RaceStartHandler(RaceStartInfo info)
         {
-            Invoke(nameof(StartRace), 1.5f);
+            StartRace();
         }
 
         private void RaceStopHandler(RaceStopInfo info)
@@ -155,6 +159,8 @@ namespace BossCortege
 
             GameManager.Instance.Distance.SetDistance(0);
 
+            //DOVirtual.Float(0, _speed, 1.5f, e => _currentSpeed = e).SetEase(Ease.InCubic);
+
             _cortege = new Cortege();
             var carSpeed = _speed * 1f;
             var parkingCars = ParkingManager.Instance.GetCortegeCars();
@@ -221,11 +227,12 @@ namespace BossCortege
         #region COROUTINES
         IEnumerator SpawnShootEnemies(float delay)
         {
-            var cortegeLevel = ParkingManager.Instance.GetCortegeLevel();
+            float currentDelay = delay;
+            int cortegeLevel = ParkingManager.Instance.GetCortegeLevel() / 3;
 
             while (true)
             {
-                yield return new WaitForSeconds(delay);
+                yield return new WaitForSeconds(currentDelay);
 
                 var distance = Vector3.Distance(_startPosition, transform.position);
                 var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
@@ -252,11 +259,12 @@ namespace BossCortege
 
         IEnumerator SpawnSuicideEnemies(float delay)
         {
-            var cortegeLevel = ParkingManager.Instance.GetCortegeLevel();
+            float currentDelay = delay;
+            int cortegeLevel = ParkingManager.Instance.GetCortegeLevel() / 3;
 
             while (true)
             {
-                yield return new WaitForSeconds(delay);
+                yield return new WaitForSeconds(currentDelay);
 
                 var distance = Vector3.Distance(_startPosition, transform.position);
                 var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);
@@ -276,11 +284,12 @@ namespace BossCortege
 
         IEnumerator SpawnBarricadeEnemies(float delay)
         {
-            var cortegeLevel = ParkingManager.Instance.GetCortegeLevel();
+            float currentDelay = delay;
+            int cortegeLevel = ParkingManager.Instance.GetCortegeLevel() / 3;
 
             while (true)
             {
-                yield return new WaitForSeconds(delay);
+                yield return new WaitForSeconds(currentDelay);
 
                 var distance = Vector3.Distance(_startPosition, transform.position);
                 var enemyPowerUp = Mathf.FloorToInt(distance / _powerUpDistance);

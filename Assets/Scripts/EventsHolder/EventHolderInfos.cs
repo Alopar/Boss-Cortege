@@ -13,6 +13,16 @@ namespace BossCortege.EventHolder
         }
     }
 
+    public class DragCarInfo
+    {
+        public bool IsDragging { get; private set; }
+
+        public DragCarInfo(bool isDragging)
+        {
+            IsDragging = isDragging;
+        }
+    }
+
     public class BuyCarInfo
     {
         public uint Cost { get; private set; }
@@ -101,6 +111,11 @@ namespace BossCortege.EventHolder
         }
     }
 
+    public class ReplaceCarInfo
+    {
+        // no info
+    }
+
     public class RamInfo
     {
         //TODO: ram cooldown
@@ -119,5 +134,10 @@ namespace BossCortege.EventHolder
         {
             Money = money;
         }
+    }
+
+    public class MenuOpenInfo
+    {
+        // no info
     }
 }

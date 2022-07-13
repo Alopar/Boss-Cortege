@@ -19,7 +19,7 @@ namespace BossCortege
             var car = GameObject.Instantiate(_scheme.Prefab);
 
             car.gameObject.AddComponent<MoveComponent>().Init(_speed);
-            car.gameObject.AddComponent<RamComponent>().Init(0);
+            car.gameObject.AddComponent<RamComponent>().Init(25);
             car.gameObject.AddComponent<DieComponent>().Init(_scheme.ExplosionPrefab);
 
             var health = car.gameObject.AddComponent<HealthComponent>();

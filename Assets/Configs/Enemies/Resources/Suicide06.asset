@@ -20,4 +20,4 @@ MonoBehaviour:
   _explosionPref: {fileID: 395031058680739610, guid: 41656e00aa3440847803124fe19bda71,
     type: 3}
   _speed: 6
-  _ramDamage: 75
+  _ramDamage: 150

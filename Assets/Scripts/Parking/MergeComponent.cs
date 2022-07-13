@@ -41,6 +41,8 @@ namespace BossCortege
         public void OnPointerDown(PointerEventData eventData)
         {
             _isDragging = true;
+            EventHolder<DragCarInfo>.NotifyListeners(new DragCarInfo(true));
+
             _currentflyHeight = transform.position.y + _flyHeight;
             _collider.enabled = false;
 
@@ -53,6 +55,8 @@ namespace BossCortege
         public void OnPointerUp(PointerEventData eventData)
         {
             _isDragging = false;
+            EventHolder<DragCarInfo>.NotifyListeners(new DragCarInfo(false));
+
             CheckMerge(eventData);
         }
 
@@ -97,6 +101,7 @@ namespace BossCortege
                 {
                     _place.Replace();
                     place.PlaceVechicle(_place);
+                    EventHolder<ReplaceCarInfo>.NotifyListeners(null);
                     return;
                 }
             }

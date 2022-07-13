@@ -19,12 +19,6 @@ namespace BossCortege
         #endregion
 
         #region UNITY CALLBACKS
-        private void FixedUpdate()
-        {
-            var currentPosition = transform.position + (transform.forward * _speed * Time.deltaTime);
-            _rigidbody.MovePosition(currentPosition);
-        }
-
         protected virtual void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.tag == "Enemy") return;
@@ -60,6 +54,7 @@ namespace BossCortege
             transform.LookAt(_aimPoint);
 
             _rigidbody = GetComponent<Rigidbody>();
+            _rigidbody.velocity = transform.forward * 25f;
 
             Destroy(gameObject, 2f);
         }

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using BossCortege.EventHolder;
-using Random = UnityEngine.Random;
 
 namespace BossCortege
 {
@@ -21,6 +20,10 @@ namespace BossCortege
         #endregion
 
         #region FIELDS PRIVATE
+        private AbstractStorage<int> _availableParkingPlaceStorage;
+        private AbstractStorage<string> _carToParkingStorage;
+        private AbstractStorage<string> _carToCortegeStorage;
+
         private List<CortegePlace> _cortegePlaces;
         private List<ParkingPlace> _parkingPlaces;
 
@@ -44,6 +47,8 @@ namespace BossCortege
                     {
                         SpawnCar(new BuildParkingGuard(PowerLevel.Level01), place);
                         Instantiate(_spawnCarVFX, place.SpawnPoint.position, Quaternion.identity);
+
+                        SaveCarsOnPlaces();
                     }
 
                     return;
@@ -56,14 +61,15 @@ namespace BossCortege
             if (GameManager.Instance.Wallet.TryGetCash(info.Cost))
             {
                 _currentAvailableParkingPlaces++;
+                _availableParkingPlaceStorage.Save((int)_currentAvailableParkingPlaces);
                 UnlockPlaces();
             }
         }
 
         private void RaceStartHandler(RaceStartInfo info)
         {
-            Invoke(nameof(UpBarrier), 1.5f);
-            Invoke(nameof(HideCortegeCars), 1.5f);
+            UpBarrier();
+            HideCortegeCars();
         }
 
         private void RaceStopHandler(RaceStopInfo info)
@@ -80,7 +86,7 @@ namespace BossCortege
             var submissiveCar = info.SecondCar;
             var submissivePlace = info.SecondPlace;
 
-            var nextLevel = (PowerLevel)Mathf.Clamp((int)dominantCar.Config.Level + 1, 1, 6);
+            var nextLevel = (PowerLevel)Mathf.Clamp((int)dominantCar.Config.Level + 1, 1, 18);
             var place = submissivePlace.Replace();
 
             dominantPlace.Replace();
@@ -89,6 +95,8 @@ namespace BossCortege
 
             SpawnCar(new BuildParkingGuard(nextLevel), place);
             Instantiate(_mergeCarVFX, place.SpawnPoint.position, Quaternion.identity);
+
+            SaveCarsOnPlaces();
         }
 
         private void SwapCarHandler(SwapCarInfo info)
@@ -101,6 +109,13 @@ namespace BossCortege
 
             dominantCarPlace.PlaceVechicle(submissivePlaceComponent);
             submissiveCarPlace.PlaceVechicle(dominantPlaceComponent);
+
+            SaveCarsOnPlaces();
+        }
+
+        private void ReplaceCarHandler(ReplaceCarInfo info)
+        {
+            SaveCarsOnPlaces();
         }
         #endregion
 
@@ -113,6 +128,7 @@ namespace BossCortege
             EventHolder<RaceStopInfo>.AddListener(RaceStopHandler, false);
             EventHolder<MergeCarInfo>.AddListener(MergeCarHandler, false);
             EventHolder<SwapCarInfo>.AddListener(SwapCarHandler, false);
+            EventHolder<ReplaceCarInfo>.AddListener(ReplaceCarHandler, false);
         }
 
         private void OnDisable()
@@ -123,6 +139,7 @@ namespace BossCortege
             EventHolder<RaceStopInfo>.RemoveListener(RaceStopHandler);
             EventHolder<MergeCarInfo>.RemoveListener(MergeCarHandler);
             EventHolder<SwapCarInfo>.RemoveListener(SwapCarHandler);
+            EventHolder<ReplaceCarInfo>.RemoveListener(ReplaceCarHandler);
         }
 
         private void Awake()
@@ -145,15 +162,29 @@ namespace BossCortege
 
         #region METHODS PRIVATE
         private void Init()
-        {
-            _currentAvailableParkingPlaces = _baseAvailableParkingPlaces;
+        {   
+            _availableParkingPlaceStorage = new IntPlayerPrefStorage("AVAILABLE-PARKING-PLACES");
+            _currentAvailableParkingPlaces = (uint)_availableParkingPlaceStorage.Load();
+
+            if(_currentAvailableParkingPlaces == 0)
+            {
+                _currentAvailableParkingPlaces = _baseAvailableParkingPlaces;
+                _availableParkingPlaceStorage.Save((int)_currentAvailableParkingPlaces);
+            }
 
             _cortegePlaces = FindObjectsOfType<CortegePlace>().ToList();
             _parkingPlaces = FindObjectsOfType<ParkingPlace>().OrderBy(e => e.Number).ToList();
 
+            UnlockPlaces();
+
             var bossPlace = _cortegePlaces.Find(e => e.IsBoss);
             SpawnCar(new BuildParkingBoss(), bossPlace);
-            UnlockPlaces();
+
+            _carToParkingStorage = new StringPlayerPrefStorage("CARS-ON-PARKING");
+            _carToCortegeStorage = new StringPlayerPrefStorage("CARS-ON-CORTEGE");
+
+            RestoreCarsOnParking();
+            RestoreCarsOnCortege();
         }
 
         private void UnlockPlaces()
@@ -195,6 +226,91 @@ namespace BossCortege
         {
             _barrieController.DownBarrier();
         }
+
+        private void SaveCarsOnPlaces()
+        {
+            SaveCarsOnParking();
+            SaveCarsOnCortege();
+        }
+
+        private void SaveCarsOnParking()
+        {
+            var parkingCars = FindObjectsOfType<GuardCar>().ToList();
+            parkingCars = parkingCars.FindAll(e => e.TryGetComponent<PlaceComponent>(out PlaceComponent component) && component.Place != null && component.Place is ParkingPlace);
+
+            var dataJSON = new ListDataJSON<CarOnParking>() { data = new List<CarOnParking>() };
+            foreach (var parkingCar in parkingCars)
+            {
+                var carToParking = new CarOnParking();
+                carToParking.powerLevel = (int)parkingCar.Config.Level;
+                carToParking.placeNumber = (int)(parkingCar.GetComponent<PlaceComponent>().Place as ParkingPlace).Number;
+
+                dataJSON.data.Add(carToParking);
+            }
+
+            var stringDataJSON = JsonUtility.ToJson(dataJSON);
+            _carToParkingStorage.Save(stringDataJSON);
+        }
+
+        private void SaveCarsOnCortege()
+        {
+            var cortegeCars = FindObjectsOfType<GuardCar>().ToList();
+            cortegeCars = cortegeCars.FindAll(e => e.TryGetComponent<PlaceComponent>(out PlaceComponent component) && component.Place != null && component.Place is CortegePlace);
+
+            var dataJSON = new ListDataJSON<CarOnCortege>() { data = new List<CarOnCortege>() };
+            foreach (var cortegeCar in cortegeCars)
+            {
+                var carToCortege = new CarOnCortege();
+                carToCortege.powerLevel = (int)cortegeCar.Config.Level;
+
+                var place = cortegeCar.GetComponent<PlaceComponent>().Place as CortegePlace;
+                carToCortege.row = (int)place.Row;
+                carToCortege.column = (int)place.Column;
+
+                dataJSON.data.Add(carToCortege);
+            }
+
+            var stringDataJSON = JsonUtility.ToJson(dataJSON);
+            _carToCortegeStorage.Save(stringDataJSON);
+        }
+
+        private void RestoreCarsOnParking()
+        {
+            try
+            {
+                ListDataJSON<CarOnParking> carsToParking = JsonUtility.FromJson<ListDataJSON<CarOnParking>>(_carToParkingStorage.Load());
+                foreach (var carToPlace in carsToParking.data)
+                {
+                    var place = _parkingPlaces.Find(e => e.Number == carToPlace.placeNumber);
+                    if (place == null) continue;
+
+                    SpawnCar(new BuildParkingGuard((PowerLevel)carToPlace.powerLevel), place);
+                }
+            }
+            catch
+            {
+                print("restore cars on parking failure");
+            }
+        }
+
+        private void RestoreCarsOnCortege()
+        {
+            try
+            {
+                ListDataJSON<CarOnCortege> carsOnCortege = JsonUtility.FromJson<ListDataJSON<CarOnCortege>>(_carToCortegeStorage.Load());
+                foreach (var carToPlace in carsOnCortege.data)
+                {
+                    var place = _cortegePlaces.Find(e => e.Row == (uint)carToPlace.row && e.Column == (uint)carToPlace.column);
+                    if (place == null) continue;
+
+                    SpawnCar(new BuildParkingGuard((PowerLevel)carToPlace.powerLevel), place);
+                }
+            }
+            catch
+            {
+                print("restore cars on cortege failure");
+            }
+        }
         #endregion
 
         #region METHODS PUBLIC
@@ -227,5 +343,26 @@ namespace BossCortege
             return cortegeLevel;
         }
         #endregion
+    }
+
+    [Serializable]
+    public struct ListDataJSON<T>
+    {
+        public List<T> data;
+    }
+
+    [Serializable]
+    public struct CarOnParking
+    {
+        public int powerLevel;
+        public int placeNumber;
+    }
+
+    [Serializable]
+    public struct CarOnCortege
+    {
+        public int powerLevel;
+        public int row;
+        public int column;
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca7402ce06754164fb24486f18d9181c, type: 3}
   m_Name: Suicide01
   m_EditorClassIdentifier: 
-  _money: 10
+  _money: 5
   _level: 1
   _prefab: {fileID: 8091229675778167791, guid: f3568c0f2896cfd488f1b13e1680011c, type: 3}
   _healthBarPref: {fileID: 0}

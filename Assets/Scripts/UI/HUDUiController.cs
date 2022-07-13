@@ -108,6 +108,11 @@ namespace BossCortege
         {
             EventHolder<RaceStopInfo>.NotifyListeners(null);
         }
+
+        public void ShowMenu()
+        {
+            EventHolder<MenuOpenInfo>.NotifyListeners(new MenuOpenInfo());
+        }
         #endregion
     }
 }

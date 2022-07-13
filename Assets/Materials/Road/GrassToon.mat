@@ -62,7 +62,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AmbientCol: 0.02
+    - _AmbientCol: 0.04
     - _BumpScale: 1
     - _Clipped: 1
     - _ColBright: 0

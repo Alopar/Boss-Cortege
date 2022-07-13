@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Cinemachine;
 using BossCortege.EventHolder;
 
@@ -58,9 +59,6 @@ namespace BossCortege
             if(_instance == null)
             {
                 _instance = this;
-#if UNITY_EDITOR
-                ClearGameStorage();
-#endif
                 _moneyWallet = new MoneyDeposite(new IntPlayerPrefStorage("MONEY"));
                 _distance = new DistanceHolder(new IntPlayerPrefStorage("BEST-DISTANCE"));
     }
@@ -72,22 +70,27 @@ namespace BossCortege
 
         private void Start()
         {
-            _moneyWallet.SetCash(1000);
+            if (!PlayerPrefs.HasKey("INITIALIZED"))
+            {
+                _moneyWallet.SetCash(1000);
+                PlayerPrefs.SetInt("INITIALIZED", 1);
+            }
+
+            _moneyWallet.SetCash(0);
         }
         #endregion
 
         #region METHODS PUBLIC
+        public void ClearGameStorage()
+        {
+            PlayerPrefs.DeleteAll();
+            SceneManager.LoadScene(0);
+        }
 #if UNITY_EDITOR
-        [ContextMenu("cheat: MoreMoney")]
+        [ContextMenu("cheat: MORE MONEY")]
         public void MoreMoney()
         {
             _moneyWallet.SetCash(1000);
-        }
-
-        public void ClearGameStorage()
-        {
-            PlayerPrefs.SetInt("MONEY", 0);
-            PlayerPrefs.SetInt("BEST-DISTANCE", 0);
         }
 #endif
         #endregion

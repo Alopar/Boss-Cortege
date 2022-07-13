@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f98850ab63bc4d147a62d237455ead0d, type: 3}
   m_Name: Shoot05
   m_EditorClassIdentifier: 
-  _money: 80
+  _money: 30
   _level: 5
   _prefab: {fileID: 1939295805654080282, guid: c51902175175b484484ca07d0e899557, type: 3}
   _healthBarPref: {fileID: 6840670707789683813, guid: 396b99676f0252840899058ae83a6c61,
@@ -23,7 +23,7 @@ MonoBehaviour:
     type: 3}
   _speed: 12
   _durability: 150
-  _shootDamage: 20
+  _shootDamage: 25
   _rateOfFire: 1
   _projectileScheme: {fileID: 11400000, guid: b18978d15bc193943b7f0b80f8be2880, type: 2}
   _turretPref: {fileID: 5843104049491328243, guid: 896b64f563244ab41a8bd7ce18579a9f,
