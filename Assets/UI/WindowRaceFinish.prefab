@@ -692,7 +692,7 @@ GameObject:
   - component: {fileID: 2718854906584197499}
   - component: {fileID: 926271245514636982}
   m_Layer: 0
-  m_Name: RaceFinishPopup
+  m_Name: WindowRaceFinish
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _name: Guard 07
   _durability: 400
-  _healthBarPref: {fileID: 6840670707789683813, guid: 396b99676f0252840899058ae83a6c61,
+  _healthBarPref: {fileID: 6840670707789683813, guid: fa898acc3aa29f340b5cfa512d9de4aa,
     type: 3}
   _smokePref: {fileID: 915196302776555465, guid: 60a37993912c6174c8e68790bb6ab58b,
     type: 3}
   _explosionPref: {fileID: 395031058680739610, guid: 41656e00aa3440847803124fe19bda71,
     type: 3}
-  _prefab: {fileID: 1813767106728686996, guid: 8b21cc1df910ba14185cfe7249d1ae73, type: 3}
+  _prefab: {fileID: 1813767106728686996, guid: d6545d2237efb874dbb54b745fcac811, type: 3}
   _ramDamage: 40
   _level: 7

@@ -415,7 +415,7 @@ GameObject:
   - component: {fileID: 2718854906584197499}
   - component: {fileID: 1529059408931190857}
   m_Layer: 0
-  m_Name: MenuPopup
+  m_Name: WindowMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

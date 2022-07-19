@@ -99,6 +99,9 @@ namespace BossCortege
             _die.Die();
 
             EventHolder<EnemyDieInfo>.NotifyListeners(new EnemyDieInfo(_scheme.Money));
+
+            var popupPrefab = Resources.Load<PopupInfo>("PopupInfos/Coins");
+            PopupInfoManager.Instance.ShowPopupInfoText(popupPrefab, Camera.main.WorldToScreenPoint(transform.position), _scheme.Money.ToString());
         }
         #endregion
 

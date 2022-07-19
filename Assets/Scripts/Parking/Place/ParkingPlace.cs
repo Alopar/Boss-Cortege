@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BossCortege
 {
@@ -8,13 +9,11 @@ namespace BossCortege
         [SerializeField, Tooltip("Parking place order number"), Min(1)] private uint _number = 1;
 
         [Space(10)]
-        [SerializeField] private Material _openPlaceMaterial;
-        [SerializeField] private Material _closePlaceMaterial;
+        [SerializeField] private Image _closeIcon;
         #endregion
 
         #region FIELDS PRIVATE
         private bool _isOpen = false;
-        private MeshRenderer _renderer;
         #endregion
 
         #region PROPERTIES
@@ -25,8 +24,7 @@ namespace BossCortege
         #region UNITY CALLBACKS
         private void Awake()
         {
-            _renderer = GetComponent<MeshRenderer>();
-            _renderer.material = _closePlaceMaterial;
+            _closeIcon.enabled = true;
         }
         #endregion
 
@@ -34,7 +32,7 @@ namespace BossCortege
         public void Unlock()
         {
             _isOpen = true;
-            _renderer.material = _openPlaceMaterial;
+            _closeIcon.enabled = false;
         }
         #endregion
     }
