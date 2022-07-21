@@ -31,7 +31,7 @@ namespace BossCortege
             EnableParkingHUD(false);
         }
 
-        private void StopRaceHandler(RaceStopInfo info)
+        private void GoHomeHandler(GoHomeInfo info)
         {
             EnableRaceHUD(false);
             EnableParkingHUD(true);
@@ -54,7 +54,7 @@ namespace BossCortege
             EventHolder<MoneyChangeInfo>.AddListener(MoneyChangeHandler, true);
             EventHolder<DistanceChangeInfo>.AddListener(DistanceChangeHandler, true);
             EventHolder<RaceStartInfo>.AddListener(StartRaceHandler, false);
-            EventHolder<RaceStopInfo>.AddListener(StopRaceHandler, false);
+            EventHolder<GoHomeInfo>.AddListener(GoHomeHandler, false);
         }
 
         private void OnDisable()
@@ -62,7 +62,7 @@ namespace BossCortege
             EventHolder<MoneyChangeInfo>.RemoveListener(MoneyChangeHandler);
             EventHolder<DistanceChangeInfo>.RemoveListener(DistanceChangeHandler);
             EventHolder<RaceStartInfo>.RemoveListener(StartRaceHandler);
-            EventHolder<RaceStopInfo>.RemoveListener(StopRaceHandler);
+            EventHolder<GoHomeInfo>.RemoveListener(GoHomeHandler);
         }
 
         private void Awake()
@@ -78,13 +78,13 @@ namespace BossCortege
             _addCarButton.gameObject.SetActive(on);
             _addPlaceButton.gameObject.SetActive(on);
             _goButton.gameObject.SetActive(on);
-            _moneyBar.gameObject.SetActive(on);
+            //_moneyBar.gameObject.SetActive(on);
         }
 
         private void EnableRaceHUD(bool on)
         {
             //_stopButton.gameObject.SetActive(on);
-            _distanceBar.gameObject.SetActive(on);
+            //_distanceBar.gameObject.SetActive(on);
         }
         #endregion
 

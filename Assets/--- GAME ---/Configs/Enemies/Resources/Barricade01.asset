@@ -19,4 +19,4 @@ MonoBehaviour:
   _smokePref: {fileID: 0}
   _explosionPref: {fileID: 725748389856807714, guid: ac78eb3a3fac56f4ba09861ade6b39de,
     type: 3}
-  _explosionDamage: 50
+  _explosionDamage: 250

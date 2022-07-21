@@ -2,10 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using BossCortege.EventHolder;
+using Coffee.UIExtensions;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace BossCortege
 {
-    public class RaceFinishUiController : MonoBehaviour
+    public class RaceLoseUiController : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField] private GameObject _content;
@@ -13,14 +16,12 @@ namespace BossCortege
         [Space(10)]
         [SerializeField] private TextMeshProUGUI _currentDistanceText;
         [SerializeField] private TextMeshProUGUI _moneyDistanceText;
-        [SerializeField] private TextMeshProUGUI _bestDistanceText;
 
         [Space(10)]
         [SerializeField] private TextMeshProUGUI _enemiesText;
         [SerializeField] private TextMeshProUGUI _moneyEnemiesText;
 
         [Space(10)]
-        [SerializeField] private TextMeshProUGUI _moneyText;
         [SerializeField] private TextMeshProUGUI _moreMoneyText;
         #endregion
 
@@ -30,7 +31,7 @@ namespace BossCortege
         #endregion
 
         #region HANDLERS
-        private void RaceStopHandler(RaceStopInfo info)
+        private void RaceLoseHandler(RaceLoseInfo info)
         {
             _currentMoney = RaceManager.Instance.RaceMoney;
             _moreMoney = _currentMoney * 3;
@@ -42,12 +43,12 @@ namespace BossCortege
         #region UNITY CALLBACKS
         private void OnEnable()
         {
-            EventHolder<RaceStopInfo>.AddListener(RaceStopHandler, false);
+            EventHolder<RaceLoseInfo>.AddListener(RaceLoseHandler, false);
         }
 
         private void OnDisable()
         {
-            EventHolder<RaceStopInfo>.RemoveListener(RaceStopHandler);
+            EventHolder<RaceLoseInfo>.RemoveListener(RaceLoseHandler);
         }
 
         private void Awake()
@@ -60,15 +61,12 @@ namespace BossCortege
         private void ShowPopup()
         {
             _currentDistanceText.text = GameManager.Instance.Distance.CurrentDistance.ToString();
-            _moneyDistanceText.text = "+" + RaceManager.Instance.DistanceMoney.ToString();
-
-            _bestDistanceText.text = GameManager.Instance.Distance.BestDistance.ToString();
+            _moneyDistanceText.text = RaceManager.Instance.DistanceMoney.ToString();
 
             _enemiesText.text = RaceManager.Instance.EnemyCount.ToString();
-            _moneyEnemiesText.text = "+" + RaceManager.Instance.EnemyMoney.ToString();
+            _moneyEnemiesText.text = RaceManager.Instance.EnemyMoney.ToString();
 
-            _moneyText.text = "+" + _currentMoney.ToString();
-            _moreMoneyText.text = "+" + _moreMoney.ToString();
+            _moreMoneyText.text = _moreMoney.ToString();
 
             _content.SetActive(true);
         }
@@ -80,16 +78,15 @@ namespace BossCortege
         #endregion
 
         #region METHODS PUBLIC
-        public void TakeMoney()
+        public void TakeMoreMoney()
         {
-            GameManager.Instance.Wallet.SetCash(_currentMoney);
+            GameManager.Instance.Wallet.SetCash(_moreMoney);
             EventHolder<GoHomeInfo>.NotifyListeners(null);
             HidePopup();
         }
 
-        public void TakeMoreMoney()
+        public void Restart()
         {
-            GameManager.Instance.Wallet.SetCash(_moreMoney);
             EventHolder<GoHomeInfo>.NotifyListeners(null);
             HidePopup();
         }

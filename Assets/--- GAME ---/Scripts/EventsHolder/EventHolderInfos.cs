@@ -63,6 +63,16 @@ namespace BossCortege.EventHolder
         // no info
     }
 
+    public class RaceWinInfo
+    {
+        // no info
+    }
+
+    public class RaceLoseInfo
+    {
+        // no info
+    }
+
     public class GoHomeInfo
     {
         // no info

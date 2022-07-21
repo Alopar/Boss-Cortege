@@ -79,6 +79,8 @@ namespace BossCortege
         {
             _distanceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
             _raceMoney = _enemyMoney + _distanceMoney;
+
+            EventHolder<RaceWinInfo>.NotifyListeners(null);
             EventHolder<RaceStopInfo>.NotifyListeners(null);
         }
 
@@ -88,6 +90,8 @@ namespace BossCortege
 
             _distanceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
             _raceMoney = _enemyMoney + _distanceMoney;
+
+            EventHolder<RaceLoseInfo>.NotifyListeners(null);
             EventHolder<RaceStopInfo>.NotifyListeners(null);
         }
 
@@ -100,6 +104,8 @@ namespace BossCortege
         {
             _enemyDieCount++;
             _enemyMoney += info.Money;
+
+            GameManager.Instance.Wallet.SetCash(info.Money);
         }
 
         private void Enemy_OnEnemyDestroyed(AbstractEnemy enemy)
