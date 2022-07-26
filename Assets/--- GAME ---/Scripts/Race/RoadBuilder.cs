@@ -17,55 +17,48 @@ namespace BossCortege
 
         [Space(10)]
         [SerializeField] private List<GameObject> _finalPartPrefabs;
-
-        [Space(10)]
-        [SerializeField] private bool _infinityBuilder = true;
-        [SerializeField] private float _baseRoadDistance = 0;
         #endregion
 
         #region FIELDS PRIVATE
-        private GameObject _lastPartRoad;
+        private GameObject _startPartRoad;
+        private List<GameObject> _roadParts;
+
+        private static RoadBuilder _instance;
+        #endregion
+
+        #region PROPERTIES
+        public static RoadBuilder Instance => _instance;
         #endregion
 
         #region UNITY CALLBACKS
-        private void Start()
+        private void Awake()
         {
-            _lastPartRoad = CreateRoadPart(_startRoadPoint.position);
-
-            if (!_infinityBuilder)
+            if(_instance == null)
             {
-                BuildRoad(_baseRoadDistance);
-                CreateFinalPart(GetCurrentPartPosition());
+                _instance = this;
+            }
+            else
+            {
+                Destroy(this);
             }
         }
 
-        private void FixedUpdate()
+        private void Start()
         {
-            if (_infinityBuilder)
-            {
-                BuildRoad(100);
-            }
+            _roadParts = new List<GameObject>();
+            _startPartRoad = CreateRoadPart(_startRoadPoint.position);
         }
         #endregion
 
         #region METHODS PRIVATE
         private Vector3 GetCurrentPartPosition()
         {
-            var roadRenderer = _lastPartRoad.GetComponentInChildren<Renderer>();
-            var roadPartPosition = _lastPartRoad.transform.position;
+            var lastPartRoad = _roadParts.Count == 0 ? _startPartRoad : _roadParts[_roadParts.Count - 1];
+            var roadRenderer = lastPartRoad.GetComponentInChildren<Renderer>();
+            var roadPartPosition = lastPartRoad.transform.position;
             roadPartPosition.z += roadRenderer.bounds.size.z;
 
             return roadPartPosition;
-        }
-
-        private void BuildRoad(float maxDistance)
-        {
-            var distance = Vector3.Distance(_cortege.position, _lastPartRoad.transform.position);
-            while (distance < maxDistance)
-            {
-                _lastPartRoad = CreateRoadPart(GetCurrentPartPosition());
-                distance = Vector3.Distance(_cortege.position, _lastPartRoad.transform.position);
-            }
         }
 
         private GameObject CreateRoadPart(Vector3 roadPartPosition)
@@ -84,6 +77,35 @@ namespace BossCortege
             roadPart.transform.SetParent(_roadContainer);
 
             return roadPart;
+        }
+
+        private void ClearRoad()
+        {
+            foreach (var roadPart in _roadParts)
+            {
+                Destroy(roadPart);
+            }
+
+            _roadParts.Clear();
+        }
+        #endregion
+
+        #region METHODS PUBLIC
+        public void BuildRoad(float maxDistance)
+        {
+            ClearRoad();
+
+            var distance = 0f;
+            while (distance < maxDistance)
+            {
+                var lastPartRoad = CreateRoadPart(GetCurrentPartPosition());
+                _roadParts.Add(lastPartRoad);
+
+                distance = Vector3.Distance(_cortege.position, lastPartRoad.transform.position);
+            }
+
+            var finalPartRoad = CreateFinalPart(GetCurrentPartPosition());
+            _roadParts.Add(finalPartRoad);
         }
         #endregion
     }

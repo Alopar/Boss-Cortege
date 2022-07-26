@@ -19,6 +19,10 @@ namespace BossCortege
         [SerializeField] private TextMeshProUGUI _bestDistanceText;
 
         [Space(10)]
+        [SerializeField] private TextMeshProUGUI _currentLevelText;
+        [SerializeField] private TextMeshProUGUI _moneyLevelText;
+
+        [Space(10)]
         [SerializeField] private TextMeshProUGUI _enemiesText;
         [SerializeField] private TextMeshProUGUI _moneyEnemiesText;
 
@@ -65,10 +69,13 @@ namespace BossCortege
         #region METHODS PRIVATE
         private void ShowPopup()
         {
-            _currentDistanceText.text = GameManager.Instance.Distance.CurrentDistance.ToString();
-            _moneyDistanceText.text = RaceManager.Instance.DistanceMoney.ToString();
+            //_currentDistanceText.text = GameManager.Instance.Distance.CurrentDistance.ToString();
+            //_moneyDistanceText.text = RaceManager.Instance.DistanceMoney.ToString();
 
-            _bestDistanceText.text = GameManager.Instance.Distance.BestDistance.ToString();
+            //_bestDistanceText.text = GameManager.Instance.Distance.BestDistance.ToString();
+
+            _currentLevelText.text = GameManager.Instance.CurrentLevel.ToString();
+            _moneyLevelText.text = (GameManager.Instance.CurrentLevel * 100).ToString();
 
             _enemiesText.text = RaceManager.Instance.EnemyCount.ToString();
             _moneyEnemiesText.text = RaceManager.Instance.EnemyMoney.ToString();
@@ -84,6 +91,8 @@ namespace BossCortege
         private void HidePopup()
         {
             _content.SetActive(false);
+            EventHolder<GoHomeInfo>.NotifyListeners(null);
+            EventHolder<NextLevelInfo>.NotifyListeners(null);
         }
         #endregion
 
@@ -91,14 +100,12 @@ namespace BossCortege
         public void TakeMoney()
         {
             GameManager.Instance.Wallet.SetCash(_currentMoney);
-            EventHolder<GoHomeInfo>.NotifyListeners(null);
             HidePopup();
         }
 
         public void TakeMoreMoney()
         {
             GameManager.Instance.Wallet.SetCash(_moreMoney);
-            EventHolder<GoHomeInfo>.NotifyListeners(null);
             HidePopup();
         }
         #endregion

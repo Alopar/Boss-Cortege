@@ -18,26 +18,33 @@ namespace BossCortege
         #region FIELDS PRIVATE
         private static GameManager _instance;
 
+        private AbstractStorage<int> _currentLevelStorage;
         private MoneyDeposite _moneyWallet;
         private DistanceHolder _distance;
         #endregion
 
         #region PROPERTIES
         public static GameManager Instance => _instance;
-        
+
+        public int CurrentLevel => _currentLevelStorage.Load();
         public MoneyDeposite Wallet => _moneyWallet;
         public DistanceHolder Distance => _distance;
         #endregion
 
         #region HANDLERS
-        public void StartRaceHandler(RaceStartInfo info)
+        private void StartRaceHandler(RaceStartInfo info)
         {
             _cortegeCamera.Priority = 30;
         }
 
-        public void GoHomeHandler(GoHomeInfo info)
+        private void GoHomeHandler(GoHomeInfo info)
         {
             _cortegeCamera.Priority = 10;
+        }
+
+        private void NextLevelHandler(NextLevelInfo info)
+        {
+            _currentLevelStorage.Save(_currentLevelStorage.Load() + 1);
         }
         #endregion
 
@@ -46,12 +53,14 @@ namespace BossCortege
         {
             EventHolder<RaceStartInfo>.AddListener(StartRaceHandler, false);
             EventHolder<GoHomeInfo>.AddListener(GoHomeHandler, false);
+            EventHolder<NextLevelInfo>.AddListener(NextLevelHandler, false);
         }
 
         private void OnDisable()
         {
             EventHolder<RaceStartInfo>.RemoveListener(StartRaceHandler);
             EventHolder<GoHomeInfo>.RemoveListener(GoHomeHandler);
+            EventHolder<NextLevelInfo>.RemoveListener(NextLevelHandler);
         }
 
         private void Awake()
@@ -59,9 +68,8 @@ namespace BossCortege
             if(_instance == null)
             {
                 _instance = this;
-                _moneyWallet = new MoneyDeposite(new IntPlayerPrefStorage("MONEY"));
-                _distance = new DistanceHolder(new IntPlayerPrefStorage("BEST-DISTANCE"));
-    }
+                Init();
+            }
             else
             {
                 Destroy(this);
@@ -79,6 +87,17 @@ namespace BossCortege
             _moneyWallet.SetCash(0);
         }
         #endregion
+
+
+        #region METHODS PRIVATE
+        private void Init()
+        {
+            _distance = new DistanceHolder(new IntPlayerPrefStorage("BEST-DISTANCE"));
+            _moneyWallet = new MoneyDeposite(new IntPlayerPrefStorage("MONEY"));
+            _currentLevelStorage = new IntPlayerPrefStorage("CURRENT-LEVEL");
+        }
+        #endregion
+
 
         #region METHODS PUBLIC
         public void ClearGameStorage()

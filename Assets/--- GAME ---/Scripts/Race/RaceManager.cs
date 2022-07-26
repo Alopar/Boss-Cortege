@@ -77,19 +77,24 @@ namespace BossCortege
 
         private void RaceFinishHandler(RaceFinishInfo info)
         {
-            _distanceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
-            _raceMoney = _enemyMoney + _distanceMoney;
+            DOVirtual.Float(_speed, 0, 1.2f, e => _currentSpeed = e).SetEase(Ease.OutCubic).OnComplete(() => {
+                //_distanceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
+                //_raceMoney = _enemyMoney + _distanceMoney;
+                _raceMoney = _enemyMoney + ((uint)GameManager.Instance.CurrentLevel * 100);
 
-            EventHolder<RaceWinInfo>.NotifyListeners(null);
-            EventHolder<RaceStopInfo>.NotifyListeners(null);
+                EventHolder<RaceWinInfo>.NotifyListeners(null);
+
+                EventHolder<RaceStopInfo>.NotifyListeners(null);
+            });
         }
 
         private void BossDieHandler(BossDieInfo info)
         {
             StopAllSpawn();
 
-            _distanceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
-            _raceMoney = _enemyMoney + _distanceMoney;
+            //_distanceMoney = (uint)(Vector3.Distance(_startPosition, transform.position) * _moneyPerUnit);
+            //_raceMoney = _enemyMoney + _distanceMoney;
+            _raceMoney = _enemyMoney + ((uint)GameManager.Instance.CurrentLevel * 100);
 
             EventHolder<RaceLoseInfo>.NotifyListeners(null);
             EventHolder<RaceStopInfo>.NotifyListeners(null);
@@ -158,7 +163,7 @@ namespace BossCortege
         {
             if (_go)
             {
-                transform.position += Vector3.forward * _speed * Time.fixedDeltaTime;
+                transform.position += Vector3.forward * _currentSpeed * Time.fixedDeltaTime;
                 GameManager.Instance.Distance.SetDistance((uint)Vector3.Distance(_startPosition, transform.position));
             }
         }
@@ -188,9 +193,9 @@ namespace BossCortege
             _enemyDieCount = 0;
             _distanceMoney = 0;
 
+            RoadBuilder.Instance.BuildRoad(300);
             GameManager.Instance.Distance.SetDistance(0);
-
-            //DOVirtual.Float(0, _speed, 1.5f, e => _currentSpeed = e).SetEase(Ease.InCubic);
+            DOVirtual.Float(0, _speed, 3f, e => _currentSpeed = e).SetEase(Ease.OutCubic);
 
             _cortege = new Cortege();
             var carSpeed = _speed * 1f;

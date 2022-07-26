@@ -78,6 +78,11 @@ namespace BossCortege.EventHolder
         // no info
     }
 
+    public class NextLevelInfo
+    {
+        // no info
+    }
+
     public class MoneyChangeInfo
     {
         public uint Value { get; private set; }

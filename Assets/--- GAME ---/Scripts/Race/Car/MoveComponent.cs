@@ -26,8 +26,11 @@ namespace BossCortege
         #region UNITY CALLBACKS
         private void FixedUpdate()
         {
-            var currentPosition = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, _speed * 0.5f * Time.deltaTime);
-            currentPosition += transform.forward * _speed * Time.deltaTime;
+            //var currentSpeed = _speed;
+            var currentSpeed = RaceManager.Instance.CurrentSpeed;
+
+            var currentPosition = Vector3.MoveTowards(transform.position, _currentPoint.transform.position, currentSpeed * 0.5f * Time.deltaTime);
+            currentPosition += transform.forward * currentSpeed * Time.deltaTime;
             _rigidbody.MovePosition(currentPosition);
 
             if (!_isPointReached)
