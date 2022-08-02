@@ -79,7 +79,10 @@ namespace BossCortege
             }
             else
             {
-                _tapPosition = Input.GetTouch(0).position;
+                if(Input.touchCount > 0)
+                {
+                    _tapPosition = Input.GetTouch(0).position;
+                }
             }
         }
 
