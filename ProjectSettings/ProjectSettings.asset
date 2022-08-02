@@ -134,7 +134,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.1.25
+  bundleVersion: 0.2.27
   preloadedAssets:
   - {fileID: -3122270584880909274, guid: 429c3f20f600d3c4ab322c06976cc2e8, type: 2}
   metroInputSource: 0
@@ -161,7 +161,7 @@ PlayerSettings:
     iPhone: 0
     tvOS: 0
   overrideDefaultApplicationIdentifier: 0
-  AndroidBundleVersionCode: 1
+  AndroidBundleVersionCode: 3
   AndroidMinSdkVersion: 22
   AndroidTargetSdkVersion: 30
   AndroidPreferredInstallLocation: 1
@@ -238,7 +238,7 @@ PlayerSettings:
   clonedFromGUID: 3df0038eaa8740a438c96d5b01ba661e
   templatePackageId: com.unity.template.mobile3d@2.0.1
   templateDefaultScene: Assets/Scenes/SampleScene.unity
-  useCustomMainManifest: 0
+  useCustomMainManifest: 1
   useCustomLauncherManifest: 0
   useCustomMainGradleTemplate: 0
   useCustomLauncherGradleManifest: 0
