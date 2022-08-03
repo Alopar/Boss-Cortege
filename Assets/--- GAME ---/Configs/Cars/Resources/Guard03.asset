@@ -20,6 +20,6 @@ MonoBehaviour:
     type: 3}
   _explosionPref: {fileID: 395031058680739610, guid: 41656e00aa3440847803124fe19bda71,
     type: 3}
-  _prefab: {fileID: 1813767106728686996, guid: 383e5a42e5d0cf847bbe517a9b396909, type: 3}
+  _prefab: {fileID: 4231979506904684563, guid: a9a6567bbc269834ca75bfc047a642eb, type: 3}
   _ramDamage: 20
   _level: 3

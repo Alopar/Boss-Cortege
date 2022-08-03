@@ -14,7 +14,8 @@ namespace BossCortege
 
         public AbstractCar BuildCar()
         {
-            string schemeNumber = (int)_level < 10 ? "0" + (int)_level : _level.ToString();
+            int level = (int)_level;
+            string schemeNumber = level < 10 ? "0" + level : level.ToString();
             string schemeName = $"Guard{schemeNumber}";
             var guardScheme = Resources.Load<GuardScheme>(schemeName);
             var car = GameObject.Instantiate(guardScheme.Prefab);

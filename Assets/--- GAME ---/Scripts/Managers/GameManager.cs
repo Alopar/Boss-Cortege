@@ -78,9 +78,11 @@ namespace BossCortege
 
         private void Start()
         {
-            if (!PlayerPrefs.HasKey("INITIALIZED"))
+            if (PlayerPrefs.GetInt("INITIALIZED") == 0)
             {
                 _moneyWallet.SetCash(1000);
+                _currentLevelStorage.Save(1);
+
                 PlayerPrefs.SetInt("INITIALIZED", 1);
             }
 
@@ -88,21 +90,26 @@ namespace BossCortege
         }
         #endregion
 
-
         #region METHODS PRIVATE
         private void Init()
         {
             _distance = new DistanceHolder(new IntPlayerPrefStorage("BEST-DISTANCE"));
             _moneyWallet = new MoneyDeposite(new IntPlayerPrefStorage("MONEY"));
             _currentLevelStorage = new IntPlayerPrefStorage("CURRENT-LEVEL");
+
+            if (!PlayerPrefs.HasKey("INITIALIZED"))
+            {
+                PlayerPrefs.SetInt("INITIALIZED", 0);
+            }
         }
         #endregion
-
 
         #region METHODS PUBLIC
         public void ClearGameStorage()
         {
             PlayerPrefs.DeleteAll();
+            PlayerPrefs.SetInt("INITIALIZED", 0);
+
             SceneManager.LoadScene(0);
         }
 #if UNITY_EDITOR
