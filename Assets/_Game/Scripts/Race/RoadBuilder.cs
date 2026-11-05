@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Scripting.LifecycleManagement;
 
 namespace BossCortege
 {
-    public class RoadBuilder : MonoBehaviour
+    public partial class RoadBuilder : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField] private Transform _cortege;
@@ -23,6 +24,7 @@ namespace BossCortege
         private GameObject _startPartRoad;
         private List<GameObject> _roadParts;
 
+        [AutoStaticsCleanup]
         private static RoadBuilder _instance;
         #endregion
 

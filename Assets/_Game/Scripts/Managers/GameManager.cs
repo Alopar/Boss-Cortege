@@ -3,12 +3,13 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Scripting.LifecycleManagement;
 
 using BossCortege.EventHolder;
 
 namespace BossCortege
 {
-    public class GameManager : MonoBehaviour
+    public partial class GameManager : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField] private Unity.Cinemachine.CinemachineVirtualCamera _parkingCamera;
@@ -16,6 +17,7 @@ namespace BossCortege
         #endregion
 
         #region FIELDS PRIVATE
+        [AutoStaticsCleanup]
         private static GameManager _instance;
 
         private AbstractStorage<int> _currentLevelStorage;

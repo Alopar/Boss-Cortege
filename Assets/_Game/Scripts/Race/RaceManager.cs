@@ -3,12 +3,13 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Scripting.LifecycleManagement;
 using BossCortege.EventHolder;
 using DG.Tweening;
 
 namespace BossCortege
 {
-    public class RaceManager : MonoBehaviour
+    public partial class RaceManager : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField, Range(1, 100), Tooltip("Монет за расстояние")] private float _moneyPerUnit = 1;
@@ -42,6 +43,7 @@ namespace BossCortege
         private Cortege _cortege;
         private BossCar _boss;
 
+        [AutoStaticsCleanup]
         private static RaceManager _instance;
         #endregion
 

@@ -1,13 +1,16 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Unity.Scripting.LifecycleManagement;
 
 namespace BossCortege.EventHolder
 {
-    public static class EventHolder<T> where T : class
+    public static partial class EventHolder<T> where T : class
     {
+        [AutoStaticsCleanup]
         private static readonly List<Action<T>> _listeners = new List<Action<T>>();
 
+        [AutoStaticsCleanup]
         private static T _currentInfo;
 
         public static void NotifyListeners(T info)

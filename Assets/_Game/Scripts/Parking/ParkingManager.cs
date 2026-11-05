@@ -2,11 +2,12 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Scripting.LifecycleManagement;
 using BossCortege.EventHolder;
 
 namespace BossCortege
 {
-    public class ParkingManager : MonoBehaviour
+    public partial class ParkingManager : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField] private uint _baseAvailableParkingPlaces = 3;
@@ -29,6 +30,7 @@ namespace BossCortege
 
         private uint _currentAvailableParkingPlaces;
 
+        [AutoStaticsCleanup]
         private static ParkingManager _instance;
         #endregion
 

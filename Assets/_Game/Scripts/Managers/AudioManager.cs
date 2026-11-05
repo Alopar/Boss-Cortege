@@ -1,14 +1,16 @@
 using UnityEngine;
+using Unity.Scripting.LifecycleManagement;
 
 namespace BossCortege
 {
-    public class AudioManager : MonoBehaviour
+    public partial class AudioManager : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField] private AudioSource _source;
         #endregion
 
         #region FIELDS PRIVATE
+        [AutoStaticsCleanup]
         private static AudioManager _instance;
         #endregion
 

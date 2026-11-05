@@ -1,15 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Scripting.LifecycleManagement;
 
 namespace BossCortege
 {
-    public class PopupInfoManager : MonoBehaviour
+    public partial class PopupInfoManager : MonoBehaviour
     {
         #region FIELDS INSPECTOR
         [SerializeField] private RectTransform _content;
         #endregion
 
         #region FIELDS PRIVATE
+        [AutoStaticsCleanup]
         private static PopupInfoManager _instance;
         #endregion
 
