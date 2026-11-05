@@ -54,7 +54,7 @@ namespace BossCortege
             transform.LookAt(_aimPoint);
 
             _rigidbody = GetComponent<Rigidbody>();
-            _rigidbody.velocity = transform.forward * 25f;
+            _rigidbody.linearVelocity = transform.forward * 25f;
 
             Destroy(gameObject, 2f);
         }
