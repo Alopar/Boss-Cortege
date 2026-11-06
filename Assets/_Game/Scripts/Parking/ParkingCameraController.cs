@@ -46,22 +46,9 @@ namespace BossCortege
         {
             if (_isDragging) return;
 
-            if (!_isMobile)
+            if (PointerInput.TryGetPrimary(_isMobile, out var pointer) && pointer.Began)
             {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    GetTapPosition();
-                }
-            }
-            else
-            {
-                if (Input.touchCount > 0)
-                {
-                    if (Input.GetTouch(0).phase == TouchPhase.Began)
-                    {
-                        GetTapPosition();
-                    }
-                }
+                _tapPosition = pointer.Position;
             }
 
             MoveCamera();
@@ -73,17 +60,9 @@ namespace BossCortege
         #region METHODS PRIVATE
         private void GetTapPosition()
         {
-            if (!_isMobile)
-            {
-                _tapPosition = Input.mousePosition;
-            }
-            else
-            {
-                if (Input.touchCount > 0)
-                {
-                    _tapPosition = Input.GetTouch(0).position;
-                }
-            }
+            if (!PointerInput.TryGetPrimary(_isMobile, out var pointer)) return;
+
+            _tapPosition = pointer.Position;
         }
 
         private void MoveCamera()
@@ -91,13 +70,9 @@ namespace BossCortege
             if (_tapPosition == Vector2.zero) return;
 
             var swipeDelta = Vector2.zero;
-            if (!_isMobile && Input.GetMouseButton(0))
+            if (PointerInput.TryGetPrimary(_isMobile, out var pointer) && pointer.Held)
             {
-                swipeDelta = (Vector2)Input.mousePosition - _tapPosition;
-            }
-            else if (Input.touchCount > 0)
-            {
-                swipeDelta = Input.GetTouch(0).position - _tapPosition;
+                swipeDelta = pointer.Position - _tapPosition;
             }
 
             var positionZ = Mathf.Clamp(transform.position.z + (-swipeDelta.y * _mouseSensitivity), -10f, 0);

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using BossCortege.EventHolder;
 
@@ -14,6 +13,7 @@ namespace BossCortege
 
         private bool isSwiping;
         private bool isMobile;
+        private bool wasPressed;
         #endregion
 
         #region UNITY CALLBACKS
@@ -24,34 +24,24 @@ namespace BossCortege
 
         private void Update()
         {
-            if (!isMobile)
+            if (!PointerInput.TryGetPrimary(isMobile, out var pointer))
             {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    isSwiping = true;
-                    tapPosition = Input.mousePosition;
-                }
-                else if (Input.GetMouseButtonUp(0))
-                {
-                    ResetSwipe();
-                }
-            }
-            else
-            {
-                if (Input.touchCount > 0)
-                {
-                    if (Input.GetTouch(0).phase == TouchPhase.Began)
-                    {
-                        isSwiping = true;
-                        tapPosition = Input.GetTouch(0).position;
-                    }
-                    else if (Input.GetTouch(0).phase == TouchPhase.Canceled || Input.GetTouch(0).phase == TouchPhase.Ended)
-                    {
-                        ResetSwipe();
-                    }
-                }
+                if (wasPressed) ResetSwipe();
+                wasPressed = false;
+                return;
             }
 
+            if (pointer.Pressed && !wasPressed)
+            {
+                isSwiping = true;
+                tapPosition = pointer.Position;
+            }
+            else if (!pointer.Pressed && wasPressed)
+            {
+                ResetSwipe();
+            }
+
+            wasPressed = pointer.Pressed;
             CheckSwipe();
         }
         #endregion
@@ -61,16 +51,9 @@ namespace BossCortege
         {
             swipeDelta = Vector2.zero;
 
-            if (isSwiping)
+            if (isSwiping && PointerInput.TryGetPrimary(isMobile, out var pointer) && pointer.Pressed)
             {
-                if (!isMobile && Input.GetMouseButton(0))
-                {
-                    swipeDelta = (Vector2)Input.mousePosition - tapPosition;
-                }
-                else if (Input.touchCount > 0)
-                {
-                    swipeDelta = Input.GetTouch(0).position - tapPosition;
-                }
+                swipeDelta = pointer.Position - tapPosition;
             }
 
             if (swipeDelta.magnitude > deadZone)

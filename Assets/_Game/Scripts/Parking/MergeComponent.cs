@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using DG.Tweening;
 using BossCortege.EventHolder;
 
@@ -128,21 +129,8 @@ namespace BossCortege
         #region METHODS PRIVATE
         private void ReadPointer()
         {
-            if (Input.touchCount > 0)
-            {
-                for (int i = 0; i < Input.touchCount; i++)
-                {
-                    var touch = Input.GetTouch(i);
-                    if (touch.fingerId != _pointerId) continue;
-
-                    _pointerPosition = touch.position;
-                    return;
-                }
-
-                return;
-            }
-
-            _pointerPosition = Input.mousePosition;
+            if (PointerInput.TryReadTracked(_pointerId, out var position))
+                _pointerPosition = position;
         }
 
         private void BeginDrag(PointerEventData eventData)
@@ -154,7 +142,9 @@ namespace BossCortege
 
             _isDragging = true;
             _aimAssist = false;
-            _pointerId = eventData.pointerId;
+            _pointerId = eventData is ExtendedPointerEventData extended && extended.touchId != 0
+                ? extended.touchId
+                : eventData.pointerId;
             _pointerPosition = eventData.position;
             _pressPosition = eventData.position;
             _groundY = _place.Place.SpawnPoint.position.y;
